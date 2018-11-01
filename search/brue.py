@@ -80,10 +80,10 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
     probe = 0
     while n < num_reads:
         switchingPoint = probe % MAX_DEPTH
-        print('probe:', probe, 'evals:', n, 'switch: ', switchingPoint)
+        # print('probe:', probe, 'evals:', n, 'switch: ', switchingPoint)
         level = 0
         current = root
-        #print(current.number_visits)
+        # print(current.number_visits)
         while level < MAX_DEPTH and n < num_reads:
             if not current.number_visits:
                 child_priors, reward = net.evaluate(current.board)
@@ -96,10 +96,10 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
 
             if level < switchingPoint:
                 current = current.explore()
-                print('explore', level+1, current.number_visits)
+                # print('explore', level+1, current.number_visits)
             else:
                 current = current.exploit()
-                print('exploit', level+1, current.number_visits)
+                # print('exploit', level+1, current.number_visits)
             level += 1
 
         current.number_visits += 1
