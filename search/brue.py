@@ -14,7 +14,7 @@ class BRUENode():
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior         # float
-        self.total_value = prior # float
+        self.total_value = 0. # float
         self.number_visits = 0     # int
         self.uncertainty = .15
 
@@ -27,7 +27,7 @@ class BRUENode():
     
     def explore(self):
         children = self.children
-        return choices(list(children.values()), [node.prior for node in children.values()])[0]
+        return choices(list(children.values()), [node.prior for node in children.values()], k=1)[0]
     
     def expand(self, child_priors):
         for move, prior in child_priors.items():
@@ -97,8 +97,9 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
             level += 1
 
 
+        _, reward = net.evaluate(current.board)
         update_node.number_visits += 1
-        update_node.backup(current.prior)
+        update_node.backup(current, reward)
         probe += 1
     
     #for action, child in root.children.items():
