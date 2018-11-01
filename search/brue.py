@@ -50,7 +50,7 @@ class BRUENode():
         
     def backup(self, value_estimate: float):
         current = self
-        current = self.EXPLOITED
+        current.state = self.EXPLOITED
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
         while current.parent is not None and current.state == self.EXPLOITED:
