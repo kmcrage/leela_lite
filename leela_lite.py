@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import sys
+sys.path.extend(['/content/lczero_tools/src', '/content/python-chess'])
 from lcztools import load_network, LeelaBoard
 import search
 import chess
@@ -17,6 +19,7 @@ nodes = int(sys.argv[3])
 
 
 board = LeelaBoard()
+print(dir(board))
 
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
