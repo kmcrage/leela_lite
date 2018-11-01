@@ -6,7 +6,7 @@ from lcztools import LeelaBoard
 import chess
 from collections import OrderedDict
 
-MAX_DEPTH = 40
+MAX_DEPTH = 10
 
 class BRUENode():
     EXPLORED = 0
