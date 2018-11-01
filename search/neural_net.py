@@ -6,7 +6,7 @@ class NeuralNet:
         super().__init__()
         assert(net != None)
         self.net = net
-        #self.evaluate = functools.lru_cache(maxsize=lru_size)(self.evaluate)
+        self.evaluate = functools.lru_cache(maxsize=lru_size)(self.evaluate)
 
     def evaluate(self, board):
         result = None

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys
-sys.path.extend(['/content/lczero_tools/src', '/content/python-chess'])
+sys.path.extend(['/content/lczero_tools/src', '/content/python-chess', '/content/leela-lite'])
 from lcztools import load_network, LeelaBoard
 import search
 import chess
@@ -18,11 +18,10 @@ nodes = int(sys.argv[3])
 
 
 board = LeelaBoard()
-board.copy = board.pc_method('copy')
 
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
-# policy, value = net.evaluate(board)
+policy, value = net.evaluate(board)
 # print(policy)
 # print(value)
 # print(uct.softmax(policy.values()))
