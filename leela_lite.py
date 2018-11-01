@@ -6,7 +6,7 @@ import chess.pgn
 import sys
 import time
 
-
+print(chess.__file__)
 if len(sys.argv) != 4:
     print("Usage: python3 leela_lite.py <backend> <weights file> <nodes>")
     print(len(sys.argv))
