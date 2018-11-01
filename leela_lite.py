@@ -7,23 +7,24 @@ import sys
 import time
 
 
-if len(sys.argv) != 3:
-    print("Usage: python3 leela_lite.py <weights file> <nodes>")
+if len(sys.argv) != 4:
+    print("Usage: python3 leela_lite.py <backend> <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
-else:
-    weights = sys.argv[1]
-    nodes = int(sys.argv[2])
+
+backend = sys.argv[1]
+weights = sys.argv[2]
+nodes = int(sys.argv[3])
 
 
 board = LeelaBoard()
 
-net = load_network(filename=weights, policy_softmax_temp=2.2)
+net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
-#policy, value = net.evaluate(board)
-#print(policy)
-#print(value)
-#print(uct.softmax(policy.values()))
+# policy, value = net.evaluate(board)
+# print(policy)
+# print(value)
+# print(uct.softmax(policy.values()))
 
 SELFPLAY = True
 
