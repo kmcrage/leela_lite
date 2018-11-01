@@ -55,12 +55,10 @@ class BRUENode():
         turnfactor = -1
         while current.parent is not None and current.state == self.EXPLOITED:
             current.state = self.EXPLORED
-            current.number_visits += 1
             current.total_value += (value_estimate *
                                     turnfactor)
             current = current.parent
             turnfactor *= -1
-        current.number_visits += 1
     
     def dump(self, move, C):
         print("---")
@@ -84,7 +82,12 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
         level = 0
         current = root
         #print(current.number_visits)
-        while current.number_visits > 0 and current.uncertainty != 0:
+        while level < MAX_DEPTH:
+            if not current.number_visits:
+                child_priors, reward = net.evaluate(current.board)
+                current.expand(child_priors)
+            current.number_visits += 1
+
             if level < switchingPoint:
                 current = current.explore()
                 #print('explore', level+1, current.number_visits)
@@ -92,9 +95,8 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
                 current = current.exploit()
                 #print('exploit', level+1, current.number_visits)
             level += 1
-        
-        child_priors, reward  = net.evaluate(current.board)
-        current.expand(child_priors)
+
+        current.number_visits += 1
         current.backup(reward)
     
     #for action, child in root.children.items():
