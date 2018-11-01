@@ -13,7 +13,7 @@ class BRUENode():
     EXPLOITED = 1
 
     def __init__(self, board, parent=None, prior=0):
-        self.state = EXPLORED
+        self.state = self.EXPLORED
         self.board = board
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
