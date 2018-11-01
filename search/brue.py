@@ -6,9 +6,14 @@ from lcztools import LeelaBoard
 import chess
 from collections import OrderedDict
 
+MAX_DEPTH = 40
 
 class BRUENode():
+    EXPLORED = 0
+    EXPLOITED = 1
+
     def __init__(self, board, parent=None, prior=0):
+        self.state = EXPLORED
         self.board = board
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
@@ -21,10 +26,12 @@ class BRUENode():
         return self.total_value/(self.number_visits+1)
         
     def exploit(self):
+        self.state = self.EXPLOITED
         children = self.children
         return max(self.children.values(), key=lambda node: node.prior+0.)
     
     def explore(self):
+        self.state = self.EXPLORED
         children = self.children
         return choices(list(children.values()), [node.prior for node in children.values()])[0]
     
@@ -43,9 +50,11 @@ class BRUENode():
         
     def backup(self, value_estimate: float):
         current = self
+        current = self.EXPLOITED
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
-        while current.parent is not None:            
+        while current.parent is not None and current.state == self.EXPLOITED:
+            current.state = self.EXPLORED
             current.number_visits += 1
             current.total_value += (value_estimate *
                                     turnfactor)
@@ -70,7 +79,7 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
     assert(net != None)
     root = BRUENode(board)
     for n in range(num_reads):
-        switchingPoint = n%40
+        switchingPoint = n % MAX_DEPTH
         #print('run ', n, 'switch ', switchingPoint)
         level = 0
         current = root
@@ -84,7 +93,7 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
                 #print('exploit', level+1, current.number_visits)
             level += 1
         
-        child_priors, reward, current.uncertainty  = net.evaluate(current.board)
+        child_priors, reward  = net.evaluate(current.board)
         current.expand(child_priors)
         current.backup(reward)
     
