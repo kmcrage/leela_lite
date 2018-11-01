@@ -13,8 +13,8 @@ class NeuralNet:
         
         if board.pc_board.is_game_over():
             result = board.pc_board.result()
-        elif board.can_claim_draw():
-            # board.can_claim_draw checks for threefold or fifty move rule
+        elif board.is_draw():
+            # board.is_draw checks for threefold or fifty move rule
             # Don't use python-chess method, because threefold checks if next move can
             # be threefold as well            
             result = "1/2-1/2"
