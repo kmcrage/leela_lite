@@ -6,7 +6,6 @@ import chess.pgn
 import sys
 import time
 
-print(chess.__file__)
 if len(sys.argv) != 4:
     print("Usage: python3 leela_lite.py <backend> <weights file> <nodes>")
     print(len(sys.argv))
@@ -18,7 +17,6 @@ nodes = int(sys.argv[3])
 
 
 board = LeelaBoard()
-board.copy = board.pc_method('copy')
 
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
