@@ -19,7 +19,9 @@ class BRUENode():
         self.uncertainty = .15
 
     def Q(self):
-        return self.total_value/self.number_visits
+        if self.number_visits > 0:
+            return self.total_value/self.number_visits
+        return 0.
         
     def exploit(self):
         children = self.children
