@@ -86,8 +86,11 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
         while level < MAX_DEPTH and n < num_reads:
             if not current.number_visits:
                 child_priors, reward = net.evaluate(current.board)
-                current.expand(child_priors)
                 n += 1
+                if not child_priors:
+                    break
+                current.expand(child_priors)
+
             current.number_visits += 1
 
             if level < switchingPoint:
