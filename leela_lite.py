@@ -21,7 +21,7 @@ board = LeelaBoard()
 
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
-policy, value = net.evaluate(board)
+# policy, value = net.evaluate(board)
 # print(policy)
 # print(value)
 # print(uct.softmax(policy.values()))
@@ -40,6 +40,20 @@ while True:
     print("thinking...")
     start = time.time()
     best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
+    elapsed = time.time() - start
+    print("best: ", best)
+    print("Time: {:.3f} nps".format(nodes/elapsed))
+    print(nn.evaluate.cache_info())
+    board.push_uci(best)
+    if board.pc_board.is_game_over() or board.is_draw():
+        print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
+        print(board)
+        print(chess.pgn.Game.from_board(board.pc_board))
+        break
+    print(board)
+    print("thinking...")
+    start = time.time()
+    best, node = search.BRUE_search(board, nodes, net=nn, C=3.4)
     elapsed = time.time() - start
     print("best: ", best)
     print("Time: {:.3f} nps".format(nodes/elapsed))
