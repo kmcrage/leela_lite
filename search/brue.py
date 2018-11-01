@@ -77,7 +77,7 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
     assert(net != None)
     root = BRUENode(board)
     n = 0
-    for n < num_reads:
+    while n < num_reads:
         switchingPoint = n % MAX_DEPTH
         #print('run ', n, 'switch ', switchingPoint)
         level = 0
@@ -95,10 +95,10 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
 
             if level < switchingPoint:
                 current = current.explore()
-                #print('explore', level+1, current.number_visits)
+                print('explore', level+1, current.number_visits)
             else:
                 current = current.exploit()
-                #print('exploit', level+1, current.number_visits)
+                print('exploit', level+1, current.number_visits)
             level += 1
 
         current.number_visits += 1
