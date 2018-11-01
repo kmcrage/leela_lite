@@ -77,9 +77,10 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
     assert(net != None)
     root = BRUENode(board)
     n = 0
+    probe = 0
     while n < num_reads:
-        switchingPoint = n % MAX_DEPTH
-        #print('run ', n, 'switch ', switchingPoint)
+        switchingPoint = probe % MAX_DEPTH
+        print('probe:', probe, 'evals:', n, 'switch: ', switchingPoint)
         level = 0
         current = root
         #print(current.number_visits)
@@ -103,6 +104,7 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
 
         current.number_visits += 1
         current.backup(reward)
+        probe += 1
     
     #for action, child in root.children.items():
     #    print(action, child.number_visits, child.Q())
