@@ -9,29 +9,23 @@ from collections import OrderedDict
 MAX_DEPTH = 10
 
 class BRUENode():
-    EXPLORED = 0
-    EXPLOITED = 1
-
     def __init__(self, board, parent=None, prior=0):
-        self.state = self.EXPLORED
         self.board = board
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior         # float
-        self.total_value = 0. # float
+        self.total_value = prior # float
         self.number_visits = 0     # int
         self.uncertainty = .15
 
     def Q(self):
-        return self.total_value/(self.number_visits+1)
+        return self.total_value/self.number_visits
         
     def exploit(self):
-        self.state = self.EXPLOITED
         children = self.children
         return max(self.children.values(), key=lambda node: node.prior+0.)
     
     def explore(self):
-        self.state = self.EXPLORED
         children = self.children
         return choices(list(children.values()), [node.prior for node in children.values()])[0]
     
@@ -48,17 +42,16 @@ class BRUENode():
         board.push_uci(move)
         return board
         
-    def backup(self, value_estimate: float):
-        current = self
-        current.state = self.EXPLOITED
+    def backup(self, leaf, value_estimate: float):
+        current = leaf
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
-        while current.parent is not None and current.state == self.EXPLOITED:
-            current.state = self.EXPLORED
-            current.total_value += (value_estimate *
-                                    turnfactor)
+        while current != self:
             current = current.parent
-            turnfactor *= -1
+            value_estimate *= turnfactor
+        self.prior = max(0.0, (self.number_visits * self.prior + value_estimate) / (self.number_visits + 1))
+        self.total_value += value_estimate
+
     
     def dump(self, move, C):
         print("---")
@@ -83,7 +76,7 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
         # print('probe:', probe, 'evals:', n, 'switch: ', switchingPoint)
         level = 0
         current = root
-        # print(current.number_visits)
+        update_node = None
         while level < MAX_DEPTH and n < num_reads:
             if not current.number_visits:
                 child_priors, reward = net.evaluate(current.board)
@@ -92,18 +85,20 @@ def BRUE_search(board, num_reads, net=None, C=1.0):
                     break
                 current.expand(child_priors)
 
-            current.number_visits += 1
 
             if level < switchingPoint:
                 current = current.explore()
                 # print('explore', level+1, current.number_visits)
             else:
+                if not update_node:
+                    update_node = current
                 current = current.exploit()
                 # print('exploit', level+1, current.number_visits)
             level += 1
 
-        current.number_visits += 1
-        current.backup(reward)
+
+        update_node.number_visits += 1
+        update_node.backup(current.prior)
         probe += 1
     
     #for action, child in root.children.items():
