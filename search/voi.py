@@ -25,6 +25,9 @@ class VOINode:
         return self.total_value / (1 + self.number_visits)
 
     def best_child(self):
+        if length(self.children) < 2:
+            return self.children.values()[0]
+        
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
                                      key=lambda node: node.Q()
