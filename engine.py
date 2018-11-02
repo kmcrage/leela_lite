@@ -1,7 +1,7 @@
 import sys
 sys.path.extend(['/content/lczero_tools/src', '/content/python-chess', '/content/leela-lite'])
 from lcztools import load_network, LeelaBoard
-import uct
+import search
 import chess
 import chess.pgn
 
@@ -73,8 +73,7 @@ while True:
     elif tokens[0] == "quit":
         exit(0)
     elif tokens[0] == "isready":
-        net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
-        nn = uct.NeuralNet(net=net)
+        net = search.NeuralNet(net=net)
         send("readyok")
     elif tokens[0] == "ucinewgame":
         board = LeelaBoard()
@@ -83,8 +82,8 @@ while True:
     elif tokens[0] == 'go':
         if nn == None:
             net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
-            nn = uct.NeuralNet(net=net)
-        best, node = uct.UCT_search(board, nodes, net=nn, C=3.4)
+            nn = search.NeuralNet(net=net)
+        best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
         send("bestmove {}".format(best))
 
 logfile.close()
