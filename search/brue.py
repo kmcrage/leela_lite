@@ -59,6 +59,16 @@ class Mcts2e:
         self.net = net
 
     def probe(self, node, depth, switch):
+        """
+        Note that we only want to give a reward based on the terminal state
+        as otherwise we over-reward long sequences. In the original MCTS/BRUE
+        search, all the sequences are |H| long, so this never matters
+
+        :param node:
+        :param depth:
+        :param switch:
+        :return:
+        """
         if node.end_of_probe(node, self.net, depth):
             if switch > depth:
                 switch = depth
@@ -68,7 +78,7 @@ class Mcts2e:
                 child = node.exploration()
             else:
                 child = node.exploitation()
-            reward = node.q - self.probe(child, depth+1, switch)
+            reward = - self.probe(child, depth+1, switch)
         print('node q:', node.q, 'depth', depth)
         if depth == switch:
             print('update depth', depth, 'reward', reward)
