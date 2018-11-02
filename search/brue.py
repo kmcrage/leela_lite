@@ -51,7 +51,8 @@ class BRUENode:
         if not node.board.pc_board.is_game_over():
             child_priors, value_estimate = net.evaluate(node.board)
             node.expand(child_priors)
-            node.reward = value_estimate
+            node.total_value = value_estimate
+            node.number_visits = 1
         return True
 
     def update_node(self, reward):
