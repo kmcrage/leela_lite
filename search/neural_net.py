@@ -30,9 +30,4 @@ class NeuralNet:
         policy, value = self.net.evaluate(board)
         
         value2 = (2.0*value)-1.0
-        #print("value: ", value)
-        #print("value2: ", value2)
-        #sm = temp_softmax(policy.values(), sm=2.2)
-        #for i, k in enumerate(policy):
-        #    policy[k] = sm[i]
         return policy, value2
