@@ -81,7 +81,7 @@ class Mcts2e:
             switch = root.switch_function(n, switch)
             self.probe(root, 0, switch)
         return max(root.children.items(),
-                   key=lambda item: (item[1].number_visits, item[1].q))
+                   key=lambda item: (item[1].q, item[1].number_visits))
 
 
 def BRUE_search(board, num_reads, net=None, **_):
