@@ -59,7 +59,6 @@ class Mcts2e:
         self.net = net
 
     def probe(self, node, depth, switch):
-        print('node q:', node.q, 'depth', depth,)
         if node.end_of_probe(node, self.net, depth):
             if switch > depth:
                 switch = depth
@@ -70,6 +69,7 @@ class Mcts2e:
             else:
                 child = node.exploitation()
             reward = node.q - self.probe(child, depth+1, switch)
+        print('node q:', node.q, 'depth', depth)
         if depth == switch:
             print('update depth', depth, 'reward', reward)
             node.update_node(reward)
