@@ -42,7 +42,7 @@ class BRUENode:
 
     @staticmethod
     def switch_function(num, _):
-        return 1 + num % int(math.log(1 + num))
+        return 1 + num % int(1 + math.log(1 + num))
 
     @staticmethod
     def end_of_probe(node, net, _):
