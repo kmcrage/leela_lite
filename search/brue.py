@@ -14,8 +14,7 @@ class BRUENode:
         self.uncertainty = .15
         
     def exploitation(self):
-        return max(self.children.values(),
-                   key=lambda node: node.prior+0.)
+        return max(self.children.values(), key=lambda node: node.q)
     
     def exploration(self):
         children = self.children
@@ -60,7 +59,7 @@ class Mcts2e:
         self.net = net
 
     def probe(self, node, depth, switch):
-        print('probe',depth)
+        print('node q:', q, 'depth', depth,)
         if node.end_of_probe(node, self.net, depth):
             if switch > depth:
                 switch = depth
