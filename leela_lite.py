@@ -53,7 +53,7 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.BRUE_search(board, nodes, net=nn, C=3.4)
+    best, node = search.VOI_search(board, nodes, net=nn)
     elapsed = time.time() - start
     print("best: ", best)
     print("Time: {:.3f} nps".format(nodes/elapsed))
