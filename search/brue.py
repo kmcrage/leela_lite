@@ -80,7 +80,7 @@ class Mcts2e:
         for n in range(num_reads):
             switch = root.switch_function(n, switch)
             self.probe(root, 0, switch)
-            print(sorted([(i[0], i[1].q) for i in root.children.items()], key=lambda item: item[1].q))
+            print(sorted([(i[0], i[1].q) for i in root.children.items()], key=lambda item: item[1]))
         return max(root.children.items(),
                    key=lambda item: (item[1].q, item[1].number_visits))
 
