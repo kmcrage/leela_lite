@@ -26,7 +26,7 @@ class VOINode:
 
     def best_child(self):
         if len(self.children) < 2:
-            return self.children.values()[0]
+            return (list(self.children.values()))[0]
 
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
