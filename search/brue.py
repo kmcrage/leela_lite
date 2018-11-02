@@ -9,14 +9,9 @@ class BRUENode:
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior         # float
-        self.total_value = 0.  # float
+        self.q = 0.
         self.number_visits = 0     # int
         self.uncertainty = .15
-
-    def Q(self):
-        if self.number_visits > 0:
-            return self.total_value/self.number_visits
-        return 0.
         
     def exploitation(self):
         return max(self.children.values(),
@@ -51,13 +46,13 @@ class BRUENode:
         if not node.board.pc_board.is_game_over():
             child_priors, value_estimate = net.evaluate(node.board)
             node.expand(child_priors)
-            node.total_value = value_estimate
+            node.q = value_estimate
             node.number_visits = 1
         return True
 
     def update_node(self, reward):
         self.number_visits += 1
-        self.total_value += reward
+        self.q += (reward - self.q) / self.number_visits
 
 
 class Mcts2e:
@@ -68,13 +63,13 @@ class Mcts2e:
         if node.end_of_probe(node, self.net, depth):
             if switch > depth:
                 switch = depth
-            reward = node.Q()
+            reward = node.q
         else:
             if depth < switch:
                 child = node.exploration()
             else:
                 child = node.exploitation()
-            reward = node.reward - self.probe(child, depth+1, switch)
+            reward = node.q - self.probe(child, depth+1, switch)
         if depth == switch:
             node.update_node(reward)
         return reward
@@ -85,7 +80,7 @@ class Mcts2e:
             switch = root.switch_function(n, switch)
             self.probe(root, 0, switch)
         return max(root.children.items(),
-                   key=lambda item: (item[1].number_visits, item[1].Q()))
+                   key=lambda item: (item[1].number_visits, item[1].q))
 
 
 def BRUE_search(board, num_reads, net=None, **_):
