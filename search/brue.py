@@ -67,7 +67,7 @@ class Mcts2e:
         if node.end_of_probe(node, self.net, depth):
             if switch > depth:
                 switch = depth
-            reward = node.reward
+            reward = node.Q()
         else:
             if depth < switch:
                 child = node.exploration()
