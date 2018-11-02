@@ -71,6 +71,7 @@ class Mcts2e:
                 child = node.exploitation()
             reward = node.q - self.probe(child, depth+1, switch)
         if depth == switch:
+            print('update depth', depth, 'reward', reward)
             node.update_node(reward)
         return reward
 
