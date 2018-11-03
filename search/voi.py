@@ -53,7 +53,7 @@ class VOINode:
         # get the two best nodes by value, tie-break with visits, then prior for the special case of first move
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: (node.desirability(c), node.number_visits, node.prior)
+                                     key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
 
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
@@ -63,10 +63,10 @@ class VOINode:
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi *= (1 + beta.desirability(c)) * math.exp(-phi * alpha.number_visits * (alpha.desirability(c) - beta.desirability(c)) ** 2)
+                voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
-                voi *= (1 - alpha.desirability(c)) * math.exp(-phi * n.number_visits * (alpha.desirability(c) - n.desirability(c)) ** 2)
-            n.V = voi
+                voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
+            n.V = voi + n.Q
             if voi > vmax:
                 vmax = voi
                 result = n
