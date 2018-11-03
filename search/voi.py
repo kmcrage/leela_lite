@@ -21,29 +21,32 @@ class VOINode:
         self.total_value = 0  # float
         self.number_visits = 0  # int
 
+    @property
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
     def best_child(self):
         """
-        Take care here: bear in mind that the rewards in the paper are in the region [0, 1]
+        Take care here: bear in mind that the rewards in the paper are in the region [0, 1].
         :return: best child
         """
         if len(self.children) < 2:
             return (list(self.children.values()))[0]
 
+        # get the two best nodes by value, tie-break with visits, then prior for the special case of first move
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: node.Q()
+                                     key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
         result = None
         voi_max = -1
         for n in self.children.values():
-            voi = n.prior / (1. + n.number_visits)
+            voi = (1 + n.Q) * n.prior / (1. + n.number_visits)
+            # the 0.5 here comes from q having a range of 2
             if n == alpha:
-                voi *= (1 + beta.Q()) * math.exp(-0.5 * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
+                voi *= (1 + beta.Q) * math.exp(-0.5 * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
-                voi *= (1 - alpha.Q()) * math.exp(-0.5 * n.number_visits * (alpha.Q() - n.Q()) ** 2)
+                voi *= (1 - alpha.Q) * math.exp(-0.5 * n.number_visits * (alpha.Q - n.Q) ** 2)
             if voi > voi_max:
                 voi_max = voi
                 result = n
@@ -85,7 +88,7 @@ class VOINode:
         print("total value: ", self.total_value)
         print("visits: ", self.number_visits)
         print("prior: ", self.prior)
-        print("Q: ", self.Q())
+        print("Q: ", self.Q)
         print("---")
 
 
@@ -98,8 +101,8 @@ def VOI_search(board, num_reads, net=None):
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    pv = sorted(root.children.items(), key=lambda item: (item[1].Q(), item[1].number_visits), reverse=True)
+    pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_visits), reverse=True)
 
-    print('pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    print('pv:', [(n[0], n[1].Q, n[1].number_visits) for n in pv])
     return max(root.children.items(),
-               key=lambda item: (item[1].Q(), item[1].number_visits))
+               key=lambda item: (item[1].Q, item[1].number_visits))
