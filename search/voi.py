@@ -124,7 +124,7 @@ def VOI_search(board, num_reads, net=None, c=1.0):
 
     # the best node might be in second place because we've been trying to catch up with first place
     # so get the two best nodes and then check the value
-    pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_visits), reverse=True)
+    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
     print('VOI:', root.V)
     return pv[0]
