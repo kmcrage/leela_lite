@@ -26,9 +26,10 @@ class VOINode:
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    def best_child(self):
+    def best_child(self, c):
         """
         Take care here: bear in mind that the rewards in the paper are in the region [0, 1].
+        :param c: magic constant balancing information gain with reward value
         :return: best child
         """
         if len(self.children) < 2:
@@ -46,25 +47,26 @@ class VOINode:
             return beta
 
         result = None
-        voi_max = -1
+        max = -1
         for n in self.children.values():
-            voi = (1 + n.Q) * n.prior / (1. + n.number_visits)
+            voi = n.prior / (1. + n.number_visits)
             # the 0.5 here comes from q having a range of 2
             if n == alpha:
                 voi *= (1 + beta.Q) * math.exp(-0.5 * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
                 voi *= (1 - alpha.Q) * math.exp(-0.5 * n.number_visits * (alpha.Q - n.Q) ** 2)
             n.V = voi
-            if voi > voi_max:
-                voi_max = voi
+            value = n.Q + c * n.V
+            if  value > max:
+                max = value
                 result = n
 
         return result
 
-    def select_leaf(self):
+    def select_leaf(self, c):
         current = self
         while current.is_expanded and current.children:
-            current = current.best_child()
+            current = current.best_child(c)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
@@ -100,11 +102,11 @@ class VOINode:
         print("---")
 
 
-def VOI_search(board, num_reads, net=None):
+def VOI_search(board, num_reads, net=None, c=1.0):
     assert(net is not None)
     root = VOINode(board)
     for _ in range(num_reads):
-        leaf = root.select_leaf()
+        leaf = root.select_leaf(c)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)

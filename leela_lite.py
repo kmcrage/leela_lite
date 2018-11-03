@@ -8,13 +8,14 @@ import chess.pgn
 import time
 
 if len(sys.argv) != 4:
-    print("Usage: python3 leela_lite.py <backend> <weights file> <nodes>")
+    print("Usage: python3 leela_lite.py <backend> <weights file> <nodes> <c>")
     print(len(sys.argv))
     exit(1)
 
 backend = sys.argv[1]
 weights = sys.argv[2]
 nodes = int(sys.argv[3])
+c = int(sys.argv[4])
 
 
 board = LeelaBoard()
@@ -41,7 +42,7 @@ while True:
     start = time.time()
     best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
     elapsed = time.time() - start
-    search.VOI_search(board, nodes, net=nn)
+    search.VOI_search(board, nodes, net=nn, c=c)
     print("UCT best: ", best, node.Q())
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
@@ -54,7 +55,7 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.VOI_search(board, nodes, net=nn)
+    best, node = search.VOI_search(board, nodes, net=nn, c=c)
     elapsed = time.time() - start
     search.UCT_search(board, nodes, net=nn, C=3.4)
     print("VOI best: ", best, node.Q)
