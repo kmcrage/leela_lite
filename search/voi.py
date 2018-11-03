@@ -90,6 +90,7 @@ class VOINode:
         print("Q: ", self.Q())
         print("---")
 
+
 def VOI_search(board, num_reads, net=None):
     assert(net is not None)
     root = VOINode(board)
