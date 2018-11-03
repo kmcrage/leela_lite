@@ -24,11 +24,9 @@ class VOINode:
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    def best_child(self, c=100):
+    def best_child(self):
         """
         Take care here: bear in mind that the rewards in the paper are in the region [0, 1]
-        relates to how many moves to consider
-        :param c:
         :return: best child
         """
         if len(self.children) < 2:
