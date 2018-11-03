@@ -27,7 +27,8 @@ class VOINode:
     def best_child(self):
         """
         Take care here: bear in mind that the children have opposite signs for Q
-
+        and that the rewards in the paper are in the region [0, 1]
+        
         :return: best child
         """
         if len(self.children) < 2:
@@ -37,16 +38,19 @@ class VOINode:
                                      self.children.values(),
                                      key=lambda node: -node.Q()
                                      )
-        voi = {}
+        result = None
+        voi_max = -1
         for n in self.children.values():
-            voi[n] = n.prior / (1. + n.number_visits)
+            voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi[alpha] *= (1 - beta.Q()) * math.exp(-2 * (alpha.Q() - beta.Q()) ** 2 * alpha.number_visits)
+                voi *= (1 - beta.Q()) * math.exp(-0.5 * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
             else:
-                voi[n] *= (1 + alpha.Q()) * math.exp(-2 * (n.Q() - alpha.Q()) ** 2 * n.number_visits)
+                voi *= (1 + alpha.Q()) * math.exp(-0.5 * n.number_visits * (n.Q() - alpha.Q()) ** 2)
+            if voi > voi_max:
+                voi_max = voi
+                result = n
 
-        return max(self.children.values(),
-                   key=lambda n: voi[n])
+        return result
 
     def select_leaf(self):
         current = self
