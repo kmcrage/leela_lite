@@ -103,7 +103,7 @@ def VOI_search(board, num_reads, net=None):
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
                               key=lambda item: (item[1].Q(), item[1].number_visits))
-    print('pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
 
+    print('pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].Q(), item[1].number_visits))

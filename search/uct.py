@@ -1,8 +1,6 @@
 import numpy as np
 import math
-import lcztools
-from lcztools import LeelaBoard
-import chess
+import heapq
 from collections import OrderedDict
 
 
@@ -79,9 +77,11 @@ def UCT_search(board, num_reads, net=None, C=1.0):
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    #for m, node in sorted(root.children.items(),
-    #                      key=lambda item: (item[1].number_visits, item[1].Q())):
-    #    node.dump(m, C)
+    size = min(5, len(root.children))
+    pv = heapq.nlargest(size, root.children.items(),
+                        key=lambda item: (item[1].number_visits, item[1].Q()))
+
+    print('pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q()))
 
