@@ -58,7 +58,7 @@ class VOINode:
         result = None
         vmax = -1
         for n in self.children.values():
-            voi = 1 / (1. + n.number_visits)
+            voi = (1 + n.Q)/ (1. + n.number_visits)
             if n == alpha:
                 voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
