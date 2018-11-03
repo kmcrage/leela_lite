@@ -20,6 +20,7 @@ class VOINode:
         self.prior = prior  # float
         self.total_value = 0  # float
         self.number_visits = 0  # int
+        self.V = 0
 
     @property
     def Q(self):  # returns float
@@ -47,6 +48,7 @@ class VOINode:
                 voi *= (1 + beta.Q) * math.exp(-0.5 * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
                 voi *= (1 - alpha.Q) * math.exp(-0.5 * n.number_visits * (alpha.Q - n.Q) ** 2)
+            n.V = voi
             if voi > voi_max:
                 voi_max = voi
                 result = n
@@ -103,6 +105,6 @@ def VOI_search(board, num_reads, net=None):
 
     pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_visits), reverse=True)
 
-    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits) for n in pv])
+    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].Q, item[1].number_visits))
