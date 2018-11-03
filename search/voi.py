@@ -80,7 +80,7 @@ class VOINode:
             if depth:
                 current = current.best_child_uct(c)
             else:
-                current = current.best_child_voi()
+                current = current.best_child_voi(c)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
