@@ -54,9 +54,9 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.VOI_search(board, nodes, net=nn, c=c)
+    best, node = search.MPA_search(board, nodes, net=nn, c=c)
     elapsed = time.time() - start
-    print(board.pc_board.fullmove_number, "VOI best: ", best, node.Q)
+    print(board.pc_board.fullmove_number, "MPA best: ", best, node.Q)
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
     board.push_uci(best)
