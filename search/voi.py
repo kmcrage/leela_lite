@@ -28,7 +28,7 @@ class VOINode:
         """
         Take care here: bear in mind that the children have opposite signs for Q
         and that the rewards in the paper are in the region [0, 1]
-        
+
         :return: best child
         """
         if len(self.children) < 2:
@@ -98,6 +98,11 @@ def VOI_search(board, num_reads, net=None):
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
+
+    size = min(5, len(root.children))
+    pv = heapq.nlargest(size, root.children.items(),
+                              key=lambda item: (item[1].Q(), item[1].number_visits))
+    print('pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
 
     return max(root.children.items(),
                key=lambda item: (item[1].Q(), item[1].number_visits))
