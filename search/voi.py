@@ -53,22 +53,21 @@ class VOINode:
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
 
-
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
         phi = 2 * (math.sqrt(2) - 1) ** 2
         result = None
-        max = -1
+        vmax = -1
         for n in self.children.values():
-            voi = n.prior / (1. + n.number_visits)
+            voi = 1 / (1. + n.number_visits)
             if n == alpha:
                 voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
                 voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
             n.V = voi
-            if voi > max:
-                max = voi
+            if voi > vmax:
+                vmax = voi
                 result = n
-        self.V = max
+        self.V = vmax
         return result
 
     def select_leaf(self, c):
@@ -123,14 +122,9 @@ def VOI_search(board, num_reads, net=None, c=1.0):
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
-
+    # the best node might be in second place because we've been trying to catch up with first place
+    # so get the two best nodes and then check the value
+    pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_values), reverse=True)
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
     print('VOI:', root.V)
-    if pv[1][1].Q > pv[0][1].Q:
-        return pv[1]
-    else:
-        return pv[0]
-    # we can never get here
-    #return max(root.children.items(),
-    #           key=lambda item: (item[1].Q, item[1].number_visits))
+    return pv[0]
