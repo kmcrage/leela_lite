@@ -43,11 +43,11 @@ class MPANode():
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = MPANode(parent=self, move=move, prior=prior, depth=self.depth+1)
+        self.children[move] = MPANode(parent=self, move=move, prior=prior, depth=self.tree_depth+1)
     
     def backup(self, value_estimate: float):
         current = self
-        self.total_value = value_estimate * (-1) ** self.depth
+        self.total_value = value_estimate * (-1) ** self.tree_depth
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
