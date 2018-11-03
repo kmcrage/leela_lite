@@ -109,8 +109,9 @@ def VOI_search(board, num_reads, net=None):
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_visits), reverse=True)
+    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
 
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
-    return max(root.children.items(),
-               key=lambda item: (item[1].Q, item[1].number_visits))
+    return pv[0]
+    #return max(root.children.items(),
+    #           key=lambda item: (item[1].Q, item[1].number_visits))
