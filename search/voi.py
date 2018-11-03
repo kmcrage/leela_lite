@@ -24,7 +24,7 @@ class VOINode:
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    def best_child(self, c=3):
+    def best_child(self, c=0.001):
         """
         Take care here: bear in mind that the children have opposite signs for Q
         and that the rewards in the paper are in the region [0, 1]
