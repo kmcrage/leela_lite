@@ -15,7 +15,7 @@ if len(sys.argv) != 5:
 backend = sys.argv[1]
 weights = sys.argv[2]
 nodes = int(sys.argv[3])
-c = int(sys.argv[4])
+c = float(sys.argv[4])
 
 
 board = LeelaBoard()
