@@ -41,9 +41,9 @@ while True:
     start = time.time()
     best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
     elapsed = time.time() - start
-    print("best: ", best)
+    print("UCT best: ", best, node.Q())
     print("Time: {:.3f} nps".format(nodes/elapsed))
-    print(nn.evaluate.cache_info())
+    #print(nn.evaluate.cache_info())
     board.push_uci(best)
     if board.pc_board.is_game_over() or board.is_draw():
         print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
@@ -55,9 +55,9 @@ while True:
     start = time.time()
     best, node = search.VOI_search(board, nodes, net=nn)
     elapsed = time.time() - start
-    print("best: ", best)
+    print("VOI best: ", best, node.Q())
     print("Time: {:.3f} nps".format(nodes/elapsed))
-    print(nn.evaluate.cache_info())
+    #print(nn.evaluate.cache_info())
     board.push_uci(best)
     if board.pc_board.is_game_over() or board.is_draw():
         print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
