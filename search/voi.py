@@ -39,10 +39,16 @@ class VOINode:
                                      self.children.values(),
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
+        # always try the best two moves, we don't want to choose something never evalled
+        if not alpha.number_visits:
+            return alpha
+        if not beta.number_visits:
+            return beta
+
         result = None
         voi_max = -1
         for n in self.children.values():
-            voi = (1 + n.Q) * n.prior / (1. + n.number_visits)
+            voi = n.prior / (1. + n.number_visits)
             # the 0.5 here comes from q having a range of 2
             if n == alpha:
                 voi *= (1 + beta.Q) * math.exp(-0.5 * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
