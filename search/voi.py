@@ -40,11 +40,9 @@ class VOINode:
                                      self.children.values(),
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
-        # always try the best two moves, we don't want to choose something never evalled
+        # always try the best move, we don't want to choose something never evalled
         if not alpha.number_visits:
             return alpha
-        if not beta.number_visits:
-            return beta
 
         result = None
         max = -1
@@ -56,8 +54,8 @@ class VOINode:
             else:
                 voi *= (1 - alpha.Q) * math.exp(-0.5 * n.number_visits * (alpha.Q - n.Q) ** 2)
             n.V = voi
-            value = n.Q + c * n.V
-            if  value > max:
+            value = (1 + n.Q) + c * n.V
+            if value > max:
                 max = value
                 result = n
 
@@ -86,10 +84,10 @@ class VOINode:
         turnfactor = -1
         while current.parent is not None:
             current.number_visits += 1
-            current.total_value += (value_estimate *
-                                    turnfactor)
+            current.total_value += value_estimate * turnfactor
             current = current.parent
             turnfactor *= -1
+        # this is the root
         current.number_visits += 1
 
     def dump(self, move):
