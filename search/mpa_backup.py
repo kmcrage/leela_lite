@@ -47,7 +47,7 @@ class MPANode():
     
     def backup(self, value_estimate: float):
         current = self
-        self.total_value = value_estimate * (-1) ** self.tree_depth
+        self.total_value = -value_estimate
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
@@ -56,7 +56,7 @@ class MPANode():
             for child in current.children.values():
                 if not child.number_visits:
                     continue
-                current.total_value += child.number_visits * child.Q
+                current.total_value -= child.number_visits * child.Q
                 current.number_visits += child.number_visits
         current.number_visits += 1
 
