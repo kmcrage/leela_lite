@@ -41,6 +41,7 @@ while True:
     start = time.time()
     best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
     elapsed = time.time() - start
+    search.VOI_search(board, nodes, net=nn)
     print("UCT best: ", best, node.Q())
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
@@ -55,6 +56,7 @@ while True:
     start = time.time()
     best, node = search.VOI_search(board, nodes, net=nn)
     elapsed = time.time() - start
+    search.UCT_search(board, nodes, net=nn, C=3.4)
     print("VOI best: ", best, node.Q)
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
