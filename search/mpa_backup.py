@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 
 class MPANode():
-    def __init__(self, board=None, parent=None, move=None, prior=0):
+    def __init__(self, board=None, parent=None, move=None, prior=0, depth=0):
         self.board = board
         self.move = move
         self.is_expanded = False
@@ -14,6 +14,7 @@ class MPANode():
         self.prior = prior  # float
         self.total_value = 0  # float
         self.number_visits = 0  # int
+        self.tree_depth = depth
 
     @property
     def Q(self):  # returns float
@@ -42,12 +43,11 @@ class MPANode():
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = MPANode(parent=self, move=move, prior=prior)
+        self.children[move] = MPANode(parent=self, move=move, prior=prior, depth=self.depth+1)
     
     def backup(self, value_estimate: float):
         current = self
-        # Child nodes are multiplied by -1 because we want max(-opponent eval)
-        self.total_value -= value_estimate
+        self.total_value = value_estimate * (-1) ** self.depth
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
