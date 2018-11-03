@@ -26,8 +26,7 @@ class VOINode:
 
     def best_child(self, c=100):
         """
-        Take care here: bear in mind that the children have opposite signs for Q
-        and that the rewards in the paper are in the region [0, 1]
+        Take care here: bear in mind that the rewards in the paper are in the region [0, 1]
         relates to how many moves to consider
         :param c:
         :return: best child
@@ -37,16 +36,16 @@ class VOINode:
 
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: -node.Q()
+                                     key=lambda node: node.Q()
                                      )
         result = None
         voi_max = -1
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi *= (1 - beta.Q()) * math.exp(-c * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
+                voi *= (1 + beta.Q()) * math.exp(-0.5 * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
             else:
-                voi *= (1 + alpha.Q()) * math.exp(-c * n.number_visits * (n.Q() - alpha.Q()) ** 2)
+                voi *= (1 - alpha.Q()) * math.exp(-0.5 * n.number_visits * (alpha.Q() - n.Q()) ** 2)
             if voi > voi_max:
                 voi_max = voi
                 result = n
