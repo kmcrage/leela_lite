@@ -53,10 +53,7 @@ class VOINode:
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
 
-        # always sample the best candidate
-        if not alpha.number_visits:
-            return alpha
-        
+
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
         phi = 2 * (math.sqrt(2) - 1) ** 2
         result = None
@@ -126,10 +123,11 @@ def VOI_search(board, num_reads, net=None, c=1.0):
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    pv = sorted(root.children.items(), key=lambda item: (item[1].Q, item[1].number_visits), reverse=True)
+    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
 
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
     print('VOI:', root.V)
-    return pv[0]
+    print('UCT:', root.best_child_uct(c))
+    return root.best_child_uct(c)
     #return max(root.children.items(),
     #           key=lambda item: (item[1].Q, item[1].number_visits))
