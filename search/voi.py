@@ -4,6 +4,8 @@
     MCTS Based on Simple Regret
     David Tolpin, Solomon Eyal Shimony
     https://pdfs.semanticscholar.org/2a81/bfc05ddec612fd9bf0aafad0a86ad13b0361.pdf
+
+    https://arxiv.org/pdf/1207.5879.pdf
 """
 import math
 import heapq
@@ -26,7 +28,15 @@ class VOINode:
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    def best_child(self, c):
+    @property
+    def U(self):  # returns float
+        return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
+
+    def best_child_uct(self, c):
+        return max(self.children.values(),
+                   key=lambda node: node.Q + c*node.U)
+
+    def best_child_voi(self):
         """
         Take care here: bear in mind that the rewards in the paper are in the region [0, 1].
         :param c: magic constant balancing information gain with reward value
@@ -44,27 +54,31 @@ class VOINode:
         # if not alpha.number_visits:
         #    return alpha
 
+        phi = 2 * (math.sqrt(2) - 1) ** 2
         result = None
         max = -1
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
             # the 0.5 here comes from q having a range of 2
             if n == alpha:
-                voi *= (1 + beta.Q) * math.exp(-0.5 * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
+                voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
-                voi *= (1 - alpha.Q) * math.exp(-0.5 * n.number_visits * (alpha.Q - n.Q) ** 2)
+                voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
             n.V = voi
-            value = (1 + n.Q) + c * n.V
-            if value > max:
-                max = value
+            if voi > max:
+                max = voi
                 result = n
 
         return result
 
     def select_leaf(self, c):
         current = self
+        depth = 0
         while current.is_expanded and current.children:
-            current = current.best_child(c)
+            if depth:
+                current = current.best_child_uct(c)
+            else:
+                current = current.best_child_voi()
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
