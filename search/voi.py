@@ -24,11 +24,12 @@ class VOINode:
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    def best_child(self):
+    def best_child(self, c=3):
         """
         Take care here: bear in mind that the children have opposite signs for Q
         and that the rewards in the paper are in the region [0, 1]
-
+        relates to how many moves to consider
+        :param c:
         :return: best child
         """
         if len(self.children) < 2:
@@ -43,9 +44,9 @@ class VOINode:
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi *= (1 - beta.Q()) * math.exp(-0.5 * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
+                voi *= (1 - beta.Q()) * math.exp(-c * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
             else:
-                voi *= (1 + alpha.Q()) * math.exp(-0.5 * n.number_visits * (n.Q() - alpha.Q()) ** 2)
+                voi *= (1 + alpha.Q()) * math.exp(-c * n.number_visits * (n.Q() - alpha.Q()) ** 2)
             if voi > voi_max:
                 voi_max = voi
                 result = n
