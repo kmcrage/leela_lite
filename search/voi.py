@@ -53,6 +53,10 @@ class VOINode:
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
 
+        # always sample the best candidate
+        if not alpha.number_visits:
+            return alpha
+        
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
         phi = 2 * (math.sqrt(2) - 1) ** 2
         result = None
