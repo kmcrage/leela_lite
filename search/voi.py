@@ -33,11 +33,14 @@ class VOINode:
     def U(self):  # returns float
         return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
 
+    def desirability(self, c):
+        return self.Q + c * self.U
+
     def best_child_uct(self, c):
         return max(self.children.values(),
-                   key=lambda node: node.Q + c*node.U)
+                   key=lambda node: node.desirability(c))
 
-    def best_child_voi(self):
+    def best_child_voi(self, c):
         """
         Take care here: bear in mind that the rewards in the papers are in the region [0, 1].
         Note that the formula in the  two papers are not identical.
@@ -50,7 +53,7 @@ class VOINode:
         # get the two best nodes by value, tie-break with visits, then prior for the special case of first move
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: (node.Q, node.number_visits, node.prior)
+                                     key=lambda node: (node.desirability(c), node.number_visits, node.prior)
                                      )
 
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
@@ -58,11 +61,11 @@ class VOINode:
         result = None
         vmax = -1
         for n in self.children.values():
-            voi = (1 + n.Q)/ (1. + n.number_visits)
+            voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
+                voi *= (1 + beta.desirability(c)) * math.exp(-phi * alpha.number_visits * (alpha.desirability(c) - beta.desirability(c)) ** 2)
             else:
-                voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
+                voi *= (1 - alpha.desirability(c)) * math.exp(-phi * n.number_visits * (alpha.desirability(c) - n.desirability(c)) ** 2)
             n.V = voi
             if voi > vmax:
                 vmax = voi
