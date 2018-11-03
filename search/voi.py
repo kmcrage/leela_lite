@@ -41,8 +41,8 @@ class VOINode:
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
         # always try the best move, we don't want to choose something never evalled
-        if not alpha.number_visits:
-            return alpha
+        # if not alpha.number_visits:
+        #    return alpha
 
         result = None
         max = -1
@@ -59,7 +59,6 @@ class VOINode:
                 max = value
                 result = n
 
-        print('candidate:', (list(result))[0])
         return result
 
     def select_leaf(self, c):
