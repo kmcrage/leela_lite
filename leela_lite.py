@@ -40,7 +40,7 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
+    best, node = search.UCT_search(board, nodes, net=nn, C=c)
     elapsed = time.time() - start
     print(board.pc_board.fullmove_number, "UCT best: ", best, node.Q())
     print("Time: {:.3f} nps".format(nodes/elapsed))
@@ -54,7 +54,7 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.MPA_search(board, nodes, net=nn, c=c)
+    best, node = search.MPA_search(board, nodes, net=nn, C=c)
     elapsed = time.time() - start
     print(board.pc_board.fullmove_number, "MPA best: ", best, node.Q)
     print("Time: {:.3f} nps".format(nodes/elapsed))
