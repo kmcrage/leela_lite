@@ -9,8 +9,8 @@ class MPANode():
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = parent  # Optional[UCTNode]
-        self.children = OrderedDict()  # Dict[move, UCTNode]
+        self.parent = parent  # Optional[MPANode]
+        self.children = OrderedDict()  # Dict[move, MPANode]
         self.prior = prior  # float
         self.total_value = 0  # float
         self.number_visits = 0  # int
@@ -42,7 +42,7 @@ class MPANode():
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = UCTNode(parent=self, move=move, prior=prior)
+        self.children[move] = MPANode(parent=self, move=move, prior=prior)
     
     def backup(self, value_estimate: float):
         current = self
@@ -76,7 +76,7 @@ class MPANode():
 
 def MPA_search(board, num_reads, net=None, C=1.0):
     assert(net != None)
-    root = UCTNode(board)
+    root = MPANode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C)
         child_priors, value_estimate = net.evaluate(leaf.board)
