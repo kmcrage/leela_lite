@@ -127,7 +127,8 @@ def VOI_search(board, num_reads, net=None, c=1.0):
 
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
     print('VOI:', root.V)
-    print('UCT:', root.best_child_uct(c))
-    return root.best_child_uct(c)
+    best = root.best_child_uct(c)
+    return [i for i in pv if i[1] == best][0]
+    # we can never get here
     #return max(root.children.items(),
     #           key=lambda item: (item[1].Q, item[1].number_visits))
