@@ -36,9 +36,9 @@ class VOINode:
         for n in self.children.values():
             voi[n] = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi[n] *= beta.Q() * math.exp(-2 * (n.Q() - beta.Q()) ** 2 * n.number_visits)
+                voi[alpha] *= (1 + beta.Q()) * math.exp(-2 * (alpha.Q() - beta.Q()) ** 2 * alpha.number_visits)
             else:
-                voi[n] *= (1 - n.Q()) * math.exp(-2 * (n.Q() - alpha.Q()) ** 2 * n.number_visits)
+                voi[n] *= (1 - alpha.Q()) * math.exp(-2 * (n.Q() - alpha.Q()) ** 2 * n.number_visits)
 
         return max(self.children.values(),
                    key=lambda n: voi[n])
