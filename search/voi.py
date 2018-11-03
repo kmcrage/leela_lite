@@ -59,6 +59,7 @@ class VOINode:
                 max = value
                 result = n
 
+        print('candidate:', result[0])
         return result
 
     def select_leaf(self, c):
