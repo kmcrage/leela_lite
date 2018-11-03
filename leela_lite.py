@@ -55,7 +55,7 @@ while True:
     start = time.time()
     best, node = search.VOI_search(board, nodes, net=nn)
     elapsed = time.time() - start
-    print("VOI best: ", best, node.Q())
+    print("VOI best: ", best, node.Q)
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
     board.push_uci(best)
