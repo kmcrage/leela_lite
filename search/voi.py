@@ -5,6 +5,7 @@
     David Tolpin, Solomon Eyal Shimony
     https://pdfs.semanticscholar.org/2a81/bfc05ddec612fd9bf0aafad0a86ad13b0361.pdf
 
+    Selecting Computations:  Theory and Applications
     https://arxiv.org/pdf/1207.5879.pdf
 """
 import math
@@ -38,8 +39,9 @@ class VOINode:
 
     def best_child_voi(self):
         """
-        Take care here: bear in mind that the rewards in the paper are in the region [0, 1].
-        :param c: magic constant balancing information gain with reward value
+        Take care here: bear in mind that the rewards in the papers are in the region [0, 1].
+        Note that the formula in the  two papers are not identical.
+
         :return: best child
         """
         if len(self.children) < 2:
@@ -50,16 +52,13 @@ class VOINode:
                                      self.children.values(),
                                      key=lambda node: (node.Q, node.number_visits, node.prior)
                                      )
-        # always try the best move, we don't want to choose something never evalled
-        # if not alpha.number_visits:
-        #    return alpha
 
+        # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
         phi = 2 * (math.sqrt(2) - 1) ** 2
         result = None
         max = -1
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
-            # the 0.5 here comes from q having a range of 2
             if n == alpha:
                 voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
@@ -68,7 +67,7 @@ class VOINode:
             if voi > max:
                 max = voi
                 result = n
-
+        self.V = max
         return result
 
     def select_leaf(self, c):
@@ -126,6 +125,7 @@ def VOI_search(board, num_reads, net=None, c=1.0):
     pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
 
     print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
+    print('VOI:', root.V)
     return pv[0]
     #return max(root.children.items(),
     #           key=lambda item: (item[1].Q, item[1].number_visits))
