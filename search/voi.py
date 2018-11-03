@@ -25,20 +25,25 @@ class VOINode:
         return self.total_value / (1 + self.number_visits)
 
     def best_child(self):
+        """
+        Take care here: bear in mind that the children have opposite signs for Q
+
+        :return: best child
+        """
         if len(self.children) < 2:
             return (list(self.children.values()))[0]
 
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: node.Q()
+                                     key=lambda node: -node.Q()
                                      )
         voi = {}
         for n in self.children.values():
             voi[n] = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi[alpha] *= (1 + beta.Q()) * math.exp(-2 * (alpha.Q() - beta.Q()) ** 2 * alpha.number_visits)
+                voi[alpha] *= (1 - beta.Q()) * math.exp(-2 * (alpha.Q() - beta.Q()) ** 2 * alpha.number_visits)
             else:
-                voi[n] *= (1 - alpha.Q()) * math.exp(-2 * (n.Q() - alpha.Q()) ** 2 * n.number_visits)
+                voi[n] *= (1 + alpha.Q()) * math.exp(-2 * (n.Q() - alpha.Q()) ** 2 * n.number_visits)
 
         return max(self.children.values(),
                    key=lambda n: voi[n])
