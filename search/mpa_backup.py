@@ -50,14 +50,14 @@ class MPANode():
         self.total_value -= value_estimate
         self.number_visits += 1
         while current.parent is not None:
-            current.parent.number_visits = 0
-            current.parent.total_value = 0
-            for sibling in current.parent.children:
-                if not sibling.number_visits:
-                    continue
-                current.parent.total_value += sibling.number_visits * sibling.Q
-                current.parent.number_visits += sibling.number_visits
             current = current.parent
+            current.number_visits = 0
+            current.total_value = 0
+            for child in current.children.values():
+                if not child.number_visits:
+                    continue
+                current.total_value += child.number_visits * child.Q
+                current.number_visits += child.number_visits
         current.number_visits += 1
 
 
