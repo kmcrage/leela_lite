@@ -80,7 +80,9 @@ while True:
     elif tokens[0] == 'position':
         board = process_position(tokens)
     elif tokens[0] == 'go':
+        print("weights", weights, "backend", backend)
         net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
+        print(net)
         nn = search.NeuralNet(net=net)
         best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
         send("bestmove {}".format(best))
