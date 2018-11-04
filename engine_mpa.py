@@ -64,8 +64,9 @@ while True:
     tokens = line.split()
     if len(tokens) == 0:
         continue
-    net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
-    nn = search.NeuralNet(net=net)
+    if nn is None:
+        net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
+        nn = search.NeuralNet(net=net)
 
     if tokens[0] == "uci":
         send('id name Leela Lite')
