@@ -51,13 +51,15 @@ class MPANode():
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
-            current.number_visits = 0
+            current.number_visits += 1
             current.total_value = 0
+            cnt = 0
             for child in current.children.values():
                 if not child.number_visits:
                     continue
-                current.total_value -= child.number_visits * child.Q
-                current.number_visits += child.number_visits
+                current.total_value += child.number_visits * max([-n.Q for n in child.children.values()])
+                cnt += child.number_visits
+            assert(cnt == current.number_visits)
         current.number_visits += 1
 
 
