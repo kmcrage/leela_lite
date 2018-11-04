@@ -45,10 +45,10 @@ if len(sys.argv) != 4:
     print("Usage: python3 engine.py <backend> <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
-else:
-    backend = sys.argv[1]
-    weights = sys.argv[2]
-    nodes = int(sys.argv[3])
+
+backend = sys.argv[1]
+weights = sys.argv[2]
+nodes = int(sys.argv[3])
 
 send("Leela Lite")
 board = LeelaBoard()
@@ -80,9 +80,8 @@ while True:
     elif tokens[0] == 'position':
         board = process_position(tokens)
     elif tokens[0] == 'go':
-        if nn == None:
-            net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
-            nn = search.NeuralNet(net=net)
+        net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
+        nn = search.NeuralNet(net=net)
         best, node = search.MPA_search(board, nodes, net=nn, C=3.4)
         send("bestmove {}".format(best))
 
