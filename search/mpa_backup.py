@@ -48,24 +48,25 @@ class MPANode():
     def backup(self, value_estimate: float):
         current = self
         self.total_value = -value_estimate
-        self.number_visits += 1
         while current.parent is not None:
-            print('preupdate Q:', current.Q)
+            print('preupdate Q:', current.Q, len(current.children))
             current = current.parent
             current.number_visits += 1
             current.total_value = 0
             cnt = 0
             for child in current.children.values():
-                if child.children:
+                if child.number_visits:
+                    print('child q', [n.Q for n in child.children.values()])
                     current.total_value -= child.number_visits * max([n.Q for n in child.children.values()])
                 else:
-                    current.total_value += child.number_visits * child.Q
+                    print('child q', child.Q)
+                    current.total_value += child.Q
                 cnt += child.number_visits
             if cnt == current.number_visits:
                 print('cnt',cnt,'num', current.number_visits)
                 print([n.number_visits for n in current.children.values()])
                 assert(False)
-            print('postupdate Q:', current.Q)
+            print('postupdate Q:', current.Q, current.number_visits)
         # this is root
         current.number_visits += 1
 
