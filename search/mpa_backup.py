@@ -68,8 +68,6 @@ class MPANode():
                 print('updating Q:', current.total_value, current.number_visits)
 
             print('postupdate Q:', current.Q, current.total_value, current.number_visits)
-        # this is root
-        current.number_visits += 1
 
     def dump(self, move, C):
         print("---")
