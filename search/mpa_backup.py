@@ -57,8 +57,8 @@ class MPANode():
                     current.Q -= child.number_visits * max(qs)
                 else:
                     current.Q -= child.number_visits * child.Q
-                Q += child.number_visits
-                print('updating Q:', current.Q current.number_visits)
+                current.Q += child.number_visits
+                print('updating Q:', current.Q, current.number_visits)
             if visits:
                 current.Q /= visits
             print('postupdate Q:', current.Q, current.number_visits)
