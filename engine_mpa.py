@@ -49,7 +49,7 @@ if len(sys.argv) != 4:
 backend = sys.argv[1]
 weights = sys.argv[2]
 nodes = int(sys.argv[3])
-
+print(backend, weights, nodes)
 send("Leela Lite")
 board = LeelaBoard()
 net = None
