@@ -6,7 +6,7 @@ import chess
 import chess.pgn
 
 logfile = open("leelalite_mpa.log", "w")
-LOG = False
+LOG = True
 
 def log(str):
     if LOG:
