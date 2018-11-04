@@ -50,7 +50,7 @@ class MPANode():
     def backup(self, value_estimate: float):
         current = self
         self.total_value = -value_estimate
-        self.number_visits = 1
+        self.number_visits += 1
         while current.parent is not None:
             current = current.parent
             print('preupdate Q:', current.Q, len(current.children), current.number_visits)
@@ -87,6 +87,7 @@ class MPANode():
 def MPA_search(board, num_reads, net=None, C=1.0):
     assert(net != None)
     root = MPANode(board)
+    root.number_visits = 1
     for _ in range(num_reads):
         leaf = root.select_leaf(C)
         child_priors, value_estimate = net.evaluate(leaf.board)
