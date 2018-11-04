@@ -58,7 +58,7 @@ class MPANode:
             # this is just for testing
             visits = current.leaf_visits
             for child in [n for n in current.children.values() if n.number_visits]:
-                child_qs = [n.q for n in child.children.values() if n.number_visits]
+                child_qs = [n.Q for n in child.children.values() if n.number_visits]
                 if child_qs:
                     child_q = max(child_qs)
                 else:
