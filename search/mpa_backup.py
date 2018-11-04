@@ -65,8 +65,9 @@ class MPANode():
                 else:
                     current.total_value -= child.number_visits * child.Q
                 cnt += child.number_visits
+                print('updating Q:', current.total_value, current.number_visits)
 
-            print('postupdate Q:', current.Q, current.number_visits)
+            print('postupdate Q:', current.Q, current.total_value, current.number_visits)
         # this is root
         current.number_visits += 1
 
