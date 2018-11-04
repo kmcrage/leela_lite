@@ -54,10 +54,10 @@ class MPANode():
             #print('preupdate Q:', current.Q, len(current.children), current.number_visits)
             current.number_visits += 1
             # do we want to add in this reward? its more stable and will disappear with many evals
-            current.Q = self.reward * self.leaf_visits
-            visits = self.number_visits
+            current.Q = current.reward * current.leaf_visits / current.number_visits
+            visits = current.leaf_visits
             for child in [n for n in current.children.values() if n.number_visits]:
-                current.Q -= child.number_visits * child.Q / self.number_visits
+                current.Q -= child.number_visits * child.Q / current.number_visits
                 visits += child.number_visits
                 #print('updating Q:', current.Q, current.number_visits, visits)
             #print('postupdate Q:', current.Q, current.number_visits, visits)
