@@ -53,7 +53,7 @@ nodes = int(sys.argv[3])
 send("Leela Lite")
 board = LeelaBoard()
 net = None
-mm = None
+nn = None
 
 
 
