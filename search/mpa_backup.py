@@ -58,7 +58,7 @@ class MPANode():
             current.total_value = 0
             cnt = 0
             for child in [n for n in current.children.values() if n.number_visits]:
-                print('child q', child.Q, [n.Q for n in child.children.values() if n.number_visits])
+                print('child q', child.Q, child.number_visits, [n.Q for n in child.children.values() if n.number_visits])
                 qs = [n.Q for n in child.children.values() if n.number_visits]
                 if qs:
                     current.total_value -= child.number_visits * max(qs)
