@@ -18,7 +18,9 @@ class MPANode():
 
     @property
     def Q(self):  # returns float
-        return self.total_value / (1 + self.number_visits)
+        if not self.number_visits:
+            return 0
+        return self.total_value / self.number_visits
 
     def U(self):  # returns float
         return (math.sqrt(self.parent.number_visits)
@@ -48,25 +50,22 @@ class MPANode():
     def backup(self, value_estimate: float):
         current = self
         self.total_value = -value_estimate
+        self.number_visits = 1
         while current.parent is not None:
-            print('preupdate Q:', current.Q, len(current.children))
+            print('preupdate Q:', current.Q, len(current.children), child.number_visits)
             current = current.parent
             current.number_visits += 1
             current.total_value = 0
             cnt = 0
-            for child in current.children.values():
-                if child.number_visits:
-                    print('child q', [n.Q for n in child.children.values() if n.number_visits])
-                    qs = [n.Q for n in child.children.values() if n.number_visits]
-                    if qs:
-                        current.total_value -= child.number_visits * max(qs)
-                    else:
-                        current.total_value -= child.number_visits * child.Q
+            for child in [current.children.values() if child.number_visits]:
+                print('child q', child.Q, [n.Q for n in child.children.values() if n.number_visits])
+                qs = [n.Q for n in child.children.values() if n.number_visits]
+                if qs:
+                    current.total_value -= child.number_visits * max(qs)
+                else:
+                    current.total_value -= child.number_visits * child.Q
                 cnt += child.number_visits
-            if cnt == current.number_visits:
-                print('cnt',cnt,'num', current.number_visits)
-                print([n.number_visits for n in current.children.values()])
-                assert(False)
+
             print('postupdate Q:', current.Q, current.number_visits)
         # this is root
         current.number_visits += 1
