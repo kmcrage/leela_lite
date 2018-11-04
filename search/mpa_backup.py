@@ -50,22 +50,24 @@ class MPANode():
         self.total_value = -value_estimate
         self.number_visits += 1
         while current.parent is not None:
+            print('preupdate Q:', current.Q)
             current = current.parent
             current.number_visits += 1
             current.total_value = 0
             cnt = 0
             for child in current.children.values():
                 if child.children:
-                    current.total_value += child.number_visits * max([n.Q for n in child.children.values()])
+                    current.total_value -= child.number_visits * max([n.Q for n in child.children.values()])
                 else:
-                    current.total_value -= child.number_visits * child.Q
+                    current.total_value += child.number_visits * child.Q
                 cnt += child.number_visits
             if cnt == current.number_visits:
                 print('cnt',cnt,'num', current.number_visits)
                 print([n.number_visits for n in current.children.values()])
                 assert(False)
+            print('postupdate Q:', current.Q)
+        # this is root
         current.number_visits += 1
-
 
     def dump(self, move, C):
         print("---")
