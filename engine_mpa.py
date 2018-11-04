@@ -8,11 +8,13 @@ import chess.pgn
 logfile = open("leelalite_mpa.log", "w")
 LOG = True
 
+
 def log(str):
     if LOG:
         logfile.write(str)
         logfile.write("\n")
         logfile.flush()
+
 
 def send(str):
     log(">{}".format(str))
@@ -20,12 +22,13 @@ def send(str):
     sys.stdout.write("\n")
     sys.stdout.flush()
 
+
 def process_position(tokens):
     board = LeelaBoard()
 
     offset = 0
 
-    if tokens[1] ==  'startpos':
+    if tokens[1] == 'startpos':
         offset = 2
     elif tokens[1] == 'fen':
         fen = " ".join(tokens[2:8])
@@ -41,6 +44,7 @@ def process_position(tokens):
 
     return board
 
+
 if len(sys.argv) != 4:
     print("Usage: python3 engine.py <backend> <weights file> <nodes>")
     print(len(sys.argv))
@@ -53,9 +57,7 @@ print(backend, weights, nodes)
 send("Leela Lite")
 board = LeelaBoard()
 net = None
-mm = None
-
-
+nn = None
 
 while True:
     line = sys.stdin.readline()
