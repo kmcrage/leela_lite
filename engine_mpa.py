@@ -64,6 +64,8 @@ while True:
     tokens = line.split()
     if len(tokens) == 0:
         continue
+    net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
+    nn = search.NeuralNet(net=net)
 
     if tokens[0] == "uci":
         send('id name Leela Lite')
@@ -73,15 +75,12 @@ while True:
     elif tokens[0] == "quit":
         exit(0)
     elif tokens[0] == "isready":
-        net = search.NeuralNet(net=net)
         send("readyok")
     elif tokens[0] == "ucinewgame":
         board = LeelaBoard()
     elif tokens[0] == 'position':
         board = process_position(tokens)
     elif tokens[0] == 'go':
-        net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
-        nn = search.NeuralNet(net=net)
         best, node = search.MPA_search(board, nodes, net=nn, C=3.4)
         send("bestmove {}".format(best))
 
