@@ -58,12 +58,12 @@ class MPANode:
             # this is just for testing
             visits = current.leaf_visits
             for child in [n for n in current.children.values() if n.number_visits]:
-                child_qs = [n.Q for n in child.children.values() if n.number_visits]
-                if child_qs:
-                    child_q = max(child_qs)
+                grandchildren = [n for n in child.children.values() if n.number_visits]
+                if grandchildren:
+                    branch_q = (max(grandchildren, key=lambda g: g.number_visits)).Q
                 else:
-                    child_q = -child.Q
-                current.Q += child.number_visits * child_q / current.number_visits
+                    branch_q = -child.Q
+                current.Q += child.number_visits * branch_q / current.number_visits
                 visits += child.number_visits
                 # print('updating Q:', current.Q, current.number_visits, visits)
             # print('postupdate Q:', current.Q, current.number_visits, visits)
