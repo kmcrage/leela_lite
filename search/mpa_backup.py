@@ -55,7 +55,7 @@ class MPANode():
                 print('child q', child.Q, child.number_visits, [n.Q for n in child.children.values() if n.number_visits])
                 qs = [n.Q for n in child.children.values() if n.number_visits]
                 if qs:
-                    current.Q -= child.number_visits * max(qs)
+                    current.Q += child.number_visits * max(qs)
                     visits += len(qs)
                 else:
                     current.Q -= child.number_visits * child.Q
