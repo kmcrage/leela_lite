@@ -13,8 +13,10 @@ class MPANode():
         self.children = OrderedDict()  # Dict[move, MPANode]
         self.prior = prior  # float
         self.number_visits = 0  # int
+        self.leaf_visits = 0  # int
         self.tree_depth = depth
         self.Q = 0
+        self.reward = 0
 
     def U(self):  # returns float
         return (math.sqrt(self.parent.number_visits)
@@ -43,28 +45,21 @@ class MPANode():
     
     def backup(self, value_estimate: float):
         current = self
-        self.Q = -value_estimate
+        self.reward = -value_estimate
+        self.Q = self.reward
+        self.leaf_visits += 1
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
-            # print('preupdate Q:', current.Q, len(current.children), current.number_visits)
+            print('preupdate Q:', current.Q, len(current.children), current.number_visits)
             current.number_visits += 1
-            current.Q = 0
+            current.Q = self.reward * self.leaf_visits
             visits = 0
             for child in [n for n in current.children.values() if n.number_visits]:
-                # print('child q', child.Q, child.number_visits,
-                # [n.Q for n in child.children.values() if n.number_visits])
-                qs = [n.Q for n in child.children.values() if n.number_visits]
-                if qs:
-                    current.Q += len(qs) * max(qs)
-                    visits += len(qs)
-                else:
-                    current.Q -= child.number_visits * child.Q
-                    visits += child.number_visits
-                # print('updating Q:', current.Q, current.number_visits)
-            if visits:
-                current.Q /= visits
-            # print('postupdate Q:', current.Q, current.number_visits)
+                current.Q -= child.number_visits * child.Q / self.number_visits
+                visits += child.number_visits
+                print('updating Q:', current.Q, current.number_visits, visits)
+            print('postupdate Q:', current.Q, current.number_visits, visits)
 
     def dump(self, move, C):
         print("---")
