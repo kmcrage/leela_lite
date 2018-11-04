@@ -52,8 +52,8 @@ class MPANode():
         self.total_value = -value_estimate
         self.number_visits = 1
         while current.parent is not None:
-            print('preupdate Q:', current.Q, len(current.children), current.number_visits)
             current = current.parent
+            print('preupdate Q:', current.Q, len(current.children), current.number_visits)
             current.number_visits += 1
             current.total_value = 0
             cnt = 0
