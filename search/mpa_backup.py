@@ -57,7 +57,7 @@ class MPANode():
             current.number_visits += 1
             current.total_value = 0
             cnt = 0
-            for child in [current.children.values() if child.number_visits]:
+            for child in [n for n in current.children.values() if n.number_visits]:
                 print('child q', child.Q, [n.Q for n in child.children.values() if n.number_visits])
                 qs = [n.Q for n in child.children.values() if n.number_visits]
                 if qs:
