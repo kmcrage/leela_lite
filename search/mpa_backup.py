@@ -48,6 +48,7 @@ class MPANode():
         while current.parent is not None:
             current = current.parent
             print('preupdate Q:', current.Q, len(current.children), current.number_visits)
+            current.number_visits += 1
             current.Q = 0
             visits = 0
             for child in [n for n in current.children.values() if n.number_visits]:
@@ -55,9 +56,10 @@ class MPANode():
                 qs = [n.Q for n in child.children.values() if n.number_visits]
                 if qs:
                     current.Q -= child.number_visits * max(qs)
+                    visits += len(qs)
                 else:
                     current.Q -= child.number_visits * child.Q
-                visits += child.number_visits
+                    visits += child.number_visits
                 print('updating Q:', current.Q, current.number_visits)
             if visits:
                 current.Q /= visits
