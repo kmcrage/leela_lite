@@ -51,15 +51,16 @@ class MPANode():
         self.number_visits += 1
         while current.parent is not None:
             current = current.parent
-            print('preupdate Q:', current.Q, len(current.children), current.number_visits)
+            #print('preupdate Q:', current.Q, len(current.children), current.number_visits)
             current.number_visits += 1
+            # do we want to add in this reward? its more stable and will disappear with many evals
             current.Q = self.reward * self.leaf_visits
-            visits = 0
+            visits = self.number_visits
             for child in [n for n in current.children.values() if n.number_visits]:
                 current.Q -= child.number_visits * child.Q / self.number_visits
                 visits += child.number_visits
-                print('updating Q:', current.Q, current.number_visits, visits)
-            print('postupdate Q:', current.Q, current.number_visits, visits)
+                #print('updating Q:', current.Q, current.number_visits, visits)
+            #print('postupdate Q:', current.Q, current.number_visits, visits)
 
     def dump(self, move, C):
         print("---")
