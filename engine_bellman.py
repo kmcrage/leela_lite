@@ -45,12 +45,12 @@ def process_position(tokens):
     return board
 
 
-if len(sys.argv) != 4:
-    print("Usage: python3 engine.py <backend> <weights file> <nodes>")
+if len(sys.argv) != 3:
+    print("Usage: python3 engine.py <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
 
-backend = sys.argv[1]
+backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
 weights = sys.argv[2]
 nodes = int(sys.argv[3])
 print(backend, weights, nodes)

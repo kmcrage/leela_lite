@@ -4,6 +4,7 @@ from lcztools import load_network, LeelaBoard
 import search
 import chess
 import chess.pgn
+from os import path
 
 logfile = open("leelalite_voi.log", "w")
 LOG = False
@@ -41,12 +42,12 @@ def process_position(tokens):
 
     return board
 
-if len(sys.argv) != 3:
-    print("Usage: python3 engine.py <backend> <weights file> <nodes>")
+if len(sys.argv) != 2:
+    print("Usage: python3 engine.py <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
 else:
-    backend = sys.argv[1]
+    backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
     weights = sys.argv[2]
     nodes = int(sys.argv[3])
 
