@@ -46,7 +46,7 @@ def process_position(tokens):
     return board
 
 
-if len(sys.argv) != :
+if len(sys.argv) != 3:
     print("Usage: python3 engine.py <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
