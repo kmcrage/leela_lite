@@ -6,16 +6,17 @@ import search
 import chess
 import chess.pgn
 import time
+from os import path
 
-if len(sys.argv) != 5:
-    print("Usage: python3 leela_lite.py <backend> <weights file> <nodes> <c>")
+if len(sys.argv) != 4:
+    print("Usage: python3 leela_lite.py <weights file> <nodes> <c>")
     print(len(sys.argv))
     exit(1)
 
-backend = sys.argv[1]
-weights = sys.argv[2]
-nodes = int(sys.argv[3])
-c = float(sys.argv[4])
+backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
+weights = sys.argv[1]
+nodes = int(sys.argv[2])
+c = float(sys.argv[3])
 
 
 board = LeelaBoard()
@@ -54,9 +55,9 @@ while True:
     print(board)
     print("thinking...")
     start = time.time()
-    best, node = search.MPA_search(board, nodes, net=nn, C=c)
+    best, node = search.MinMax_search(board, nodes, net=nn, C=c)
     elapsed = time.time() - start
-    print(board.pc_board.fullmove_number, "MPA best: ", best, node.Q)
+    print(board.pc_board.fullmove_number, "MinMax best: ", best, node.Q)
     print("Time: {:.3f} nps".format(nodes/elapsed))
     #print(nn.evaluate.cache_info())
     board.push_uci(best)
