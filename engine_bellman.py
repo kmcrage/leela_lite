@@ -52,8 +52,8 @@ if len(sys.argv) != 3:
     exit(1)
 
 backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
-weights = sys.argv[2]
-nodes = int(sys.argv[3])
+weights = sys.argv[1]
+nodes = int(sys.argv[2])
 print(backend, weights, nodes)
 send("Leela Lite")
 board = LeelaBoard()
