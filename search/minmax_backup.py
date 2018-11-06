@@ -12,21 +12,25 @@ class MinMaxNode:
         self.children = OrderedDict()  # Dict[move, MinMaxNode]
         self.prior = prior  # float
         self.total_value = 0  # float
+        self.minmax_value = 0  # float
         self.number_visits = 0  # int
-        self.Q = 0
+
+    def Q(self, alpha=0.25):
+        return (1 - alpha) * self.total_value / (1 + self.number_visits) + alpha * self.minmax_value
+
+
 
     def U(self):  # returns float
-        return (math.sqrt(self.parent.number_visits)
-                * self.prior / (1 + self.number_visits))
+        return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
 
-    def best_child(self, C):
+    def best_child(self, C, alpha):
         return max(self.children.values(),
-                   key=lambda node: node.Q + C*node.U())
+                   key=lambda node: node.Q(alpha) + C*node.U())
 
-    def select_leaf(self, C):
+    def select_leaf(self, C, alpha):
         current = self
         while current.is_expanded and current.children:
-            current = current.best_child(C)
+            current = current.best_child(C, alpha)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
@@ -42,41 +46,47 @@ class MinMaxNode:
     
     def backup(self, value_estimate: float):
         current = self
-        current.Q = -value_estimate
+        current.total_value = -value_estimate
+        current.minmax_value = -value_estimate
         current.number_visits += 1
+        turnfactor = 1
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
-            current.Q = -max([n.Q for n in current.children.values() if n.number_visits])
+            current.minmax_value = -max([n.minmax_value for n in current.children.values()
+                                         if n.number_visits])
+
+            current.total_value += value_estimate * turnfactor
+            turnfactor *= -1
         current.number_visits += 1
 
-    def dump(self, move, C):
+    def dump(self, move, C, alpha):
         print("---")
         print("move: ", move)
         print("total value: ", self.total_value)
         print("visits: ", self.number_visits)
         print("prior: ", self.prior)
-        print("Q: ", self.Q)
+        print("Q: ", self.Q(alpha))
         print("U: ", self.U())
-        print("BestMove: ", self.Q + C * self.U())
+        print("BestMove: ", self.Q(alpha) + C * self.U())
         # print("math.sqrt({}) * {} / (1 + {}))".format(self.parent.number_visits,
         #      self.prior, self.number_visits))
         print("---")
 
 
-def MinMax_search(board, num_reads, net=None, C=1.0):
+def MinMax_search(board, num_reads, net=None, C=1.0, alpha=0.25):
     assert(net is not None)
     root = MinMaxNode(board)
     for _ in range(num_reads):
-        leaf = root.select_leaf(C)
+        leaf = root.select_leaf(C, alpha)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
-                        key=lambda item: (item[1].number_visits, item[1].Q))
+                        key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
 
-    print('MinMax pv:', [(n[0], n[1].Q, n[1].number_visits) for n in pv])
+    print('MinMax pv:', [(n[0], n[1].Q(alpha), n[1].number_visits) for n in pv])
     return max(root.children.items(),
-               key=lambda item: (item[1].number_visits, item[1].Q))
+               key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
