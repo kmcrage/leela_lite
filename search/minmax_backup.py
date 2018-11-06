@@ -75,8 +75,8 @@ def MinMax_search(board, num_reads, net=None, C=1.0):
 
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
-                        key=lambda item: (item[1].number_visits, item[1].Q()))
+                        key=lambda item: (item[1].number_visits, item[1].Q))
 
-    print('MinMax pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    print('MinMax pv:', [(n[0], n[1].Q, n[1].number_visits) for n in pv])
     return max(root.children.items(),
-               key=lambda item: (item[1].number_visits, item[1].Q()))
+               key=lambda item: (item[1].number_visits, item[1].Q))
