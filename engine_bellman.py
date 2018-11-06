@@ -4,6 +4,7 @@ from lcztools import load_network, LeelaBoard
 import search
 import chess
 import chess.pgn
+from os import path
 
 logfile = open("leelalite_bellman.log", "w")
 LOG = True
