@@ -12,7 +12,8 @@ engines = {'uct': search.UCT_search,
            'minmax': search.MinMax_search,
            'bellman': search.Bellman_search,
            'mpa': search.MPA_search,
-           'srcr': search.SRCR_search
+           'srcr': search.SRCR_search,
+           'human': 'brain'
            }
 
 if len(sys.argv) != 6:
@@ -35,13 +36,20 @@ nn = search.NeuralNet(net=net)
 turn = 0
 while True:
     print(board)
-    print("thinking...")
-    start = time.time()
-    best, node = engines[players[turn]](board, nodes, net=nn, C=c)
-    elapsed = time.time() - start
-    print(board.pc_board.fullmove_number, players[turn], "best: ", best)
-    print("Time: {:.3f} nps".format(nodes/elapsed))
-    board.push_uci(best)
+    if players[turn] == "human":
+        print("Enter move: ", end='')
+        sys.stdout.flush()
+        line = sys.stdin.readline()
+        line = line.rstrip()
+        board.push_uci(line)
+    else:
+        print("thinking...")
+        start = time.time()
+        best, node = engines[players[turn]](board, nodes, net=nn, C=c)
+        elapsed = time.time() - start
+        print(board.pc_board.fullmove_number, players[turn], "best: ", best)
+        print("Time: {:.3f} nps".format(nodes/elapsed))
+        board.push_uci(best)
     if board.pc_board.is_game_over() or board.is_draw():
         print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
         print(board)
