@@ -93,6 +93,6 @@ def MinMax_search(board, num_reads, net=None, C=1.0, alpha=0.25):
         next = heapq.nlargest(1, next[1].children.items(),
                                 key=lambda item: (item[1].number_visits, item[1].Q(alpha)))[0]
         print(next[0], end=' ')
-
+    print('')
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
