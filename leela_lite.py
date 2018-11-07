@@ -9,8 +9,8 @@ import time
 from os import path
 
 engines = {'uct': search.UCT_search,
-           'minmax': search.MinMax_search
-           'bellman': search.Bellman_search
+           'minmax': search.MinMax_search,
+           'bellman': search.Bellman_search,
            'mpa': search.MPA_search}
 
 if len(sys.argv) != 4:
