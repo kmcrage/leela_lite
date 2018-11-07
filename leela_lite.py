@@ -11,10 +11,12 @@ from os import path
 engines = {'uct': search.UCT_search,
            'minmax': search.MinMax_search,
            'bellman': search.Bellman_search,
-           'mpa': search.MPA_search}
+           'mpa': search.MPA_search,
+           'srcr': search.SRCR_search
+           }
 
 if len(sys.argv) != 6:
-    print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes>")
+    print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes> <c>")
     print(len(sys.argv))
     exit(1)
 
