@@ -74,11 +74,11 @@ class MinMaxNode:
         print("---")
 
 
-def MinMax_search(board, num_reads, net=None, c=1.0, alpha=0.25):
+def MinMax_search(board, num_reads, net=None, C=1.0, alpha=0.25):
     assert(net is not None)
     root = MinMaxNode(board)
     for _ in range(num_reads):
-        leaf = root.select_leaf(c, alpha)
+        leaf = root.select_leaf(C, alpha)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
