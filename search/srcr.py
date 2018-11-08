@@ -102,6 +102,6 @@ def SRCR_search(board, num_reads, net=None, C_sr=3.4, C_cr=3.4):
                         key=lambda item: (item[1].number_visits, item[1].Q()))
 
     print('SRCR (', C_sr, ',', C_cr, ') pv:', [(n[0], n[1].Q(), n[1].number_visits,
-                                          n[1].U_cr(), n[1].U_sr()) for n in pv])
+                                          C_sr*n[1].U_sr(), C_cr*n[1].U_cr()) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q()))
