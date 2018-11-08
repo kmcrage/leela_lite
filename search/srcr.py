@@ -36,7 +36,7 @@ class SRCRNode:
 
     def best_child(self, C_sr, C_cr):
         return max(self.children.values(),
-                   key=lambda node: node.Q() + C_sr * node.U_sr() + C_cr * node.U_google())
+                   key=lambda node: node.Q() + C_sr * node.U_sr() + C_cr * node.U_cr())
 
     def select_leaf(self, C_sr=1.0, C_cr=1.0):
         current = self
