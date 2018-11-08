@@ -88,8 +88,8 @@ class SRCRNode:
 
 def SRCR_search(board, num_reads, net=None, C_sr=3.4, C_cr=3.4):
     assert(net is not None)
-    C_sr = os.getenv('CP_SR', C_sr)
-    C_cr = os.getenv('CP_CR', C_cr)
+    C_sr = float(os.getenv('CP_SR', C_sr))
+    C_cr = float(os.getenv('CP_CR', C_cr))
     root = SRCRNode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C_sr, C_cr)
