@@ -26,12 +26,24 @@ class SRCRNode:
         return self.total_value / (1 + self.number_visits)
 
     def U_sr(self):  # returns float
+        """
+        this is the classic simple regret minimiser, used for max (self) nodes
+        :return:
+        """
         return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
 
     def U_google(self):  # returns float
+        """
+        this is what google used: the square of the simple regret minimiser
+        :return:
+        """
         return self.prior * math.sqrt(self.parent.number_visits) / (1 + self.number_visits)
 
     def U_cr(self):  # returns float
+        """
+        this is the classic cumulative regret minimiser, used for min (opponent) nodes
+        :return:
+        """
         return self.prior * math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
 
     def best_child(self, C_sr, C_cr):
@@ -86,7 +98,7 @@ class SRCRNode:
         print("---")
 
 
-def SRCR_search(board, num_reads, net=None, C_sr=3.4, C_cr=3.4):
+def SRCR_search(board, num_reads, net=None, C_sr=1.7, C_cr=3.4):
     assert(net is not None)
     C_sr = float(os.getenv('CP_SR', C_sr))
     C_cr = float(os.getenv('CP_CR', C_cr))
