@@ -9,7 +9,7 @@ from os import path
 
 
 if len(sys.argv) != 6:
-    print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes> <c>")
+    print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
 
@@ -37,7 +37,7 @@ while True:
     else:
         print("thinking...")
         start = time.time()
-        best, node = search.engines[players[turn]](board, nodes, net=nn, C=c)
+        best, node = search.engines[players[turn]](board, nodes, net=nn)
         elapsed = time.time() - start
         print(board.pc_board.fullmove_number, players[turn], "best: ", best)
         print("Time: {:.3f} nps".format(nodes/elapsed))

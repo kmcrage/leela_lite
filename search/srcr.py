@@ -2,6 +2,7 @@ import numpy as np
 import math
 import heapq
 from collections import OrderedDict
+import os
 
 """
 Asymmetric Move Selection Strategies in
@@ -85,11 +86,13 @@ class SRCRNode:
         print("---")
 
 
-def SRCR_search(board, num_reads, net=None, C=1.0, C_cr=3.4):
+def SRCR_search(board, num_reads, net=None, C_sr=3.4, C_cr=3.4):
     assert(net is not None)
+    C_sr = os.getenv('CP_SR', C_sr)
+    C_cr = os.getenv('CP_CR', C_cr)
     root = SRCRNode(board)
     for _ in range(num_reads):
-        leaf = root.select_leaf(C, C_cr)
+        leaf = root.select_leaf(C_sr, C_cr)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
