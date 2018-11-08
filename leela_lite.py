@@ -3,18 +3,10 @@ import sys
 sys.path.extend(['/content/lczero_tools/src', '/content/python-chess', '/content/leela-lite'])
 from lcztools import load_network, LeelaBoard
 import search
-import chess
 import chess.pgn
 import time
 from os import path
 
-engines = {'uct': search.UCT_search,
-           'minmax': search.MinMax_search,
-           'bellman': search.Bellman_search,
-           'mpa': search.MPA_search,
-           'srcr': search.SRCR_search,
-           'human': 'brain'
-           }
 
 if len(sys.argv) != 6:
     print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes> <c>")
@@ -45,7 +37,7 @@ while True:
     else:
         print("thinking...")
         start = time.time()
-        best, node = engines[players[turn]](board, nodes, net=nn, C=c)
+        best, node = search.engines[players[turn]](board, nodes, net=nn, C=c)
         elapsed = time.time() - start
         print(board.pc_board.fullmove_number, players[turn], "best: ", best)
         print("Time: {:.3f} nps".format(nodes/elapsed))

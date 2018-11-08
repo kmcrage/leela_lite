@@ -8,3 +8,12 @@ from search.bellman_backup import Bellman_search
 from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 # from uct.util import softmax, temp_softmax
+
+
+engines = {'uct': UCT_search,
+           'minmax': MinMax_search,
+           'bellman': Bellman_search,
+           'mpa': MPA_search,
+           'srcr': SRCR_search,
+           'human': 'brain'
+           }
