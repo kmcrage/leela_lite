@@ -77,8 +77,8 @@ class UCTVNode():
 
 def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
     assert(net is not None)
-    zeta = os.getenv('ZETA', zeta)
-    C = os.getenv('C', C)
+    zeta = float(os.getenv('ZETA', zeta))
+    C = float(os.getenv('C', C))
     root = UCTVNode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C, zeta)
