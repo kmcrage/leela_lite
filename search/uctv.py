@@ -97,7 +97,7 @@ def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
     # variance, so picking the natural max makes more sense
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
-                        key=lambda item: (item[1].Q(), item[1].number_visits))
+                        key=lambda item: (item[1].number_visits !=0, item[1].Q(), item[1].number_visits))
 
     # robust max,
     # pv = heapq.nlargest(size, root.children.items(),
