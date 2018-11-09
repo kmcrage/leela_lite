@@ -25,10 +25,10 @@ class UCTVNode():
 
     def U(self):  # returns float
         """
-        cumulative regret
+        simple regret
         :return:
         """
-        return math.sqrt(self.parent.number_visits / (1 + self.number_visits))
+        return math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
 
     def best_child(self, C, zeta):
         return max(self.children.values(),
@@ -98,6 +98,11 @@ def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
                         key=lambda item: (item[1].Q(), item[1].number_visits))
+
+    # robust max,
+    # pv = heapq.nlargest(size, root.children.items(),
+    #                    key=lambda item: (item[1].number_visits, item[1].Q())
+
 
     print('UCTV pv:', [(n[0], n[1].Q(), n[1].number_visits, n[1].sigma()) for n in pv])
     return max(root.children.items(),
