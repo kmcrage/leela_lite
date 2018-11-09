@@ -37,7 +37,8 @@ while True:
     else:
         print("thinking...")
         start = time.time()
-        search.engines['uct'](board, nodes, net=nn)
+        if players[turn] != 'uct':
+            search.engines['uct'](board, nodes, net=nn)
         best, node = search.engines[players[turn]](board, nodes, net=nn)
         elapsed = time.time() - start
         print(board.pc_board.fullmove_number, players[turn], "best: ", best)
