@@ -24,7 +24,11 @@ class UCTVNode():
         return math.sqrt(self.total_vsquared / (1 + self.number_visits) - self.Q() ** 2)
 
     def U(self):  # returns float
-        return math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
+        """
+        cumulative regret
+        :return:
+        """
+        return math.sqrt(self.parent.number_visits / (1 + self.number_visits))
 
     def best_child(self, C, zeta):
         return max(self.children.values(),
