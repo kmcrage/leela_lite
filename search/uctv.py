@@ -2,6 +2,7 @@ import numpy as np
 import math
 import heapq
 from collections import OrderedDict
+import os
 
 
 class UCTVNode():
@@ -76,6 +77,7 @@ class UCTVNode():
 
 def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
     assert(net is not None)
+    zeta = os.getenv('ZETA', zeta)
     root = UCTVNode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C, zeta)
@@ -87,7 +89,7 @@ def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
     pv = heapq.nlargest(size, root.children.items(),
                         key=lambda item: (item[1].number_visits, item[1].Q()))
 
-    print('UCT pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    print('UCTV pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q()))
 
