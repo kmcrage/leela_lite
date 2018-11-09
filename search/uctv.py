@@ -25,7 +25,7 @@ class UCTVNode():
 
     def U(self):  # returns float
         """
-        simple regret
+        simple regret minimiser
         :return:
         """
         return math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
