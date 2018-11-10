@@ -77,7 +77,7 @@ class AsymNode:
             turnfactor *= -1
         current.number_visits += 1
 
-    def dump(self, move, C):
+    def dump(self, move):
         print("---")
         print("move: ", move)
         print("total value: ", self.total_value)
@@ -93,8 +93,8 @@ class AsymNode:
 
 def Asym_search(board, num_reads, net=None, C_max_sr=3.4, C_max_cr=0., C_min_sr=0., C_min_cr=3.4):
     assert(net is not None)
-    #C_sr = float(os.getenv('CP_SR', C_sr))
-    #C_cr = float(os.getenv('CP_CR', C_cr))
+    # C_sr = float(os.getenv('CP_SR', C_sr))
+    # C_cr = float(os.getenv('CP_CR', C_cr))
     root = AsymNode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C_max_sr, C_max_cr, C_min_sr, C_min_cr)
@@ -102,17 +102,17 @@ def Asym_search(board, num_reads, net=None, C_max_sr=3.4, C_max_cr=0., C_min_sr=
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    size = min(5, len(root.children))
-    pv = heapq.nlargest(size, root.children.items(),
-                        key=lambda item: (item[1].number_visits, item[1].Q()))
-
-    print('Asym pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
-    print('prediction:', end=' ')
-    next = pv[0]
-    while len(next[1].children):
-        next = heapq.nlargest(1, next[1].children.items(),
-                                key=lambda item: (item[1].number_visits, item[1].Q()))[0]
-        print(next[0], end=' ')
-    print('')
+    # size = min(5, len(root.children))
+    # pv = heapq.nlargest(size, root.children.items(),
+    #                    key=lambda item: (item[1].number_visits, item[1].Q()))
+    #
+    # print('Asym pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    # print('prediction:', end=' ')
+    # next = pv[0]
+    # while len(next[1].children):
+    #    next = heapq.nlargest(1, next[1].children.items(),
+    #                            key=lambda item: (item[1].number_visits, item[1].Q()))[0]
+    #    print(next[0], end=' ')
+    # print('')
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q()))
