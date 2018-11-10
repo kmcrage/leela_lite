@@ -34,14 +34,14 @@ class SOTANode:
         this is the classic simple regret minimiser, used for max (self) nodes
         :return:
         """
-        return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / self.number_visits)
+        return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
 
     def U_cr(self):  # returns float
         """
         this is the classic cumulative regret minimiser, used for min (opponent) nodes
         :return:
         """
-        return self.prior * math.sqrt(math.log(self.parent.number_visits) / self.number_visits)
+        return self.prior * math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
 
     def best_child(self, C_sr, C_cr, alpha):
         return max(self.children.values(),
