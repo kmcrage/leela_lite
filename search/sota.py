@@ -1,5 +1,5 @@
 import math
-# import heapq
+import heapq
 from collections import OrderedDict
 # import os
 
@@ -10,19 +10,24 @@ Regret at Max Nodes
 """
 
 
-class AsymNode:
+class SOTANode:
     def __init__(self, board=None, parent=None, move=None, prior=0):
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = parent  # Optional[AsymNode]
-        self.children = OrderedDict()  # Dict[move, AsymNode]
+        self.parent = parent  # Optional[SOTANode]
+        self.children = OrderedDict()  # Dict[move, SOTANode]
         self.prior = prior  # float
-        self.total_value = -parent.Q() if parent else 0.   # float
-        self.number_visits = 1  # int
 
-    def Q(self):  # returns float
-        return self.total_value / self.number_visits
+        self.reward = 0.  # float
+        self.minmax_value = 0.  # float
+        self.bellman_value = 0.  # float
+
+        self.number_visits = 0  # int
+        self.leaf_visits = 0  # int
+
+    def Q(self, alpha):  # returns float
+        return (1 - alpha) * self.bellman_value + alpha * self.minmax_value
 
     def U_sr(self):  # returns float
         """
@@ -38,18 +43,18 @@ class AsymNode:
         """
         return self.prior * math.sqrt(math.log(self.parent.number_visits) / self.number_visits)
 
-    def best_child(self, C_sr, C_cr):
+    def best_child(self, C_sr, C_cr, alpha):
         return max(self.children.values(),
-                   key=lambda node: node.Q() + C_sr * node.U_sr() + C_cr * node.U_cr())
+                   key=lambda node: (node.Q(alpha) + C_sr * node.U_sr() + C_cr * node.U_cr(), node.prior)
 
-    def select_leaf(self, C_max_sr, C_max_cr, C_min_sr, C_min_cr):
+    def select_leaf(self, C_max_sr, C_max_cr, C_min_sr, C_min_cr, alpha):
         current = self
         depth = 0
         while current.is_expanded and current.children:
             if depth % 2 == 0:
-                current = current.best_child(C_max_sr, C_max_cr)  # MAX node, simple regret
+                current = current.best_child(C_max_sr, C_max_cr, alpha)  # MAX node, simple regret
             else:
-                current = current.best_child(C_min_sr, C_min_cr)  # MIN node, cumulative regret
+                current = current.best_child(C_min_sr, C_min_cr, alpha)  # MIN node, cumulative regret
             depth += 1
         if not current.board:
             current.board = current.parent.board.copy()
@@ -62,27 +67,38 @@ class AsymNode:
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = AsymNode(parent=self, move=move, prior=prior)
+        self.children[move] = SOTANode(parent=self, move=move, prior=prior)
     
     def backup(self, value_estimate: float):
         current = self
-        # Child nodes are multiplied by -1 because we want max(-opponent eval)
-        turnfactor = -1
-        while current.parent is not None:            
-            current.number_visits += 1
-            current.total_value += (value_estimate *
-                                    turnfactor)
+        self.reward = -value_estimate
+        self.bellman_value = self.reward
+        self.minmax_value = self.reward
+        self.leaf_visits += 1
+        self.number_visits += 1
+
+        while current.parent is not None:
             current = current.parent
-            turnfactor *= -1
+            current.number_visits += 1
+            current.minmax_value = -max([n.minmax_value for n in current.children.values()
+                                         if n.number_visits])
+            # do we want to add in this reward? its more stable and will disappear with many evals
+            # keep because it matters on leaf nodes
+            current.Q = current.reward * current.leaf_visits / current.number_visits
+            for child in [n for n in current.children.values() if n.number_visits]:
+                current.bellman_value -= child.number_visits * child.bellman_value / current.number_visits
+                # print('updating Q:', current.Q, current.number_visits, visits)
+            # print('postupdate Q:', current.Q, current.number_visits, visits)
+
         current.number_visits += 1
 
     def dump(self, move):
         print("---")
         print("move: ", move)
-        print("total value: ", self.total_value)
+        print("belman value: ", self.bellman_value)
+        print("minmax value: ", self.minmax_value)
         print("visits: ", self.number_visits)
         print("prior: ", self.prior)
-        print("Q: ", self.Q())
         print("U_cr: ", self.U_cr())
         print("U_sr: ", self.U_sr())
         # print("math.sqrt({}) * {} / (1 + {}))".format(self.parent.number_visits,
@@ -90,24 +106,25 @@ class AsymNode:
         print("---")
 
 
-def Asym_search(board, num_reads, net=None,
+def SOTA_search(board, num_reads, net=None,
                 C_max_sr=3.4, C_max_cr=0.,
-                C_min_sr=0., C_min_cr=3.4):
+                C_min_sr=0., C_min_cr=3.4,
+                alpha=0.25):
     assert(net is not None)
     # C_sr = float(os.getenv('CP_SR', C_sr))
     # C_cr = float(os.getenv('CP_CR', C_cr))
-    root = AsymNode(board)
+    root = SOTANode(board)
     for _ in range(num_reads):
-        leaf = root.select_leaf(C_max_sr, C_max_cr, C_min_sr, C_min_cr)
+        leaf = root.select_leaf(C_max_sr, C_max_cr, C_min_sr, C_min_cr, alpha)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
-    # size = min(5, len(root.children))
-    # pv = heapq.nlargest(size, root.children.items(),
-    #                    key=lambda item: (item[1].number_visits, item[1].Q()))
+    size = min(5, len(root.children))
+    pv = heapq.nlargest(size, root.children.items(),
+                        key=lambda item: (item[1].number_visits, item[1].Q()))
     #
-    # print('Asym pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    print('SOTA pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
     # print('prediction:', end=' ')
     # next = pv[0]
     # while len(next[1].children):

@@ -9,6 +9,7 @@ from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
 from search.uctv import UCTV_search
+from search.sota import SOTA_search
 # from uct.util import softmax, temp_softmax
 
 
@@ -19,5 +20,6 @@ engines = {'uct': UCT_search,
            'uctv': UCTV_search,
            'srcr': SRCR_search,
            'asym': Asym_search,
+           'sota': SOTA_search,
            'human': 'brain'
            }

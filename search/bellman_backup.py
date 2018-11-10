@@ -12,10 +12,10 @@ class BellmanNode:
         self.parent = parent  # Optional[BellmanNode]
         self.children = OrderedDict()  # Dict[move, BellmanNode]
         self.prior = prior  # float
-        self.number_visits = -parent.Q if parent else 0.   # int
+        self.number_visits = 0 # int
         self.leaf_visits = 0  # int
         self.tree_depth = depth
-        self.Q = 0
+        self.Q = 0.
         self.reward = 0
 
     def U(self):  # returns float
