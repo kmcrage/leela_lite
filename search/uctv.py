@@ -79,10 +79,10 @@ class UCTVNode():
         print("---")
 
 
-def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
+def UCTV_search(board, num_reads, net=None, C=3.4, zeta=10.0):
     assert(net is not None)
-    zeta = float(os.getenv('ZETA', zeta))
-    C = float(os.getenv('C', C))
+    #zeta = float(os.getenv('ZETA', zeta))
+    #C = float(os.getenv('C', C))
     root = UCTVNode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(C, zeta)
@@ -108,11 +108,11 @@ def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
 
 
 
-#num_reads = 10000
-#import time
-#tick = time.time()
-#UCT_search(GameState(), num_reads)
-#tock = time.time()
-#print("Took %s sec to run %s times" % (tock - tick, num_reads))
-#import resource
-#print("Consumed %sB memory" % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+# num_reads = 10000
+# import time
+# tick = time.time()
+# UCT_search(GameState(), num_reads)
+# tock = time.time()
+# print("Took %s sec to run %s times" % (tock - tick, num_reads))
+# import resource
+# print("Consumed %sB memory" % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
