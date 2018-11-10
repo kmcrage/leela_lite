@@ -44,6 +44,12 @@ class SOTANode:
         return self.prior * math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
 
     def best_child(self, C_sr, C_cr, alpha):
+        for c in self.children.values():
+            print(c)
+            print(c.Q(alpha))
+            print(c.U_sr())
+            print(c.U_cr())
+            print(c.prior)
         def node_order(node):
             return (node.Q(alpha) + C_sr * node.U_sr() + C_cr * node.U_cr(),
                     node.prior)
