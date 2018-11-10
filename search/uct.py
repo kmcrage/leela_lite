@@ -68,7 +68,7 @@ class UCTNode():
         #      self.prior, self.number_visits))
         print("---")
 
-def UCT_search(board, num_reads, net=None, C=1.0):
+def UCT_search(board, num_reads, net=None, C=3.4):
     assert(net != None)
     root = UCTNode(board)
     for _ in range(num_reads):
@@ -81,7 +81,7 @@ def UCT_search(board, num_reads, net=None, C=1.0):
     pv = heapq.nlargest(size, root.children.items(),
                         key=lambda item: (item[1].number_visits, item[1].Q()))
 
-    print('UCT pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+    print('UCT pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q()))
 
