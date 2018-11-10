@@ -45,7 +45,7 @@ class SOTANode:
 
     def best_child(self, C_sr, C_cr, alpha):
         return max(self.children.values(),
-                   key=lambda node: (node.Q(alpha) + C_sr * node.U_sr() + C_cr * node.U_cr(), node.prior)
+                   key=lambda node: (node.Q(alpha) + C_sr * node.U_sr() + C_cr * node.U_cr(), node.prior))
 
     def select_leaf(self, C_max_sr, C_max_cr, C_min_sr, C_min_cr, alpha):
         current = self
