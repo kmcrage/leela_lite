@@ -44,15 +44,14 @@ def process_position(tokens):
     return board
 
 
-if len(sys.argv) != 4 and len(sys.argv) != 5:
-    print("Usage: python3 engine.py <policy> <weights file> <nodes> [<c>]")
+if len(sys.argv) != 4:
+    print("Usage: python3 engine.py <policy> <weights file> <nodes>")
     print(len(sys.argv))
     exit(1)
 
 policy = sys.argv[1]
 weights = sys.argv[2]
 nodes = int(sys.argv[3])
-cpuct = float(sys.argv[4]) if len(sys.argv) == 5 else 3.4
 
 backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
@@ -82,7 +81,7 @@ while True:
     elif tokens[0] == 'position':
         board = process_position(tokens)
     elif tokens[0] == 'go':
-        best, node = search.engines[policy](board, nodes, net=nn, C=cpuct)
+        best, node = search.engines[policy](board, nodes, net=nn)
         send("bestmove {}".format(best))
     else:
         print('unknown:', tokens)
