@@ -101,7 +101,7 @@ def UCTV_search(board, num_reads, net=None, C=1.0, zeta=1.0):
 
     # robust max,
     pv = heapq.nlargest(size, root.children.items(),
-                        key=lambda item: (item[1].number_visits, item[1].Q())
+                        key=lambda item: (item[1].number_visits, item[1].Q()))
 
 
     print('UCTV pv:', [(n[0], n[1].Q(), n[1].number_visits, n[1].sigma()) for n in pv])
