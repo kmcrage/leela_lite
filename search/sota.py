@@ -126,7 +126,11 @@ def SOTA_search(board, num_reads, net=None,
     pv = heapq.nlargest(size, root.children.items(),
                         key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
     #
-    print('SOTA pv:', [(n[0], n[1].Q(alpha), n[1].number_visits) for n in pv])
+    print('SOTA pv:', [(n[0],
+                        n[1].Q(alpha),
+                        n[1].number_visits,
+                        n[1].Q(alpha) + C_sr * n[1].U_sr() + C_max_cr * n[1].U_cr(),
+                        n[1].prior) for n in pv])
     # print('prediction:', end=' ')
     # next = pv[0]
     # while len(next[1].children):
