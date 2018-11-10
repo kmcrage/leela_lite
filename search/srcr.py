@@ -48,7 +48,7 @@ class SRCRNode:
 
     def best_child(self, C_sr, C_cr):
         return max(self.children.values(),
-                   key=lambda node: node.Q() + C_sr * node.U_sr() + C_cr * node.U_cr())
+                   key=lambda node: node.Q() + C_sr * node.U_sr()**2 + C_cr * node.U_cr()**2)
 
     def select_leaf(self, C_sr=1.0, C_cr=1.0):
         current = self
@@ -98,7 +98,7 @@ class SRCRNode:
         print("---")
 
 
-def SRCR_search(board, num_reads, net=None, C_sr=1.7, C_cr=3.4):
+def SRCR_search(board, num_reads, net=None, C_sr=3.4, C_cr=3.4):
     assert(net is not None)
     C_sr = float(os.getenv('CP_SR', C_sr))
     C_cr = float(os.getenv('CP_CR', C_cr))
