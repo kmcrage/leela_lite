@@ -12,15 +12,15 @@ class UCTNode():
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
-        self.number_visits = 0  # int
+        self.total_value = -parent.Q() if parent else 0. # float
+        self.number_visits = 1  # int
 
     def Q(self):  # returns float
-        return self.total_value / (1 + self.number_visits)
+        return self.total_value / self.number_visits
 
     def U(self):  # returns float
         return (math.sqrt(self.parent.number_visits)
-                * self.prior / (1 + self.number_visits))
+                * self.prior / self.number_visits)
 
     def best_child(self, C):
         return max(self.children.values(),

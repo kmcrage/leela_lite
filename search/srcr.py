@@ -19,7 +19,7 @@ class SRCRNode:
         self.parent = parent  # Optional[SRCRNode]
         self.children = OrderedDict()  # Dict[move, SRCRNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
+        self.total_value = -parent.Q() if parent else 0.   # float
         self.number_visits = 0  # int
 
     def Q(self):  # returns float

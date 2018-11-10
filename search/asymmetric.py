@@ -1,8 +1,7 @@
-import numpy as np
 import math
-import heapq
+# import heapq
 from collections import OrderedDict
-import os
+# import os
 
 """
 Asymmetric Move Selection Strategies in
@@ -19,25 +18,25 @@ class AsymNode:
         self.parent = parent  # Optional[AsymNode]
         self.children = OrderedDict()  # Dict[move, AsymNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
-        self.number_visits = 0  # int
+        self.total_value = -parent.Q() if parent else 0.   # float
+        self.number_visits = 1  # int
 
     def Q(self):  # returns float
-        return self.total_value / (1 + self.number_visits)
+        return self.total_value / self.number_visits
 
     def U_sr(self):  # returns float
         """
         this is the classic simple regret minimiser, used for max (self) nodes
         :return:
         """
-        return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
+        return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / self.number_visits)
 
     def U_cr(self):  # returns float
         """
         this is the classic cumulative regret minimiser, used for min (opponent) nodes
         :return:
         """
-        return self.prior * math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
+        return self.prior * math.sqrt(math.log(self.parent.number_visits) / self.number_visits)
 
     def best_child(self, C_sr, C_cr):
         return max(self.children.values(),

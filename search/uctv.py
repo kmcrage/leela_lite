@@ -13,22 +13,22 @@ class UCTVNode():
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
-        self.total_vsquared = 0  # float
-        self.number_visits = 0  # int
+        self.total_value = -parent.Q() if parent else 0.   # float
+        self.total_vsquared = parent.sigma() ** 2 + parent.Q() ** 2 if parent else 0.   # float
+        self.number_visits = 1  # int
 
     def Q(self):  # returns float
-        return self.total_value / (1 + self.number_visits)
+        return self.total_value / self.number_visits
 
     def sigma(self):  # returns float
-        return math.sqrt(self.total_vsquared / (1 + self.number_visits) - self.Q() ** 2)
+        return math.sqrt(self.total_vsquared / self.number_visits - self.Q() ** 2)
 
     def U(self):  # returns float
         """
         simple regret minimiser
         :return:
         """
-        return math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
+        return math.sqrt(math.sqrt(self.parent.number_visits) / self.number_visits)
 
     def best_child(self, C, zeta):
         return max(self.children.values(),
