@@ -111,7 +111,7 @@ class SOTANode:
 def SOTA_search(board, num_reads, net=None,
                 C_max_sr=3.4, C_max_cr=0.,
                 C_min_sr=0., C_min_cr=3.4,
-                alpha=0.25):
+                alpha=0.):
     assert(net is not None)
     # C_sr = float(os.getenv('CP_SR', C_sr))
     # C_cr = float(os.getenv('CP_CR', C_cr))
