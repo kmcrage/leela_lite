@@ -32,13 +32,6 @@ class SRCRNode:
         """
         return self.prior * math.sqrt(math.sqrt(self.parent.number_visits) / (1 + self.number_visits))
 
-    def U_google(self):  # returns float
-        """
-        this is what google used: the square of the simple regret minimiser
-        :return:
-        """
-        return self.prior * math.sqrt(self.parent.number_visits) / (1 + self.number_visits)
-
     def U_cr(self):  # returns float
         """
         this is the classic cumulative regret minimiser, used for min (opponent) nodes
@@ -48,7 +41,7 @@ class SRCRNode:
 
     def best_child(self, C_sr, C_cr):
         return max(self.children.values(),
-                   key=lambda node: node.Q() + C_sr * node.U_sr()**2 + C_cr * node.U_cr()**2)
+                   key=lambda node: node.Q() + C_sr * node.U_sr() + C_cr * node.U_cr())
 
     def select_leaf(self, C_sr=1.0, C_cr=1.0):
         current = self
