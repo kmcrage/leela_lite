@@ -9,9 +9,9 @@ class MaxUct_mixin:
         return self.number_visits
 
 
-class Bellman_mixin:
+class DPUCT_mixin:
     def __init__(self, **kwargs):
-        super(Bellman_mixin, self).__init__(**kwargs)
+        super(DPUCT_mixin, self).__init__(**kwargs)
 
     def backup_weight(self):
         return self.prior
@@ -42,9 +42,9 @@ class Bellman_mixin:
             current.total_value *= current.number_visits / sum_weights
 
 
-class BellmanNode(Bellman_mixin, UCTNode):
+class DPUCTNode(DPUCT_mixin, UCTNode):
     name = 'bellman'
 
 
-class MaxUCTNode(MaxUct_mixin, Bellman_mixin, UCTNode):
+class MaxUCTNode(MaxUct_mixin, DPUCT_mixin, UCTNode):
     name = 'maxuct'
