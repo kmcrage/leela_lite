@@ -43,7 +43,7 @@ class DPUCT_mixin:
 
 
 class DPUCTNode(DPUCT_mixin, UCTNode):
-    name = 'bellman'
+    name = 'dpuct'
 
 
 class MaxUCTNode(MaxUct_mixin, DPUCT_mixin, UCTNode):
