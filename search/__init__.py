@@ -15,14 +15,19 @@ from search.sota import SOTA_search
 from functools import partial
 from search.mcts import mcts_search
 
+# active searches first
+#
+#
 engines = {'uct': partial(mcts_search, UCTNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
-           
+
            'mpa': MPA_search,
            'uctv': UCTV_search,
+           'crazy': CRAZY_search,
            'srcr': SRCR_search,
            'asym': Asym_search,
            'sota': SOTA_search,
+
            'human': 'brain'
            }
