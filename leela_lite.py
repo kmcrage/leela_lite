@@ -1,66 +1,77 @@
 #!/usr/bin/python3
-from lcztools import load_network, LeelaBoard
-import search
-import chess
+import argparse
 import chess.pgn
+from lcztools import load_network, LeelaBoard
+import os.path
+import search
 import sys
 import time
 
+default_engine = 'uct'
 
-if len(sys.argv) != 3:
-    print("Usage: python3 leela_lite.py <weights file or network server ID> <nodes>")
-    print(len(sys.argv))
-    exit(1)
-else:
-    weights = sys.argv[1]
-    nodes = int(sys.argv[2])
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--weights",
+                    help="a path to a weights file")
+parser.add_argument("-w", "--white",
+                    help="the engine to use for white",
+                    choices=search.engines.keys(), default=default_engine)
+parser.add_argument("-b", "--black",
+                    help="the engine to use for black",
+                    choices=search.engines.keys(), default=default_engine)
+parser.add_argument("-n", "--nodes",
+                    help="the engine to use for black",
+                    type=int, default=800)
+parser.add_argument("-v", "--verbosity", action="count", default=0)
+args = parser.parse_args()
 
-network_id = None
-try:
-    # If the parameter is an integer, assume it's a network server ID
-    network_id = int(weights)
-    weights = None
-except:
-    pass
-
-def load_leela_network():
-    global net, nn
-    if network_id is not None:
-        net = load_network(backend='net_client', network_id=network_id, policy_softmax_temp=2.2)
-    else:
-        net = load_network(backend='pytorch_cuda', filename=weights, policy_softmax_temp=2.2)
-    nn = search.NeuralNet(net=net, lru_size=min(5000, nodes))
-    
-
-load_leela_network()
-
-SELFPLAY = True
-
+backend = 'pytorch_cuda' if os.path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
+net = load_network(backend=backend, filename=args.weights, policy_softmax_temp=2.2)
+nn = search.NeuralNet(net=net)
 board = LeelaBoard()
+
+players = [{'engine': args.white,
+            'root': None,
+            'resets': 0},
+           {'engine': args.black,
+            'root': None,
+            'resets': 0}]
+
+turn = 0
 while True:
-    if not SELFPLAY:
-        print(board.unicode())
+    print(board)
+    if players[turn] == "human":
         print("Enter move: ", end='')
         sys.stdout.flush()
         line = sys.stdin.readline()
-        line = line.rstrip()
-        board.push_uci(line)
-    print(board.unicode())
-    print("thinking...")
-    start = time.time()
-    best, node = search.UCT_search(board, nodes, net=nn, C=3.4)
-    elapsed = time.time() - start
-    print("best: ", best)
-    print("Time: {:.3f} nps".format(nodes/elapsed))
-    print(nn.evaluate.cache_info())
+        best = line.rstrip()
+    else:
+        if args.verbosity:
+            print("thinking...")
+            if players[turn]['root']:
+                print('starting with', players[turn]['root'].number_visits, 'visits')
+        start = time.time()
+        if players[turn]['engine'] != default_engine:
+            search.engines[default_engine](board, args.nodes, net=nn)
+        best, node = search.engines[players[turn]['engine']](board, args.nodes,
+                                                             net=nn, root=players[turn]['root'])
+        print(board.pc_board.fullmove_number, players[turn]['engine'], "best: ", best)
+        elapsed = time.time() - start
+        if args.verbosity:
+            print("Time: {:.3f} nps".format(args.nodes/elapsed))
+        players[turn]['root'] = node
+
     board.push_uci(best)
+    if players[1-turn]['root'] and best in players[1-turn]['root'].children:
+        players[1 - turn]['root'] = players[1-turn]['root'].children[best]
+    else:
+        if args.verbosity:
+            print('tree reset for player', 1-turn, players[1 - turn]['engine'])
+        players[1 - turn]['resets'] += 1
+        players[1 - turn]['root'] = None
+
     if board.pc_board.is_game_over() or board.is_draw():
-        result = board.pc_board.result(claim_draw=True)
-        print("Game over... result is {}".format(result))
-        print(board.unicode())
-        print()
-        pgn_game = chess.pgn.Game.from_board(board.pc_board) 
-        pgn_game.headers['Result'] = result
-        print(pgn_game)
+        print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
+        print(board)
+        print(chess.pgn.Game.from_board(board.pc_board))
         break
-    
+    turn = 1 - turn

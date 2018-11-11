@@ -11,17 +11,17 @@ class MinMaxNode:
         self.parent = parent  # Optional[MinMaxNode]
         self.children = OrderedDict()  # Dict[move, MinMaxNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
-        self.minmax_value = 0  # float
-        self.number_visits = 0  # int
+        self.total_value = -parent.Q() if parent else 0.  # float
+        self.minmax_value = -parent.Q() if parent else 0.  # float
+        self.number_visits = 1  # int
 
     def Q(self, alpha=0.25):
-        return (1 - alpha) * self.total_value / (1 + self.number_visits) + alpha * self.minmax_value
+        return (1 - alpha) * self.total_value / self.number_visits + alpha * self.minmax_value
 
 
 
     def U(self):  # returns float
-        return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
+        return math.sqrt(self.parent.number_visits) * self.prior / self.number_visits
 
     def best_child(self, C, alpha):
         return max(self.children.values(),
@@ -86,13 +86,13 @@ def MinMax_search(board, num_reads, net=None, C=1.0, alpha=0.25):
     size = min(5, len(root.children))
     pv = heapq.nlargest(size, root.children.items(),
                         key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
-    #print('MinMax pv:', [(n[0], n[1].Q(alpha), n[1].number_visits) for n in pv])
-    #print('prediction:', end=' ')
+    print('MinMax pv:', [(n[0], n[1].Q(alpha), n[1].number_visits) for n in pv])
+    print('prediction:', end=' ')
     next = pv[0]
     while len(next[1].children):
         next = heapq.nlargest(1, next[1].children.items(),
                                 key=lambda item: (item[1].number_visits, item[1].Q(alpha)))[0]
-        #print(next[0], end=' ')
-    #print('')
+        print(next[0], end=' ')
+    print('')
     return max(root.children.items(),
                key=lambda item: (item[1].number_visits, item[1].Q(alpha)))
