@@ -57,13 +57,13 @@ while True:
         players[turn]['root'] = node
 
     board.push_uci(best)
-    if players[1-turn]['node'] and best in players[1-turn]['node'].children:
-        players[1 - turn]['node'] = players[1-turn]['node'].children[best]
+    if players[1-turn]['root'] and best in players[1-turn]['root'].children:
+        players[1 - turn]['root'] = players[1-turn]['root'].children[best]
     else:
         if args.verbosity:
             print('tree reset for player', 1-turn, players[1 - turn]['engine'])
         players[1 - turn]['resets'] += 1
-        players[1 - turn]['node'] = None
+        players[1 - turn]['root'] = None
 
     if board.pc_board.is_game_over() or board.is_draw():
         print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
