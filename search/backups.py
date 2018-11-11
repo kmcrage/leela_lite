@@ -43,8 +43,8 @@ class Bellman_mixin:
 
 
 class BellmanNode(Bellman_mixin, UCTNode):
-    pass
+    name = 'bellman'
 
 
 class MaxUCTNode(MaxUct_mixin, Bellman_mixin, UCTNode):
-    pass
+    name = 'maxuct'

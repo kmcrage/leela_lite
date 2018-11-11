@@ -8,6 +8,8 @@ Standard UCT
 
 
 class UCTNode:
+    name = 'uct'
+
     def __init__(self, board=None, parent=None, move=None, prior=0,
                  cpuct=3.4):
         self.cpuct = cpuct
@@ -80,5 +82,5 @@ class UCTNode:
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda item: (item[1].number_visits, item[1].Q()))
 
-        print(self.__class__, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
+        print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
         return pv[0]
