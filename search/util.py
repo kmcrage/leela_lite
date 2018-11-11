@@ -19,3 +19,17 @@ def temp_softmax(x, sm=2.2):
         z2 = list(map(lambda v: v*scale, z))
         z = z2
     return z
+
+
+def MCTS_search(nodeclass, board, num_reads, net=None, root=None, C=3.4):
+    assert(net != None)
+    if not root:
+        root = nodeclass(board)
+    for _ in range(num_reads):
+        leaf = root.select_leaf(C)
+        child_priors, value_estimate = net.evaluate(leaf.board)
+        leaf.expand(child_priors)
+        leaf.backup(value_estimate)
+
+    return root.outcome()
+

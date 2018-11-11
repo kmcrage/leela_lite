@@ -1,5 +1,5 @@
 from search.neural_net import NeuralNet
-from search.uct import UCT_search
+from search.uct import UCTNode
 from search.crazy import CRAZY_search
 from search.brue import BRUE_search
 from search.voi import VOI_search
@@ -10,10 +10,13 @@ from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
 from search.uctv import UCTV_search
 from search.sota import SOTA_search
-# from uct.util import softmax, temp_softmax
 
+from util import MCTS_search
+from functools import partial
 
-engines = {'uct': UCT_search,
+from util import MCTS_Search
+
+engines = {'uct': partial(MCTS_Search, UCTNode),
            'minmax': MinMax_search,
            'bellman': Bellman_search,
            'mpa': MPA_search,
