@@ -45,6 +45,8 @@ while True:
     else:
         if args.verbosity:
             print("thinking...")
+            if players[turn]['root']:
+                print('starting with', players[turn]['root'].number_visits, 'visits')
         start = time.time()
         if players[turn] != 'uct':
             search.engines['uct'](board, args.nodes, net=nn)
