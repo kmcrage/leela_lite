@@ -92,7 +92,6 @@ class SOTANode:
                 # print('updating Q:', current.Q, current.number_visits, visits)
             # print('postupdate Q:', current.Q, current.number_visits, visits)
 
-        current.number_visits += 1
 
     def dump(self, move):
         print("---")
