@@ -11,9 +11,7 @@ from search.asymmetric import Asym_search
 from search.uctv import UCTV_search
 from search.sota import SOTA_search
 
-from util import MCTS_search
 from functools import partial
-
 from util import MCTS_Search
 
 engines = {'uct': partial(MCTS_Search, UCTNode),
