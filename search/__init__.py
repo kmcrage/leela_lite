@@ -5,7 +5,7 @@ from search.brue import BRUE_search
 from search.voi import VOI_search
 from search.mpa_backup import MPA_search
 from search.backups import BellmanNode
-from search.backups import MaxUctNode
+from search.backups import MaxUCTNode
 from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
@@ -17,7 +17,7 @@ from search.mcts import mcts_search
 
 engines = {'uct': partial(mcts_search, UCTNode),
            'bellman': partial(mcts_search, BellmanNode),
-           'maxuct': partial(mcts_search, MaxUctNode),
+           'maxuct': partial(mcts_search, MaxUCTNode),
            'mpa': MPA_search,
            'uctv': UCTV_search,
            'srcr': SRCR_search,
