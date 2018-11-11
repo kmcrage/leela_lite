@@ -12,9 +12,9 @@ from search.uctv import UCTV_search
 from search.sota import SOTA_search
 
 from functools import partial
-from search.util import MCTS_Search
+from search.mcts import mcts_search
 
-engines = {'uct': partial(MCTS_Search, UCTNode),
+engines = {'uct': partial(mcts_search, UCTNode),
            'minmax': MinMax_search,
            'bellman': Bellman_search,
            'mpa': MPA_search,

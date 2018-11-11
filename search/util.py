@@ -1,14 +1,17 @@
 import numpy as np
 
+
 def softmax2(x):
     z = np.array(list(x))
     return np.exp(z)/np.sum(np.exp(z)).tolist()
+
 
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     z = np.array(list(x))
     e_x = np.exp(z - np.max(z))
     return e_x / e_x.sum()
+
 
 def temp_softmax(x, sm=2.2):
     inv = 1.0/sm
@@ -19,17 +22,3 @@ def temp_softmax(x, sm=2.2):
         z2 = list(map(lambda v: v*scale, z))
         z = z2
     return z
-
-
-def MCTS_search(nodeclass, board, num_reads, net=None, root=None, C=3.4):
-    assert(net != None)
-    if not root:
-        root = nodeclass(board)
-    for _ in range(num_reads):
-        leaf = root.select_leaf(C)
-        child_priors, value_estimate = net.evaluate(leaf.board)
-        leaf.expand(child_priors)
-        leaf.backup(value_estimate)
-
-    return root.outcome()
-
