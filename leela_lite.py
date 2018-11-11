@@ -7,15 +7,17 @@ import search
 import sys
 import time
 
+default_engine = 'uct'
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--weights",
                     help="a path to a weights file")
 parser.add_argument("-w", "--white",
                     help="the engine to use for white",
-                    choices=search.engines.keys(), default='uct')
+                    choices=search.engines.keys(), default=default_engine)
 parser.add_argument("-b", "--black",
                     help="the engine to use for black",
-                    choices=search.engines.keys(), default='uct')
+                    choices=search.engines.keys(), default=default_engine)
 parser.add_argument("-n", "--nodes",
                     help="the engine to use for black",
                     type=int, default=800)
@@ -48,8 +50,8 @@ while True:
             if players[turn]['root']:
                 print('starting with', players[turn]['root'].number_visits, 'visits')
         start = time.time()
-        if players[turn] != 'uct':
-            search.engines['uct'](board, args.nodes, net=nn)
+        if players[turn]['engine'] != default_engine:
+            search.engines[default_engine](board, args.nodes, net=nn)
         best, node = search.engines[players[turn]['engine']](board, args.nodes,
                                                              net=nn, root=players[turn]['root'])
         print(board.pc_board.fullmove_number, players[turn]['engine'], "best: ", best)
