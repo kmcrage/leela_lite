@@ -1,29 +1,38 @@
 #!/usr/bin/python3
-import sys
-sys.path.extend(['/content/lczero_tools/src', '/content/python-chess', '/content/leela-lite'])
-from lcztools import load_network, LeelaBoard
-import search
+import argparse
 import chess.pgn
+from lcztools import load_network, LeelaBoard
+import os.path
+import search
+import sys
 import time
-from os import path
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--weights",
+                    help="a path to a weights file")
+parser.add_argument("-w", "--white",
+                    help="the engine to use for white",
+                    choices=search.engines.keys(), default='uct')
+parser.add_argument("-b", "--black",
+                    help="the engine to use for black",
+                    choices=search.engines.keys(), default='uct')
+parser.add_argument("-n", "--nodes",
+                    help="the engine to use for black",
+                    type=int, default=800)
+parser.add_argument("-v", "--verbosity", action="count", default=0)
+args = parser.parse_args()
 
-if len(sys.argv) != 6:
-    print("Usage: python3 leela_lite.py <policy1> <policy2> <weights file> <nodes>")
-    print(len(sys.argv))
-    exit(1)
-
-players = [sys.argv[1], sys.argv[2]]
-weights = sys.argv[3]
-nodes = int(sys.argv[4])
-c = float(sys.argv[5])
-
-
-backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
-board = LeelaBoard()
-net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
+backend = 'pytorch_cuda' if os.path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
+net = load_network(backend=backend, filename=args.weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
+board = LeelaBoard()
 
+players = [{'engine': args.white,
+            'root': None,
+            'resets': 0},
+           {'engine': args.black,
+            'root': None,
+            'resets': 0}]
 
 turn = 0
 while True:
@@ -32,18 +41,30 @@ while True:
         print("Enter move: ", end='')
         sys.stdout.flush()
         line = sys.stdin.readline()
-        line = line.rstrip()
-        board.push_uci(line)
+        best = line.rstrip()
     else:
-        print("thinking...")
+        if args.verbosity:
+            print("thinking...")
         start = time.time()
         if players[turn] != 'uct':
-            search.engines['uct'](board, nodes, net=nn)
-        best, node = search.engines[players[turn]](board, nodes, net=nn)
+            search.engines['uct'](board, args.nodes, net=nn)
+        best, node = search.engines[players[turn]['engine']](board, args.nodes,
+                                                             net=nn, root=players[turn]['root'])
+        print(board.pc_board.fullmove_number, players[turn]['engine'], "best: ", best)
         elapsed = time.time() - start
-        print(board.pc_board.fullmove_number, players[turn], "best: ", best)
-        print("Time: {:.3f} nps".format(nodes/elapsed))
-        board.push_uci(best)
+        if args.verbosity:
+            print("Time: {:.3f} nps".format(args.nodes/elapsed))
+        players[turn]['root'] = node
+
+    board.push_uci(best)
+    if players[1-turn]['node'] and best in players[1-turn]['node'].children:
+        players[1 - turn]['node'] = players[1-turn]['node'].children[best]
+    else:
+        if args.verbosity:
+            print('tree reset for player', 1-turn, players[1 - turn]['engine'])
+        players[1 - turn]['resets'] += 1
+        players[1 - turn]['node'] = None
+
     if board.pc_board.is_game_over() or board.is_draw():
         print("Game over... result is {}".format(board.pc_board.result(claim_draw=True)))
         print(board)

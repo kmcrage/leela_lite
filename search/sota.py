@@ -81,7 +81,7 @@ class SOTANode:
             current = current.parent
             current.number_visits += 1
             # do we want to add in this reward? its more stable and will disappear with many evals
-            # keep because it matters on leaf nodes
+            # keep because it matters on terminal nodes
             current.bellman_value = current.reward * current.leaf_visits
             for child in [n for n in current.children.values() if n.number_visits]:
                 current.bellman_value -= child.number_visits * child.bellman_value
