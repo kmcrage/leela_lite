@@ -49,7 +49,7 @@ class UCTNode:
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = UCTNode(parent=self, move=move, prior=prior)
+        self.children[move] = self.__class__(parent=self, move=move, prior=prior)
     
     def backup(self, value_estimate: float):
         current = self
