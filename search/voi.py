@@ -52,7 +52,7 @@ class VOINode(UCTNode):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda item: (item[1].number_visits, item[1].Q()))
-        best = pv[1] if len(pv) > 1 and pv[1].Q() > pv[0].Q() else pv[0]
+        best = pv[1] if len(pv) > 1 and pv[1][1].Q() > pv[0][1].Q() else pv[0]
 
         print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
 
