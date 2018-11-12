@@ -10,37 +10,14 @@
 """
 import math
 import heapq
-from collections import OrderedDict
+from search.uct import UCTNode
 
 
-class VOINode:
-    def __init__(self, board=None, parent=None, move=None, prior=0):
-        self.board = board
-        self.move = move
-        self.is_expanded = False
-        self.parent = parent  # Optional[UCTNode]
-        self.children = OrderedDict()  # Dict[move, UCTNode]
-        self.prior = prior  # float
-        self.total_value = 0  # float
-        self.number_visits = 0  # int
-        self.V = 0
+class VOINode(UCTNode):
+    def __init__(self, **kwargs):
+        super(VOINode, self).__init__(**kwargs)
 
-    @property
-    def Q(self):  # returns float
-        return self.total_value / (1 + self.number_visits)
-
-    @property
-    def U(self):  # returns float
-        return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
-
-    def desirability(self, c):
-        return self.Q + c * self.U
-
-    def best_child_uct(self, c):
-        return max(self.children.values(),
-                   key=lambda node: node.desirability(c))
-
-    def best_child_voi(self, c):
+    def best_child(self):
         """
         Take care here: bear in mind that the rewards in the papers are in the region [0, 1].
         Note that the formula in the  two papers are not identical.
@@ -66,68 +43,25 @@ class VOINode:
                 voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
             else:
                 voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
-            n.V = voi + n.Q
             if voi > vmax:
                 vmax = voi
                 result = n
-        self.V = vmax
         return result
 
-    def select_leaf(self, c):
-        current = self
-        depth = 0
-        while current.is_expanded and current.children:
-            if depth:
-                current = current.best_child_uct(c)
-            else:
-                current = current.best_child_voi(c)
-        if not current.board:
-            current.board = current.parent.board.copy()
-            current.board.push_uci(current.move)
-        return current
+    def outcome(self):
+        size = min(5, len(self.children))
+        pv = heapq.nlargest(size, self.children.items(),
+                            key=lambda item: (item[1].number_visits, item[1].Q()))
+        best = pv[1] if len(pv) > 1 and pv[1].Q() > pv[0].Q() else pv[0]
 
-    def expand(self, child_priors):
-        self.is_expanded = True
-        for move, prior in child_priors.items():
-            self.add_child(move, prior)
+        print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
 
-    def add_child(self, move, prior):
-        self.children[move] = VOINode(parent=self, move=move, prior=prior)
+        prediction = best
+        print('prediction:', prediction[0], end=' ')
+        while len(prediction[1].children):
+            prediction = heapq.nlargest(1, prediction[1].children.items(),
+                                        key=lambda item: (item[1].number_visits, item[1].Q()))[0]
+            print(prediction[0], end=' ')
+        print('')
 
-    def backup(self, value_estimate: float):
-        current = self
-        # Child nodes are multiplied by -1 because we want max(-opponent eval)
-        turnfactor = -1
-        while current.parent is not None:
-            current.number_visits += 1
-            current.total_value += value_estimate * turnfactor
-            current = current.parent
-            turnfactor *= -1
-        # this is the root
-        current.number_visits += 1
-
-    def dump(self, move):
-        print("---")
-        print("move: ", move)
-        print("total value: ", self.total_value)
-        print("visits: ", self.number_visits)
-        print("prior: ", self.prior)
-        print("Q: ", self.Q)
-        print("---")
-
-
-def VOI_search(board, num_reads, net=None, c=1.0):
-    assert(net is not None)
-    root = VOINode(board)
-    for _ in range(num_reads):
-        leaf = root.select_leaf(c)
-        child_priors, value_estimate = net.evaluate(leaf.board)
-        leaf.expand(child_priors)
-        leaf.backup(value_estimate)
-
-    # the best node might be in second place because we've been trying to catch up with first place
-    # so get the two best nodes and then check the value
-    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
-    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
-    print('VOI:', root.V)
-    return pv[0]
+        return best
