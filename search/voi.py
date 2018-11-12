@@ -14,6 +14,8 @@ from search.uct import UCTNode
 
 
 class VOINode(UCTNode):
+    name = 'dpuct'
+    
     def __init__(self, **kwargs):
         super(VOINode, self).__init__(**kwargs)
 

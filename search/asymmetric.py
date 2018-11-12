@@ -9,6 +9,8 @@ Regret at Max Nodes
 
 
 class AsymNode(UCTNode):
+    name = 'asym'
+
     def __init__(self, C_max_sr=3.4, C_max_cr=0., C_min_sr=0., C_min_cr=3.4, **kwargs):
         super(AsymNode, self).__init__(**kwargs)
         self.C_max_sr = C_max_sr
