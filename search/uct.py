@@ -121,7 +121,7 @@ class adaptive_mixin:
 
     def best_child(self):
         return max(self.children.values(),
-                   key=lambda node: node.Q() + self.cpuct * (1 - node.V()) * node.U())
+                   key=lambda node: node.Q() + self.cpuct * (1 + node.V()) * node.U())
 
 
 class AdaptNode(adaptive_mixin, UCTNode):
