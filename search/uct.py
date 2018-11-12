@@ -25,10 +25,30 @@ class UCTNode:
         self.reward = 0
 
     def Q(self):  # returns float
+        """
+        Q(action, state) action value estimate: the value of moving to this state (parent pov)
+        :return:
+        """
         return self.reward + self.total_value / (1 + self.number_visits)
 
     def U(self):  # returns float
+        """
+        an upper confidence bound on the value of the node, from our parents pov
+        :return:
+        """
         return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
+
+    def V(self):
+        """
+        V(state) state value estimate: the value of the state (self pov)
+        :return:
+        """
+        children = [n for n in self.children.values() if n.number_visits]
+        if children:
+            value = max([n.Q() for n in children])
+        else:
+            value = -self.Q()
+        return value
 
     def best_child(self):
         return max(self.children.values(),
@@ -83,4 +103,13 @@ class UCTNode:
                             key=lambda item: (item[1].number_visits, item[1].Q()))
 
         print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
+
+        next = pv[0]
+        print('prediction:', next[0], end=' ')
+        while len(next[1].children):
+            next = heapq.nlargest(1, next[1].children.items(),
+                                    key=lambda item: (item[1].number_visits, item[1].Q(alpha)))[0]
+            print(next[0], end=' ')
+        print('')
+
         return pv[0]
