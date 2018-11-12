@@ -28,7 +28,7 @@ class AsymNode(UCTNode):
         this is the classic cumulative regret minimiser, used for min (opponent) nodes
         :return:
         """
-        return self.prior * math.sqrt(math.log(self.parent.number_visits) / (1 + self.number_visits))
+        return self.prior * math.sqrt(math.log(1 + self.parent.number_visits) / (1 + self.number_visits))
 
     def best_child(self, C_sr, C_cr):
         return max(self.children.values(),
