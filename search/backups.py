@@ -21,7 +21,7 @@ class DPUCT_mixin:
             current.total_value = 0
             sum_weights = 0
             for child in [n for n in current.children.values() if n.number_visits]:
-                current.total_value -= child.backup_weight() * child.V()
+                current.total_value += child.backup_weight() * child.V()
                 sum_weights += child.backup_weight()
             current.total_value *= current.number_visits / sum_weights
 
