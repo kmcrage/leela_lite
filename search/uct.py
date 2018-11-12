@@ -113,3 +113,16 @@ class UCTNode:
         print('')
 
         return pv[0]
+
+
+class adaptive_mixin:
+    def __init__(self, **kwargs):
+        super(MaxUct_mixin, self).__init__(**kwargs)
+
+    def best_child(self):
+        return max(self.children.values(),
+                   key=lambda node: node.Q() + self.cpuct * (1 - node.V()) * node.U())
+
+
+class AdaptNode(adaptive_mixin, UCTNode):
+    name = 'adapt'

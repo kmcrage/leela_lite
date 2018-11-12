@@ -21,6 +21,7 @@ from search.mcts import mcts_search
 engines = {'uct': partial(mcts_search, UCTNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
+           'adapt': partial(mcts_search, AdaptNode),
 
            'mpa': MPA_search,
            'uctv': UCTV_search,
