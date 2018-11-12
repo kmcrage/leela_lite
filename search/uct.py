@@ -108,7 +108,7 @@ class UCTNode:
         print('prediction:', next[0], end=' ')
         while len(next[1].children):
             next = heapq.nlargest(1, next[1].children.items(),
-                                    key=lambda item: (item[1].number_visits, item[1].Q(alpha)))[0]
+                                    key=lambda item: (item[1].number_visits, item[1].Q()))[0]
             print(next[0], end=' ')
         print('')
 
