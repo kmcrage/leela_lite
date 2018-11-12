@@ -117,7 +117,7 @@ class UCTNode:
 
 class adaptive_mixin:
     def __init__(self, **kwargs):
-        super(MaxUct_mixin, self).__init__(**kwargs)
+        super(adaptive_mixin, self).__init__(**kwargs)
 
     def best_child(self):
         return max(self.children.values(),
