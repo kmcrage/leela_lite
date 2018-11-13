@@ -43,7 +43,7 @@ class UCTSNode:
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
-            hash = chess.polyglot.zobrist_hash(current.board)
+            hash = chess.polyglot.zobrist_hash(current.board.pc_board)
             if hash in CACHE:
                 CACHE[hash] += 1
                 print('cache hit!', CACHE[hash])
