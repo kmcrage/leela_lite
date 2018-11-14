@@ -88,7 +88,7 @@ class UCDEdge:
         return self.mu(self.d1)
 
     def U(self):
-        return self.prior * math.sqrt(self.p(self.d2)) / self.n(self.d3)
+        return  self.prior * math.sqrt(self.p(self.d2)) / (1 + self.n(self.d3))
 
     def set_child(self):
         board = self.parent.board.copy()
