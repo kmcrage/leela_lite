@@ -78,7 +78,7 @@ class UCDEdge:
 
     def mu(self, depth):
         if not depth:
-            return self.reward
+            return self.total_value / (1 + self.number_visits)
         visits = 0
         value = 0
         for edge in self.child.children or []:
