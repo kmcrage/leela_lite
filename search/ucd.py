@@ -82,7 +82,7 @@ class UCDEdge:
         for edge in self.child.children or []:
             value += self.mu(depth-1) * edge.number_visits
             visits += edge.number_visits
-        return value / visits
+        return value / (1 + visits)
 
     def Q(self):
         return self.mu(self.d1)
