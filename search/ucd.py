@@ -13,7 +13,7 @@ NODE_CACHE = {}  # Dict [hash_of_board, UCDNode]
 
 class UCDRollout:
     def __init__(self, root):
-        self.history = []
+        self.history = [root]  # [node, edge, edge, ...]
         self.root = root
 
     def expand(self, child_priors):
@@ -25,6 +25,7 @@ class UCDRollout:
             node.add_child(move, prior)
 
     def backup(self, reward):
+        self.history.pop(0)
         if self.history:
             self.history[-1].reward = -reward
         while self.history:
