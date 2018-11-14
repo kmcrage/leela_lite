@@ -92,7 +92,7 @@ class UCDEdge:
         board.push_uci(self.move)
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
         if zhash not in NODE_CACHE:
-            NODE_CACHE[zhash] = self.parent.__class__()
+            NODE_CACHE[zhash] = self.parent.__class__(board=board)
         self.child = NODE_CACHE[zhash]
 
 
@@ -101,8 +101,8 @@ class UCDNode:
     edge_class = UCDEdge
     rollout_class = UCDRollout
 
-    def __init__(self):
-        self.board = None
+    def __init__(self, board=None):
+        self.board = board
         self.parents = []  # [UCDNode]
         self.children = []  # [UCDNode]
 
