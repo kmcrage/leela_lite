@@ -1,5 +1,5 @@
 
-def mcts_search(nodeclass, board, num_reads, net=None, root=None):
+def mcds_search(nodeclass, board, num_reads, net=None, root=None):
     assert(net is not None)
     if not root:
         root = nodeclass(board=board)
