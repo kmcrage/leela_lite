@@ -72,7 +72,7 @@ class UCDEdge:
 
     def p(self, depth):
         visits = 0
-        for edge in self.parent.parents or []:
+        for edge in self.parent.children or []:
             visits += edge.n(depth)
         return visits
 
