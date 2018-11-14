@@ -36,6 +36,7 @@ class UCDRollout:
             edge = self.history.pop()
             edge.total_value += reward
             edge.number_visits += 1
+            print('visit', edge.move, edge.number_visits, edge.reward)
 
 
 class UCDEdge:
