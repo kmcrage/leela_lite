@@ -20,7 +20,7 @@ class UCDRollout:
         if self.history:
             node = self.history[-1].child
         else:
-            node = root
+            node = self.root
         return node
 
     def expand(self, child_priors):
