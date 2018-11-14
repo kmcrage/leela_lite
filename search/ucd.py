@@ -31,11 +31,13 @@ class UCDRollout:
     def backup(self, reward):
         if self.history:
             self.history[-1].reward = -reward
+            print('reward', self.history[-1], self.history[-1].reward)
         while self.history:
             reward *= -1
             edge = self.history.pop()
             edge.total_value += reward
             edge.number_visits += 1
+            print('value', edge, reward)
 
 
 class UCDEdge:
@@ -85,10 +87,11 @@ class UCDEdge:
         return value / visits
 
     def Q(self):
+        print('Q', self, self.mu(self.d1))
         return self.mu(self.d1)
 
     def U(self):
-        return  self.prior * math.sqrt(self.p(self.d2)) / (1 + self.n(self.d3))
+        return self.prior * math.sqrt(self.p(self.d2)) / (1 + self.n(self.d3))
 
     def set_child(self):
         board = self.parent.board.copy()
