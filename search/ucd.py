@@ -31,6 +31,7 @@ class UCDRollout:
     def backup(self, reward):
         if self.history:
             self.history[-1].reward = -reward
+            prinr('reward', self.history[-1].mode, self.history[-1].number_visits, self.history[-1].reward)
         while self.history:
             reward *= -1
             edge = self.history.pop()
