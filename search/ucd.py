@@ -70,7 +70,7 @@ class UCDEdge:
 
     def p(self, depth):
         visits = 0
-        for edge in self.parent.children or []:
+        for edge in self.parent.children:
             visits += edge.n(depth)
         return visits
 
@@ -79,8 +79,8 @@ class UCDEdge:
             return self.total_value / (1 + self.number_visits)
         visits = 0
         value = 0
-        for edge in self.child.children or []:
-            value += self.mu(depth-1) * edge.number_visits
+        for edge in self.child.children:
+            value += edge.mu(depth-1) * edge.number_visits
             visits += edge.number_visits
         return value / (1 + visits)
 
