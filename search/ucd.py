@@ -36,7 +36,7 @@ class UCDRollout:
 
 
 class UCDEdge:
-    def __init__(self, board=None, parent=None, move=None, prior=0,
+    def __init__(self, parent=None, move=None, prior=0,
                  cpuct=3.4):
         self.cpuct = cpuct
         self.d1 = 0
@@ -44,7 +44,7 @@ class UCDEdge:
         self.d3 = 0
 
         self.parent = parent
-        self.board = board
+        self.board = parent.board if parent else None
         self.move = move
         self.child = None
 
