@@ -121,7 +121,7 @@ class UCDNode:
         return rollout
 
     def add_child(self, move, prior):
-        self.children.append = self.edge_class(parent=self, move=move, prior=prior)
+        self.children.append(self.edge_class(parent=self, move=move, prior=prior))
 
     def outcome(self):
         size = min(5, len(self.children))
