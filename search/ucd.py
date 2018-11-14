@@ -44,7 +44,6 @@ class UCDEdge:
         self.d3 = 0
 
         self.parent = parent
-        self.board = parent.board if parent else None
         self.move = move
         self.child = None
 
@@ -95,7 +94,7 @@ class UCDEdge:
         if zhash not in NODE_CACHE:
             NODE_CACHE[zhash] = self.parent.__class__(board=board)
         self.child = NODE_CACHE[zhash]
-
+        NODE_CACHE[zhash].parents.append(self)
 
 class UCDNode:
     name = 'ucd'
