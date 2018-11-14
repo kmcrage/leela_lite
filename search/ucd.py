@@ -17,10 +17,10 @@ class UCDRollout:
         self.root = root
 
     def expand(self, child_priors):
-        if self.history:
-            node = self.history[-1].child
-        else:
-            node = self.root
+        node = self.history[-1]
+        # is it a node or an edge?
+        if hasattr(node, 'child'):
+            node = node.child
         for move, prior in child_priors.items():
             node.add_child(move, prior)
 
