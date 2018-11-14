@@ -24,7 +24,7 @@ class UCDRollout:
         return node
 
     def expand(self, child_priors):
-        node = leaf_node()
+        node = self.leaf_node()
         for move, prior in child_priors.items():
             node.add_child(move, prior)
 
