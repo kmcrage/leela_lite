@@ -31,13 +31,11 @@ class UCDRollout:
     def backup(self, reward):
         if self.history:
             self.history[-1].reward = -reward
-            print('reward', self.history[-1].move, self.history[-1].number_visits, self.history[-1].reward)
         while self.history:
             reward *= -1
             edge = self.history.pop()
             edge.total_value += reward
             edge.number_visits += 1
-            print('visit', edge.move, edge.number_visits, edge.reward)
 
 
 class UCDEdge:
