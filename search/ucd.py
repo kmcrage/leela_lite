@@ -29,7 +29,6 @@ class UCDRollout:
             node.add_child(move, prior)
 
     def backup(self, reward):
-        self.history.pop(0)
         if self.history:
             self.history[-1].reward = -reward
         while self.history:
