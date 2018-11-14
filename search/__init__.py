@@ -21,7 +21,6 @@ from search.mcts import mcts_search
 #
 #
 engines = {'uct': partial(mcts_search, UCTNode),
-           'shared': partial(mcts_search, UCTSNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
 
