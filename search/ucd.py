@@ -13,14 +13,18 @@ NODE_CACHE = {}  # Dict [hash_of_board, UCDNode]
 
 class UCDRollout:
     def __init__(self, root):
-        self.history = [root]  # [node, edge, edge, ...]
+        self.history = []  # [edge, edge, ...]
         self.root = root
 
+    def leaf_node(self):
+        if self.history:
+            node = self.history[-1].child
+        else:
+            node = root
+        return node
+
     def expand(self, child_priors):
-        node = self.history[-1]
-        # is it a node or an edge?
-        if hasattr(node, 'child'):
-            node = node.child
+        node = leaf_node()
         for move, prior in child_priors.items():
             node.add_child(move, prior)
 
