@@ -128,7 +128,7 @@ class UCDNode:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children,
-                            key=lambda item: (item[1].number_visits, item[1].Q()))
+                            key=lambda item: (item.number_visits, item.Q()))
 
         print(self.name, 'pv:', [(n.move, n.Q(), n.U(), n.number_visits) for n in pv])
         return [pv[0].move, pv[0].child]
