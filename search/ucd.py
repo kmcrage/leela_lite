@@ -64,7 +64,7 @@ class UCDEdge:
         self.child = NODE_CACHE[zhash]
         # is this already a parent of this node?
         # ie are we entering a cycle?
-        if not any([self.board == e.board for e in self.child.parents]):
+        if not any([self.parent == e.parent for e in self.child.parents]):
             self.child.parents.append(self)
         # replace the board in case of repetition
         self.child.board = board
