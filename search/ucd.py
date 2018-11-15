@@ -74,19 +74,19 @@ class UCDEdge:
 
     def mu(self, depth):
         if not depth:
-            return self.total_value / min(1, self.number_visits)
+            return self.total_value / max(1, self.number_visits)
         visits = self.terminal_visits
         value = self.terminal_value
         for edge in self.child.children:
             value += edge.mu(depth-1) * edge.number_visits
             visits += edge.number_visits
-        return value / min(1, visits)
+        return value / max(1, visits)
 
     def Q(self):
         return self.mu(self.d1)
 
     def U(self):
-        return self.prior * math.sqrt(self.p(self.d2)) / min(1, self.n(self.d3))
+        return self.prior * math.sqrt(self.p(self.d2)) / max(1, self.n(self.d3))
 
     def set_child(self):
         board = self.parent.board.copy()
