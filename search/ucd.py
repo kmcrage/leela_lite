@@ -57,6 +57,7 @@ class UCDEdge:
         self.number_visits = 0  # int
         self.terminal_value = 0.  # float
         self.terminal_visits = 0  # int
+        self.set_child()
 
     def n(self, depth):
         if not depth:
@@ -127,7 +128,6 @@ class UCDNode:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
-            current.set_child()
         return rollout
 
     def add_child(self, move, prior):
