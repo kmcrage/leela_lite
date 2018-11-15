@@ -59,10 +59,16 @@ class UCDEdge:
         board = self.parent.board.copy()
         board.push_uci(self.move)
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
-        #if zhash not in NODE_CACHE:
-        NODE_CACHE[zhash] = self.parent.__class__(board=board)
+        if zhash not in NODE_CACHE:
+            NODE_CACHE[zhash] = self.parent.__class__(board=board)
         self.child = NODE_CACHE[zhash]
-        NODE_CACHE[zhash].parents.append(self)
+        # is this already a parent of this node?
+        # ie are we entering a cycle?
+        if not any([self.board == e.board for e in self.child.parents]):
+            self.child.parents.append(self)
+        # replace the board in case of repetition
+        self.child.board = board
+
 
     def n(self, depth):
         if not depth:
@@ -119,7 +125,7 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self
-        while current and not current.board.is_game_over(claim_draw=True) and current.children:
+        while current and current.children:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
