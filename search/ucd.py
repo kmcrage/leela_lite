@@ -19,7 +19,7 @@ class UCDRollout:
     def leaf_node(self):
         print(self.root, self.history)
         if self.history:
-            node = self.history[-1].child or self.history[-1].parent
+            node = self.history[-1].child
         else:
             node = self.root
         return node
@@ -90,6 +90,8 @@ class UCDEdge:
         return self.prior * math.sqrt(self.p(self.d2)) / max(1, self.n(self.d3))
 
     def set_child(self):
+        if self.child:
+            return
         board = self.parent.board.copy()
         board.push_uci(self.move)
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
@@ -125,6 +127,7 @@ class UCDNode:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
+            current.set_child()
         return rollout
 
     def add_child(self, move, prior):
