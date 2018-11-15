@@ -27,6 +27,7 @@ class UCDRollout:
         if self.history:
             self.history[-1].terminal_value += -reward
             self.history[-1].terminal_visits += 1
+            self.history[-1].set_child() # only do this if we follow the node
         while self.history:
             reward *= -1
             edge = self.history.pop()
@@ -51,7 +52,6 @@ class UCDEdge:
         self.number_visits = 0  # int
         self.terminal_value = 0.  # float
         self.terminal_visits = 0  # int
-        self.set_child()
 
     def set_child(self):
         if self.child:
