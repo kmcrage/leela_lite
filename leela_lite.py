@@ -47,7 +47,7 @@ while True:
     else:
         if args.verbosity:
             print("thinking...")
-            if players[turn]['root']:
+            if players[turn]['root'] and hasattr(players[turn]['root'], 'number_visits'):
                 print('starting with', players[turn]['root'].number_visits, 'visits')
         start = time.time()
         if players[turn]['engine'] != default_engine:
