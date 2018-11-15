@@ -61,7 +61,7 @@ while True:
         players[turn]['root'] = node
 
     board.push_uci(best)
-    if players[1-turn]['root'] and best in players[1-turn]['root'].children:
+    if players[1 - turn]['root']:
         players[1 - turn]['root'] = players[1-turn]['root'].get_node(best)
     if not players[1 - turn]['root']:
         if args.verbosity:
