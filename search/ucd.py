@@ -17,7 +17,6 @@ class UCDRollout:
         self.root = root
 
     def leaf_node(self):
-        print(self.root, self.history)
         if self.history:
             node = self.history[-1].child
         else:
