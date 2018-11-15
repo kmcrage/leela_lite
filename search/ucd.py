@@ -62,7 +62,7 @@ class UCDEdge:
             return self.number_visits
 
         visits = self.terminal_visits
-        for edge in self.child.children or []:
+        for edge in self.child.children:
             visits += edge.n(depth - 1)
         return visits
 
@@ -120,7 +120,7 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self
-        while current and current.children:
+        while current.children:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
