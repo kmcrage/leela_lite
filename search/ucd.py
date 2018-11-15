@@ -69,7 +69,7 @@ class UCDEdge:
             return self.number_visits
 
         visits = self.terminal_visits
-        for edge in self.child.children:
+        for edge in [e for e in self.child.children if e.number_visits]:
             visits += edge.n(depth - 1)
         return visits
 
@@ -84,7 +84,7 @@ class UCDEdge:
             return self.total_value / max(1, self.number_visits)
         visits = self.terminal_visits
         value = self.terminal_value
-        for edge in self.child.children:
+        for edge in [e for e in self.child.children if e.number_visits]:
             value += edge.mu(depth-1) * edge.number_visits
             visits += edge.number_visits
         return value / max(1, visits)
