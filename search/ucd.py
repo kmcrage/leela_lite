@@ -19,7 +19,7 @@ class UCDRollout:
     def leaf_node(self):
         print(self.root, self.history)
         if self.history:
-            node = self.history[-1].child
+            node = self.history[-1].child or self.history[-1].parent
         else:
             node = self.root
         return node
