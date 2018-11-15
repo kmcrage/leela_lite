@@ -19,6 +19,7 @@ class UCDRollout:
     def leaf_node(self):
         if self.history:
             node = self.history[-1].child
+            node.set_child() # only do this if we follow the node
         else:
             node = self.root
         return node
@@ -27,7 +28,6 @@ class UCDRollout:
         if self.history:
             self.history[-1].terminal_value += -reward
             self.history[-1].terminal_visits += 1
-            self.history[-1].set_child() # only do this if we follow the node
         while self.history:
             reward *= -1
             edge = self.history.pop()
