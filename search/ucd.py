@@ -23,11 +23,6 @@ class UCDRollout:
             node = self.root
         return node
 
-    def expand(self, child_priors):
-        node = self.leaf_node()
-        for move, prior in child_priors.items():
-            node.add_child(move, prior)
-
     def backup(self, reward):
         if self.history:
             self.history[-1].terminal_value += -reward
@@ -58,6 +53,17 @@ class UCDEdge:
         self.terminal_visits = 0  # int
         self.set_child()
 
+    def set_child(self):
+        if self.child:
+            return
+        board = self.parent.board.copy()
+        board.push_uci(self.move)
+        zhash = chess.polyglot.zobrist_hash(board.pc_board)
+        if zhash not in NODE_CACHE:
+            NODE_CACHE[zhash] = self.parent.__class__(board=board)
+        self.child = NODE_CACHE[zhash]
+        NODE_CACHE[zhash].parents.append(self)
+
     def n(self, depth):
         if not depth:
             return self.number_visits
@@ -69,7 +75,7 @@ class UCDEdge:
 
     def p(self, depth):
         visits = 0
-        print('p num children', len(self.parent.children), depth)
+        print('p num children', len(self.parent.children), depth, [e.move for e in self.parent.children])
         for edge in self.parent.children:
             visits += edge.n(depth)
         return visits
@@ -90,16 +96,6 @@ class UCDEdge:
     def U(self):
         return self.prior * math.sqrt(self.p(self.d2)) / max(1, self.n(self.d3))
 
-    def set_child(self):
-        if self.child:
-            return
-        board = self.parent.board.copy()
-        board.push_uci(self.move)
-        zhash = chess.polyglot.zobrist_hash(board.pc_board)
-        if zhash not in NODE_CACHE:
-            NODE_CACHE[zhash] = self.parent.__class__(board=board)
-        self.child = NODE_CACHE[zhash]
-        NODE_CACHE[zhash].parents.append(self)
 
 class UCDNode:
     name = 'ucd'
@@ -129,6 +125,10 @@ class UCDNode:
             rollout.history.append(edge)
             current = edge.child
         return rollout
+
+    def expand(self, child_priors):
+        for move, prior in child_priors.items():
+            self.add_child(move, prior)
 
     def add_child(self, move, prior):
         self.children.append(self.edge_class(parent=self, move=move, prior=prior))
