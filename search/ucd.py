@@ -18,7 +18,7 @@ class UCDRollout:
 
     def leaf_node(self):
         if self.history:
-            self.history[-1].set_child() # only do this if we follow the node
+            self.history[-1].update_child()  # only do this if we follow the node
             node = self.history[-1].child
         else:
             node = self.root
@@ -53,22 +53,23 @@ class UCDEdge:
         self.terminal_value = 0.  # float
         self.terminal_visits = 0  # int
 
-    def set_child(self):
-        if self.child:
-            return
+    def update_child(self):
         board = self.parent.board.copy()
         board.push_uci(self.move)
+        if self.child:
+            self.child.board = board
+            return
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
         if zhash not in NODE_CACHE:
             NODE_CACHE[zhash] = self.parent.__class__(board=board)
+        else:
+            NODE_CACHE[zhash].board = board
         self.child = NODE_CACHE[zhash]
         # is this already a parent of this node?
         # ie are we entering a cycle?
+        # this may be paranoia
         if not any([self.parent == e.parent for e in self.child.parents]):
             self.child.parents.append(self)
-        # replace the board in case of repetition
-        self.child.board = board
-
 
     def n(self, depth):
         if not depth:
@@ -125,10 +126,14 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self
-        while current and current.children:
+        while current and not current.board.is_draw() and current.children:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
+            # make sure the board is passed on to avoid loops
+            if current:
+                edge.update_child()
+
         return rollout
 
     def expand(self, child_priors):
