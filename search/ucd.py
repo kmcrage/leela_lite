@@ -30,7 +30,8 @@ class UCDRollout:
 
     def backup(self, reward):
         if self.history:
-            self.history[-1].reward = -reward
+            self.history[-1].terminal_value += -reward
+            self.history[-1].terminal_visits += 1
         while self.history:
             reward *= -1
             edge = self.history.pop()
@@ -42,8 +43,8 @@ class UCDEdge:
     def __init__(self, parent=None, move=None, prior=0,
                  cpuct=3.4):
         self.cpuct = cpuct
-        self.d1 = 1
-        self.d2 = 1
+        self.d1 = 0
+        self.d2 = 0
         self.d3 = 0
 
         self.parent = parent
@@ -53,17 +54,14 @@ class UCDEdge:
         self.prior = prior  # float
         self.total_value = 0.  # float
         self.number_visits = 0  # int
-        self.terminal_value = 0.  # float TODO
-        self.terminal_visits = 0  # int TODO
-        self.reward = 0
-
-        self.set_child()
+        self.terminal_value = 0.  # float
+        self.terminal_visits = 0  # int
 
     def n(self, depth):
         if not depth:
             return self.number_visits
 
-        visits = 0
+        visits = self.terminal_visits
         for edge in self.child.children or []:
             visits += edge.n(depth - 1)
         return visits
@@ -76,19 +74,19 @@ class UCDEdge:
 
     def mu(self, depth):
         if not depth:
-            return self.total_value / (1 + self.number_visits)
-        visits = 0
-        value = 0
+            return self.total_value / min(1, self.number_visits)
+        visits = self.terminal_visits
+        value = self.terminal_value
         for edge in self.child.children:
             value += edge.mu(depth-1) * edge.number_visits
             visits += edge.number_visits
-        return value / (1 + visits)
+        return value / min(1, visits)
 
     def Q(self):
         return self.mu(self.d1)
 
     def U(self):
-        return self.prior * math.sqrt(self.p(self.d2)) / (1 + self.n(self.d3))
+        return self.prior * math.sqrt(self.p(self.d2)) / min(1, self.n(self.d3))
 
     def set_child(self):
         board = self.parent.board.copy()
