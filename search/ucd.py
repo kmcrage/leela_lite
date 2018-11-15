@@ -119,7 +119,7 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self
-        while current and current.children:
+        while current and not current.board.is_game_over(claim_draw=True) and current.children:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
