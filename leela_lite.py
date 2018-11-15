@@ -62,8 +62,8 @@ while True:
 
     board.push_uci(best)
     if players[1-turn]['root'] and best in players[1-turn]['root'].children:
-        players[1 - turn]['root'] = players[1-turn]['root'].children[best]
-    else:
+        players[1 - turn]['root'] = players[1-turn]['root'].get_node(best)
+    if not players[1 - turn]['root']:
         if args.verbosity:
             print('tree reset for player', 1-turn, players[1 - turn]['engine'])
         players[1 - turn]['resets'] += 1

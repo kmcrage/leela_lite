@@ -64,6 +64,11 @@ class UCTNode:
             current.total_value += (value_estimate * turnfactor)
             current.reward = 0.
 
+    def get_node(self, move):
+        if move in self.children:
+            return self.children[move]
+        return None
+
     def dump(self):
         print("---")
         print("move: ", self.move)
