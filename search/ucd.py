@@ -59,8 +59,8 @@ class UCDEdge:
         board = self.parent.board.copy()
         board.push_uci(self.move)
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
-        if zhash not in NODE_CACHE:
-            NODE_CACHE[zhash] = self.parent.__class__(board=board)
+        #if zhash not in NODE_CACHE:
+        NODE_CACHE[zhash] = self.parent.__class__(board=board)
         self.child = NODE_CACHE[zhash]
         NODE_CACHE[zhash].parents.append(self)
 
