@@ -107,7 +107,7 @@ class UCDEdge:
         value = self.terminal_value
         if self.child:
             for edge in [e for e in self.child.children if e.number_visits]:
-                value += edge.mu(depth-1) * edge.number_visits
+                value -= edge.mu(depth-1) * edge.number_visits  # note alternating signs
                 visits += edge.number_visits
         return value / max(1, visits)
 
