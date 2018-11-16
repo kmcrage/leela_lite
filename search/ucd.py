@@ -90,7 +90,7 @@ class UCDEdge:
             return self.number_visits
 
         visits = self.terminal_visits
-        for edge in [e for e in self.child.children if e.number_visits]:
+        for edge in [e for e in self.child.children if e.number_visits and e.child]:
             visits += edge.n(depth - 1)
         return visits
 
