@@ -4,7 +4,15 @@ from collections import OrderedDict
 import chess.polyglot
 
 """
-Standard UCT + cache
+UCD: UCT with transpositions, and values on edges
+
+https://hal.archives-ouvertes.fr/hal-01499672/document
+
+
+UCD : Upper confidence bound for rooted directed acyclic graphs
+Tristan Cazenave, Jean Méhat, Abdallah Saffidine
+
+TODO: cache management
 """
 
 
@@ -39,8 +47,8 @@ class UCDEdge:
     def __init__(self, parent=None, move=None, prior=0,
                  cpuct=3.4):
         self.cpuct = cpuct
-        self.d1 = 0
-        self.d2 = 0
+        self.d1 = 1
+        self.d2 = 1
         self.d3 = 0
 
         self.parent = parent
@@ -57,8 +65,10 @@ class UCDEdge:
         board = self.parent.board.copy()
         board.push_uci(self.move)
         if self.child:
+            # update board so we track repetition
             self.child.board = board
             return
+
         zhash = chess.polyglot.zobrist_hash(board.pc_board)
         if zhash not in NODE_CACHE:
             NODE_CACHE[zhash] = self.parent.__class__(board=board)
