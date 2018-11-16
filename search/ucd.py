@@ -48,7 +48,7 @@ class UCDEdge:
                  cpuct=3.4):
         self.cpuct = cpuct
         self.d1 = 1
-        self.d2 = 1
+        self.d2 = 0
         self.d3 = 0
 
         self.parent = parent
