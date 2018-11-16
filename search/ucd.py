@@ -52,7 +52,7 @@ class UCDEdge:
                  cpuct=3.4):
         self.cpuct = cpuct
         self.d1 = 1
-        self.d2 = 0
+        self.d2 = 1
         self.d3 = 0
 
         self.parent = parent
@@ -153,6 +153,7 @@ class UCDNode:
         return rollout
 
     def expand(self, child_priors):
+        # for perpetuals, don't re-expand nodes
         if self.children:
             return
         for move, prior in child_priors.items():
