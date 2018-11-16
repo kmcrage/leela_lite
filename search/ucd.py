@@ -153,6 +153,8 @@ class UCDNode:
         return rollout
 
     def expand(self, child_priors):
+        if self.children:
+            return
         for move, prior in child_priors.items():
             self.add_child(move, prior)
 
