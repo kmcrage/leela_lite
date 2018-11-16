@@ -141,6 +141,7 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self  # current is a node not an edge
+        # stop the loop if we hit a leaf, terminal state, or a node we've already visited (perpetual)
         while current and current.children and current not in [e.child for e in rollout.history[:-1]]:
             edge = current.best_edge()
             rollout.history.append(edge)
