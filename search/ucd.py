@@ -101,9 +101,10 @@ class UCDEdge:
             return self.total_value / max(1, self.number_visits)
         visits = self.terminal_visits
         value = self.terminal_value
-        for edge in [e for e in self.child.children if e.number_visits and e.child]:
-            value += edge.mu(depth-1) * edge.number_visits
-            visits += edge.number_visits
+        if self.child:
+            for edge in [e for e in self.child.children if e.number_visits]:
+                value += edge.mu(depth-1) * edge.number_visits
+                visits += edge.number_visits
         return value / max(1, visits)
 
     def Q(self):
