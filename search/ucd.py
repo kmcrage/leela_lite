@@ -32,22 +32,26 @@ class UCDRollout:
             node = self.root
         return node
 
-    def backup(self, reward):
+    def backup(self, value):
+        if len(self.history) and self.history[-1] in self.history[:-1]:
+            reward = 0  # closed loop
+        else:
+            reward = -value
         if self.history:
-            self.history[-1].terminal_value += -reward
+            self.history[-1].terminal_value += reward
             self.history[-1].terminal_visits += 1
         while self.history:
-            reward *= -1
             edge = self.history.pop()
             edge.total_value += reward
             edge.number_visits += 1
+            reward *= -1
 
 
 class UCDEdge:
     def __init__(self, parent=None, move=None, prior=0,
                  cpuct=3.4):
         self.cpuct = cpuct
-        self.d1 = 0
+        self.d1 = 1
         self.d2 = 0
         self.d3 = 0
 
@@ -137,7 +141,7 @@ class UCDNode:
     def generate_rollout(self):
         rollout = self.rollout_class(root=self)
         current = self
-        while current and not current.board.is_draw() and current.children:
+        while current and current.children and current not in rollout.history[:-1]:
             edge = current.best_edge()
             rollout.history.append(edge)
             current = edge.child
