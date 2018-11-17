@@ -91,4 +91,5 @@ class UCTNode:
                             key=lambda item: (item[1].number_visits, item[1].Q()))
         if self.verbose:
             print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
-        return pv[0]
+        # there could be no moves if we jump into a mate somehow
+        return pv[0] if pv else None

@@ -43,10 +43,9 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5, verbose=Tru
             for child in G:
                 search.mcts.mcts_search(nodeclass, board, child_budget, net=net, root=child, verbose=False)
         worst = heapq.nsmallest(1, G, key=lambda ch: (ch.Q(), ch.prior))[0]
-        if verbose:
-            print('worst', worst.move, worst.Q())
-        G.remove(worst)
         if len(G) < 5 and verbose:
+            print('worst', worst.move, worst.Q())
             print([(ch.move, ch.Q()) for ch in G])
+        G.remove(worst)
 
     return G[0].move, G[0]  # only remaining member
