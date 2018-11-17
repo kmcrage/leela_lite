@@ -8,7 +8,7 @@ class PrunedUCT_mixin:
 
     def expand(self, child_priors):
         self.is_expanded = True
-        if not child.priors:
+        if not child_priors:
             return
         threshold = max(child_priors.values()) * self.prune
         for move, prior in child_priors.items():
