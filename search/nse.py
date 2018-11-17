@@ -35,6 +35,9 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
     K = len(G)
     for r in range(1, K):
         child_budget = n(p, budget, K, r) - n(p, budget, K, r - 1)
+        if child_budget = 0:
+            child_budget = 1
+            budget -= K
         print('round', r, 'budget', child_budget)
         for child in G:
             search.mcts.mcts_search(nodeclass, board, child_budget, net=net, root=child)
