@@ -8,7 +8,7 @@ Sufficiency Threshold
 
 class ST_mixin:
     def __init__(self, **kwargs):
-        super(PrunedUCT_mixin, self).__init__(**kwargs)
+        super(ST_mixin, self).__init__(**kwargs)
         self.win_threshhold = 0.7
 
     def best_child(self):
@@ -17,5 +17,5 @@ class ST_mixin:
                    key=lambda node: node.Q() + c * self.cpuct * node.U())
 
 
-class STUCTNode(PrunedUCT_mixin, UCTNode):
+class STUCTNode(ST_mixin, UCTNode):
     name = 'st'
