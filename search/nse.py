@@ -16,6 +16,8 @@ def c(p, num_moves):
 
 
 def n(p, budget, num_moves, rnd):
+    if not rnd:
+        return 0
     result = budget - num_moves
     result /= c(p, num_moves) * math.pow(num_moves - rnd + 1, p)
     return math.ceil(result)
@@ -33,7 +35,7 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
 
     G = list(root.children.values())
     K = len(G)
-    print('budgets')
+    print('budgets', K)
     b = 0
     for r in range(1, K):
         b += (K - r + 1) * (n(p, budget, K, r) - n(p, budget, K, r - 1))
