@@ -31,7 +31,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
 
-           'nse': partial(nse_search, UCTNode),
+           'nse_uct': partial(nse_search, UCTNode),
 
            'mpa': MPA_search,
            'uctv': UCTV_search,
