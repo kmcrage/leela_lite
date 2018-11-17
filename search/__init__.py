@@ -7,6 +7,7 @@ from search.voi import VOI_search
 from search.mpa_backup import MPA_search
 from search.backups import DPUCTNode
 from search.backups import MaxUCTNode
+from search.prune import PrunedUCTNode
 from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
@@ -23,6 +24,7 @@ from search.mcts import mcts_search
 engines = {'uct': partial(mcts_search, UCTNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
+           'pruned': partial(mcts_search, PrunedUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
 
