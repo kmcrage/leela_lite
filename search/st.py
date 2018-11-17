@@ -9,7 +9,7 @@ Sufficiency Threshold
 class ST_mixin:
     def __init__(self, **kwargs):
         super(ST_mixin, self).__init__(**kwargs)
-        self.win_threshhold = 0.7
+        self.win_threshhold = 0.25
 
     def best_child(self):
         c = 0 if any([c.Q() > self.win_threshhold for c in self.children.values()]) else 1
