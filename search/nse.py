@@ -23,7 +23,7 @@ def n(p, budget, num_moves, rnd):
     return math.ceil(result)
 
 
-def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5, verbose=True):
+def nse_search(nodeclass, board, budget, net=None, root=None, p=1., verbose=False):
     assert(net is not None)
     if not root:
         root = nodeclass(board=board)
@@ -37,15 +37,13 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5, verbose=Tru
     K = len(G)
     for r in range(1, K):
         child_budget = n(p, budget, K, r) - n(p, budget, K, r - 1)
-        if verbose:
-            print('round', r, 'budget', child_budget)
         if child_budget:
             for child in G:
                 search.mcts.mcts_search(nodeclass, board, child_budget, net=net, root=child, verbose=False)
-        worst = heapq.nsmallest(1, G, key=lambda ch: (ch.Q(), ch.prior))[0]
+        size = min(5, len(G))
+        worst = heapq.nsmallest(size , G, key=lambda ch: (ch.Q(), ch.prior))[0]
         if len(G) < 5 and verbose:
-            print('worst', worst.move, worst.Q())
-            print([(ch.move, ch.Q()) for ch in G])
-        G.remove(worst)
+            print([(ch.move, ch.Q(), ch.number_visits) for ch in worst])
+        G.remove(worst[0])
 
     return G[0].move, G[0]  # only remaining member
