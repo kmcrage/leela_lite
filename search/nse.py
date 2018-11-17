@@ -34,8 +34,10 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
     G = list(root.children.values())
     K = len(G)
     print('budgets')
+    b = 0
     for r in range(1, K):
-        print('round', r, 'budget', n(p, budget, K, r))
+        b += (K - r + 1) * n(p, budget, K, r)
+        print('round', r, 'budget', n(p, budget, K, r), 'total',  b)
     for r in range(1, K):
         child_budget = n(p, budget, K, r) - n(p, budget, K, r - 1)
         if child_budget == 0:
