@@ -18,6 +18,7 @@ from search.st import STUCTNode
 from functools import partial
 from search.mcds import mcds_search
 from search.mcts import mcts_search
+from search.nse import nse_search
 
 # active searches first
 #
@@ -29,6 +30,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'st': partial(mcts_search, STUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
+
+           'nse': partial(nse_search, UCTNode),
 
            'mpa': MPA_search,
            'uctv': UCTV_search,
