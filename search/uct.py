@@ -12,7 +12,7 @@ class UCTNode:
     name = 'uct'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
-                 cpuct=3.4):
+                 cpuct=3.4, verbose=True):
         self.cpuct = cpuct
 
         self.board = board
@@ -24,6 +24,8 @@ class UCTNode:
         self.total_value = -parent.Q() if parent else 0  # float, fpu is in lc0 rather than a0
         self.number_visits = 0  # int
         self.reward = 0
+
+        self.verbose = verbose
 
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
@@ -87,6 +89,6 @@ class UCTNode:
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda item: (item[1].number_visits, item[1].Q()))
-
-        print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
+        if self.verbose:
+            print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
         return pv[0]

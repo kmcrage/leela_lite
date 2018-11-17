@@ -1,8 +1,9 @@
 
-def mcts_search(nodeclass, board, num_reads, net=None, root=None):
+def mcts_search(nodeclass, board, num_reads, net=None, root=None, verbose=True):
     assert(net is not None)
     if not root:
         root = nodeclass(board=board)
+    root.verbose = verbose
     for _ in range(num_reads):
         leaf = root.select_leaf()
         child_priors, value_estimate = net.evaluate(leaf.board)
