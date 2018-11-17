@@ -36,7 +36,7 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
     print('min budget', K * (K - 1) / 2.)
     for r in range(1, K):
         child_budget = n(p, budget, K, r) - n(p, budget, K, r - 1)
-        if child_budget = 0:
+        if child_budget == 0:
             child_budget = 1
             budget -= K
         print('round', r, 'budget', child_budget)
