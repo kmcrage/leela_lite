@@ -31,7 +31,7 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
         root.expand(child_priors)
         budget -= 1
 
-    G = root.children.values()
+    G = list(root.children.values())
     K = len(G)
     print('min budget', K * (K - 1) / 2.)
     for r in range(1, K):
