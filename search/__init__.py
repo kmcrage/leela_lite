@@ -13,6 +13,7 @@ from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
 from search.uctv import UCTV_search
 from search.sota import SOTA_search
+from search.st import STUCTNode
 
 from functools import partial
 from search.mcds import mcds_search
@@ -25,6 +26,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
            'pruned': partial(mcts_search, PrunedUCTNode),
+           'st': partial(mcts_search, STUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
 
