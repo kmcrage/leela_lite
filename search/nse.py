@@ -1,5 +1,5 @@
 import math
-import mcts
+import search.mcts
 import heapq
 
 """
@@ -36,7 +36,7 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1.5):
     for r in range(1, K):
         child_budget = n(p, budget, K, r) - n(p, budget, K, r - 1)
         for child in G:
-            mcts.mcts_search(nodeclass, board, child_budget, net=net, root=child)
+            search.mcts.mcts_search(nodeclass, board, child_budget, net=net, root=child)
         worst = heapq.nsmallest(1, G, key=lambda c: (c.Q(), -c.number_visits))
         G.remove(worst)
         print([(ch.move, ch.Q()) for ch in G])
