@@ -8,10 +8,9 @@ class PrunedUCT_mixin:
 
     def expand(self, child_priors):
         self.is_expanded = True
-        print(child_priors.values())
         threshold = max(child_priors.values()) * self.prune
         for move, prior in child_priors.items():
-            if self.prior > threshold:
+            if prior > threshold:
                 self.add_child(move, prior)
 
 class PrunedUCTNode(PrunedUCT_mixin, UCTNode):
