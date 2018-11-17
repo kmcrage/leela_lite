@@ -4,6 +4,7 @@ from collections import OrderedDict
 
 """
 Standard UCT
+initialise Q from parent
 """
 
 
@@ -20,12 +21,12 @@ class UCTNode:
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
-        self.total_value = 0.  # float
+        self.total_value = -parent.Q() if parent else 0  # float, fpu is in lc0 rather than a0
         self.number_visits = 0  # int
         self.reward = 0
 
     def Q(self):  # returns float
-        return self.reward + self.total_value / (1 + self.number_visits)
+        return self.total_value / (1 + self.number_visits)
 
     def U(self):  # returns float
         return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
