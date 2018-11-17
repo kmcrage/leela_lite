@@ -4,7 +4,7 @@ from search.uct import UCTNode
 class PrunedUCT_mixin:
     def __init__(self, **kwargs):
         super(PrunedUCT_mixin, self).__init__(**kwargs)
-        self.prune = 0.5
+        self.prune = 0.05
 
     def expand(self, child_priors):
         self.is_expanded = True
