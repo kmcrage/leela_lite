@@ -26,12 +26,12 @@ def mcts_eval_search(nodeclass,
     while budget > 0:
         leaf = root.select_leaf()
         if leaf.is_expanded:
+            leaf.backup(-leaf.reward)
+            budget -= rollout_cost
+        else:
             child_priors, value_estimate = net.evaluate(leaf.board)
             leaf.expand(child_priors)
             leaf.backup(value_estimate)
             budget -= 1
-        else:
-            leaf.backup(-leaf.reward)
-            budget -= rollout_cost
 
     return root.outcome()
