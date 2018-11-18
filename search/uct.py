@@ -92,4 +92,11 @@ class UCTNode:
         if self.verbose:
             print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].U(), n[1].number_visits) for n in pv])
         # there could be no moves if we jump into a mate somehow
+        print('prediction:', end=' ')
+        predict = pv[0]
+        while len(predict[1].children):
+            predict = heapq.nlargest(1, predict[1].children.items(),
+                                     key=lambda item: (item[1].number_visits, item[1].Q()))[0]
+            print(predict[0], end=' ')
+        print('')
         return pv[0] if pv else None
