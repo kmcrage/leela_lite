@@ -44,6 +44,6 @@ def nse_search(nodeclass, board, budget, net=None, root=None, p=1., verbose=Fals
         worst = heapq.nsmallest(size , G, key=lambda ch: (ch.Q(), ch.prior))[0]
         if len(G) < 5 and verbose:
             print([(ch.move, ch.Q(), ch.number_visits) for ch in worst])
-        G.remove(worst[0])
+        G.remove(worst)
 
     return G[0].move, G[0]  # only remaining member
