@@ -10,8 +10,8 @@ class Cutoff_mixin:
         current = self
         # don't bother confirming the win if we boom,
         # but watch out for draws
-        min_reward = max(0., current.reward - self.cutoff)
-        max_reward = min(0., current.reward + self.cutoff)
+        min_reward = min(0., current.reward - self.cutoff)
+        max_reward = max(0., current.reward + self.cutoff)
         while current.is_expanded and current.children and min_reward < current.reward < max_reward:
             current = current.best_child()
         if not current.board:
