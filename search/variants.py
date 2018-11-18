@@ -12,8 +12,10 @@ class Cutoff_mixin:
         # but watch out for draws
         min_reward = min(0., current.Q() - self.cutoff)
         max_reward = max(0., current.Q() + self.cutoff)
-        while current.is_expanded and current.children and min_reward < current.reward < max_reward:
+        turn_factor = 1
+        while current.is_expanded and current.children and min_reward < current.Q() * turn_factor < max_reward:
             current = current.best_child()
+            turn_factor *= -1
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
