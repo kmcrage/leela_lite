@@ -10,7 +10,9 @@ class Cutoff_mixin:
         current = self
         min_reward = current.reward - self.cutoff
         max_reward = current.reward + self.cutoff
-        while current.is_expanded and current.children and min_reward < current.reward < max_reward:
+        while (current.is_expanded and current.children and
+               min_reward < current.reward < max_reward and
+               not current.board.is_draw()):
             current = current.best_child()
         if not current.board:
             current.board = current.parent.board.copy()

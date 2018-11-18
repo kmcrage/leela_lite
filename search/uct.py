@@ -39,7 +39,7 @@ class UCTNode:
 
     def select_leaf(self):
         current = self
-        while current.is_expanded and current.children:
+        while current.is_expanded and current.children and not current.board.is_draw():
             current = current.best_child()
         if not current.board:
             current.board = current.parent.board.copy()
