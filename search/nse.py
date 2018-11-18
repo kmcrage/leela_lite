@@ -23,7 +23,7 @@ def n(p, budget, num_moves, rnd):
     return math.ceil(result)
 
 
-def nse_search(nodeclass, board, budget, net=None, root=None, p=1., verbose=False):
+def nse_search(nodeclass, board, budget, net=None, root=None, p=.5, verbose=False):
     assert(net is not None)
     if not root:
         root = nodeclass(board=board)

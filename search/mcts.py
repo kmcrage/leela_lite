@@ -1,13 +1,37 @@
 
-def mcts_search(nodeclass, board, num_reads, net=None, root=None, verbose=True):
+
+def mcts_search(nodeclass,
+                board, budget, net=None, root=None,
+                verbose=True):
     assert(net is not None)
     if not root:
         root = nodeclass(board=board)
     root.verbose = verbose
-    for _ in range(num_reads):
+    while budget > 0:
         leaf = root.select_leaf()
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
         leaf.backup(value_estimate)
+        budget -= 1
+
+    return root.outcome()
+
+def mcts_eval_search(nodeclass,
+                     board, budget, net=None, root=None,
+                     verbose=True, rollout_cost=0.01):
+    assert(net is not None)
+    if not root:
+        root = nodeclass(board=board)
+    root.verbose = verbose
+    while budget > 0:
+        leaf = root.select_leaf()
+        if leaf.is_expanded:
+            child_priors, value_estimate = net.evaluate(leaf.board)
+            leaf.expand(child_priors)
+            leaf.backup(value_estimate)
+            budget -= 1
+        else:
+            leaf.backup(-leaf.reward)
+            budget -= rollout_cost
 
     return root.outcome()

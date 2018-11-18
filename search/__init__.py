@@ -7,6 +7,7 @@ from search.voi import VOI_search
 from search.mpa_backup import MPA_search
 from search.backups import DPUCTNode
 from search.backups import MaxUCTNode
+from search.variants import CutoffUCTNode
 from search.prune import PrunedUCTNode
 from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
@@ -17,7 +18,7 @@ from search.st import STUCTNode
 
 from functools import partial
 from search.mcds import mcds_search
-from search.mcts import mcts_search
+from search.mcts import mcts_search, mcts_eval_search
 from search.nse import nse_search
 
 # active searches first
@@ -32,6 +33,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'ucd': partial(mcds_search, UCDNode),
 
            'nse_uct': partial(nse_search, UCTNode),
+
+           'cutoff': partial(mcts_eval__search, CutoffUCTNode),
 
            'mpa': MPA_search,
            'uctv': UCTV_search,
