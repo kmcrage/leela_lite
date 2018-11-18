@@ -8,11 +8,11 @@ class Cutoff_mixin:
 
     def select_leaf(self):
         current = self
-        min_reward = current.reward - self.cutoff
-        max_reward = current.reward + self.cutoff
-        while (current.is_expanded and current.children and
-               min_reward < current.reward < max_reward and
-               not current.board.is_draw()):
+        # don't bother confirming the win if we boom,
+        # but watch out for draws
+        min_reward = max(0., current.reward - self.cutoff)
+        max_reward = min(0., current.reward + self.cutoff)
+        while current.is_expanded and current.children and min_reward < current.reward < max_reward:
             current = current.best_child()
         if not current.board:
             current.board = current.parent.board.copy()
