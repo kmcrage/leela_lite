@@ -101,9 +101,7 @@ class VOINode:
             current.number_visits += 1
             policy_move = current.best_child_uct(c)
             policy_move.q_visits += 1
-            current.total_value = current.reward
-            for child in current.children.values():
-                current.total_value -= child.Q() * child.q_visits
+            current.total_value -= policy_move.Q()
         # policy move at root
         policy_move = current.best_child_uct(c)
         policy_move.q_visits += 1
