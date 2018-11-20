@@ -97,13 +97,13 @@ class VOINode:
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
-            policy_move = self.best_child_uct(c)
+            policy_move = current.best_child_uct(c)
             policy_move.q_visits += 1
             current.total_value = 0
-            for child in self.children.values():
+            for child in current.children.values():
                 current.total_value += child.Q() * child.q_visits
         # policy move at root
-        policy_move = self.best_child_uct(c)
+        policy_move = current.best_child_uct(c)
         policy_move.q_visits += 1
         current.number_visits += 1
 
