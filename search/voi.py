@@ -119,9 +119,10 @@ class VOINode:
         print("---")
 
 
-def VOI_search(board, num_reads, net=None, c=1.0):
+def VOI_search(board, num_reads, net=None, c=3.4, root=None):
     assert(net is not None)
-    root = VOINode(board)
+    if not root:
+        root = VOINode(board)
     for _ in range(num_reads):
         leaf = root.select_leaf(c)
         child_priors, value_estimate = net.evaluate(leaf.board)

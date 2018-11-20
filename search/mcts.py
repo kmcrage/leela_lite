@@ -16,6 +16,7 @@ def mcts_search(nodeclass,
 
     return root.outcome()
 
+
 def mcts_eval_search(nodeclass,
                      board, budget, net=None, root=None,
                      verbose=True, rollout_cost=0.01):
