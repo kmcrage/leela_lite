@@ -37,6 +37,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'cutoff': partial(mcts_eval_search, CutoffUCTNode),
 
            'mpa': MPA_search,
+           'voi': VOI_search,
            'uctv': UCTV_search,
            'crazy': CRAZY_search,
            'srcr': SRCR_search,
