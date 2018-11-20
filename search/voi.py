@@ -23,6 +23,7 @@ class VOINode:
         self.prior = prior  # float
         self.total_value = 0  # float
         self.number_visits = 0  # int
+        self.q_visits = 0  # int
         self.V = 0
 
     @property
@@ -75,12 +76,8 @@ class VOINode:
 
     def select_leaf(self, c):
         current = self
-        depth = 0
         while current.is_expanded and current.children:
-            if depth:
-                current = current.best_child_uct(c)
-            else:
-                current = current.best_child_voi(c)
+            current = current.best_child_voi(c)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
@@ -94,16 +91,22 @@ class VOINode:
     def add_child(self, move, prior):
         self.children[move] = VOINode(parent=self, move=move, prior=prior)
 
-    def backup(self, value_estimate: float):
+    def backup(self, value_estimate: float, c):
         current = self
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
-        turnfactor = -1
+        current.number_visits += 1
+        current.total_value += -value_estimate
         while current.parent is not None:
-            current.number_visits += 1
-            current.total_value += value_estimate * turnfactor
             current = current.parent
-            turnfactor *= -1
-        # this is the root
+            current.number_visits += 1
+            policy_move = self.best_child_uct(c)
+            policy_move.q_visits += 1
+            current.total_value = 0
+            for c in self.children:
+                current.total_value += c.Q() * c.q_visits
+        # policy move at root
+        policy_move = self.best_child_uct(c)
+        policy_move.q_visits += 1
         current.number_visits += 1
 
     def dump(self, move):
@@ -123,11 +126,11 @@ def VOI_search(board, num_reads, net=None, c=1.0):
         leaf = root.select_leaf(c)
         child_priors, value_estimate = net.evaluate(leaf.board)
         leaf.expand(child_priors)
-        leaf.backup(value_estimate)
+        leaf.backup(value_estimate, c)
 
     # the best node might be in second place because we've been trying to catch up with first place
     # so get the two best nodes and then check the value
-    pv = sorted(root.children.items(), key=lambda item: (item[1].number_visits, item[1].Q), reverse=True)
-    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].V) for n in pv])
+    pv = sorted(root.children.items(), key=lambda item: (item[1].q_visits, item[1].Q), reverse=True)
+    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].q_visits) for n in pv])
     print('VOI:', root.V)
     return pv[0]
