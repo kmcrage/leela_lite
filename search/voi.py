@@ -52,7 +52,7 @@ class VOINode:
         # get the two best nodes by value, tie-break with visits, then prior for the special case of first move
         alpha, beta = heapq.nlargest(2,
                                      self.children.values(),
-                                     key=lambda node: (node.Q, node.number_visits, node.prior)
+                                     key=lambda node: (node.Q(), node.q_visits, node.prior)
                                      )
 
         # this incorporates a /4 scaling as our reward has a range of 2, and we are squaring it
