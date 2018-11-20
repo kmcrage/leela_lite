@@ -99,7 +99,7 @@ class VOINode:
             current.number_visits += 1
             policy_move = current.best_child_uct(c)
             policy_move.q_visits += 1
-            current.total_value = 0
+            current.total_value = -current.parent.Q() if current.parent else 0
             for child in current.children.values():
                 current.total_value -= child.Q() * child.q_visits
         # policy move at root
@@ -121,6 +121,7 @@ class VOINode:
             return self.children[move]
         return None
 
+
 def VOI_search(board, num_reads, net=None, c=3.4, root=None):
     assert(net is not None)
     if not root:
@@ -133,7 +134,8 @@ def VOI_search(board, num_reads, net=None, c=3.4, root=None):
 
     # the best node might be in second place because we've been trying to catch up with first place
     # so get the two best nodes and then check the value
-    pv = sorted(root.children.items(), key=lambda item: (item[1].q_visits, item[1].Q()), reverse=True)
+    pv = sorted([c for c in root.children.items() if c.number_visits],
+                key=lambda item: (item[1].Q(), item[1].q_visits), reverse=True)
     print('VOI pv:', [(n[0], n[1].Q(), n[1].number_visits, n[1].q_visits) for n in pv])
     print('VOI:', root.V)
     return pv[0]
