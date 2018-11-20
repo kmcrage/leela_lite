@@ -26,16 +26,14 @@ class VOINode:
         self.q_visits = 0  # int
         self.V = 0
 
-    @property
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)
 
-    @property
     def U(self):  # returns float
         return math.sqrt(self.parent.number_visits) * self.prior / (1 + self.number_visits)
 
     def desirability(self, c):
-        return self.Q + c * self.U
+        return self.Q() + c * self.U()
 
     def best_child_uct(self, c):
         return max(self.children.values(),
@@ -64,10 +62,10 @@ class VOINode:
         for n in self.children.values():
             voi = n.prior / (1. + n.number_visits)
             if n == alpha:
-                voi *= (1 + beta.Q) * math.exp(-phi * alpha.number_visits * (alpha.Q - beta.Q) ** 2)
+                voi *= (1 + beta.Q()) * math.exp(-phi * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
             else:
-                voi *= (1 - alpha.Q) * math.exp(-phi * n.number_visits * (alpha.Q - n.Q) ** 2)
-            n.V = voi + n.Q
+                voi *= (1 - alpha.Q()) * math.exp(-phi * n.number_visits * (alpha.Q() - n.Q()) ** 2)
+            n.V = voi + n.Q()
             if voi > vmax:
                 vmax = voi
                 result = n
@@ -102,8 +100,8 @@ class VOINode:
             policy_move = self.best_child_uct(c)
             policy_move.q_visits += 1
             current.total_value = 0
-            for c in self.children:
-                current.total_value += c.Q() * c.q_visits
+            for child in self.children.values():
+                current.total_value += child.Q() * child.q_visits
         # policy move at root
         policy_move = self.best_child_uct(c)
         policy_move.q_visits += 1
@@ -131,7 +129,7 @@ def VOI_search(board, num_reads, net=None, c=3.4, root=None):
 
     # the best node might be in second place because we've been trying to catch up with first place
     # so get the two best nodes and then check the value
-    pv = sorted(root.children.items(), key=lambda item: (item[1].q_visits, item[1].Q), reverse=True)
-    print('VOI pv:', [(n[0], n[1].Q, n[1].number_visits, n[1].q_visits) for n in pv])
+    pv = sorted(root.children.items(), key=lambda item: (item[1].q_visits, item[1].Q()), reverse=True)
+    print('VOI pv:', [(n[0], n[1].Q(), n[1].number_visits, n[1].q_visits) for n in pv])
     print('VOI:', root.V)
     return pv[0]
