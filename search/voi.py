@@ -116,6 +116,10 @@ class VOINode:
         print("Q: ", self.Q)
         print("---")
 
+    def get_node(self, move):
+        if move in self.children:
+            return self.children[move]
+        return None
 
 def VOI_search(board, num_reads, net=None, c=3.4, root=None):
     assert(net is not None)
