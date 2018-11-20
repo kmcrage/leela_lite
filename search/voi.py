@@ -21,7 +21,7 @@ class VOINode:
         self.parent = parent  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
-        self.total_value = 0  # float
+        self.total_value = -parent.Q() if parent else 0  # float
         self.number_visits = 0  # int
         self.q_visits = 0  # int
         self.V = 0
@@ -101,7 +101,7 @@ class VOINode:
             policy_move.q_visits += 1
             current.total_value = 0
             for child in current.children.values():
-                current.total_value += child.Q() * child.q_visits
+                current.total_value -= child.Q() * child.q_visits
         # policy move at root
         policy_move = current.best_child_uct(c)
         policy_move.q_visits += 1
