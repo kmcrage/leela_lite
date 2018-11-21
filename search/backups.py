@@ -4,7 +4,7 @@ from search.uct import UCTNode
 class MinMax_mixin:
     def __init__(self, **kwargs):
         super(MinMax_mixin, self).__init__(**kwargs)
-        self.minmax_threshhold = 20
+        self.minmax_threshhold = 50
 
     def backup(self, value_estimate: float):
         current = self
