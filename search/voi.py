@@ -66,7 +66,7 @@ class VOINode:
                 voi *= (1 + beta.Q()) * math.exp(-phi * alpha.number_visits * (alpha.Q() - beta.Q()) ** 2)
             else:
                 voi *= (1 - alpha.Q()) * math.exp(-phi * n.number_visits * (alpha.Q() - n.Q()) ** 2)
-            n.V = voi + n.Q()
+            n.V = voi
             if voi > vmax:
                 vmax = voi
                 result = n
