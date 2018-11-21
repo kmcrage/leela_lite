@@ -1,6 +1,28 @@
 from search.uct import UCTNode
 
 
+class MinMax_mixin:
+    def __init__(self, **kwargs):
+        super(MinMax_mixin, self).__init__(**kwargs)
+        self.minmax_threshhold = 20
+
+    def backup(self, value_estimate: float):
+        current = self
+        current.reward = -value_estimate
+        current.total_value += current.reward
+        current.number_visits += 1
+        # Child nodes are multiplied by -1 because we want max(-opponent eval)
+        turnfactor = -1
+        while current.parent is not None:
+            current = current.parent
+            current.number_visits += 1
+            turnfactor *= -1
+            if current.number_visits > self.minmax_threshhold:
+                current.total_value = - (1 + current.number_visits) * max([c.Q() for c in current.children])
+            else:
+                current.total_value += (value_estimate * turnfactor)
+
+
 class MaxUct_mixin:
     def __init__(self, **kwargs):
         super(MaxUct_mixin, self).__init__(**kwargs)
@@ -48,3 +70,7 @@ class DPUCTNode(DPUCT_mixin, UCTNode):
 
 class MaxUCTNode(MaxUct_mixin, DPUCT_mixin, UCTNode):
     name = 'maxuct'
+
+
+class MinMaxUCTNode(MinMax_mixin, UCTNode):
+    name = 'minmaxt'
