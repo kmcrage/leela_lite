@@ -18,7 +18,7 @@ class MinMax_mixin:
             current.number_visits += 1
             turnfactor *= -1
             if current.number_visits > self.minmax_threshhold:
-                current.total_value = - (1 + current.number_visits) * max([c.Q() for c in current.children])
+                current.total_value = - (1 + current.number_visits) * max([c.Q() for c in current.children.values()])
             else:
                 current.total_value += (value_estimate * turnfactor)
 
