@@ -35,12 +35,12 @@ class ABNode:
         alpha = self.alpha
         beta = self.beta
         current = self
-        print('selct leaf', d)
+        print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.children and d:
             feasible_children = []
             for child in current.children:
-                child.alpha = max(alpha, -child.v_plus[d-1])
-                child.beta = min(beta, -child.v_minus[d-1])
+                child.alpha = max(alpha, child.v_minus[d-1])
+                child.beta = min(beta, child.v_plus[d-1])
                 if child.alpha < child.beta:
                     feasible_children.append(child)
             current = feasible_children[0]
