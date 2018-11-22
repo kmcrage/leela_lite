@@ -49,7 +49,7 @@ class ABNode:
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
-        return current, d
+        return current
 
     def expand(self, child_priors):
         self.is_expanded = True
@@ -59,9 +59,11 @@ class ABNode:
     def add_child(self, move, prior):
         self.children.append(self.__class__(parent=self, move=move, prior=prior))
     
-    def backup(self, value_estimate, d):
+    def backup(self, value_estimate):
         current = self
-        current.eval = value_estimate
+        d = 0
+        current.v_plus[d] = value_estimate
+        current.v_minus[d] = value_estimate
         while current.parent is not None:
             current = current.parent
             d += 1

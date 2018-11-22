@@ -1,19 +1,4 @@
 
-def ab_search(nodeclass,
-                board, budget, net=None, root=None,
-                verbose=True):
-    assert(net is not None)
-    if not root:
-        root = nodeclass(board=board)
-    root.verbose = verbose
-    while budget > 0:
-        leaf, depth = root.select_leaf()
-        child_priors, value_estimate = net.evaluate(leaf.board)
-        leaf.expand(child_priors)
-        leaf.backup(value_estimate, depth)
-        budget -= 1
-
-    return root.outcome()
 
 def mcts_search(nodeclass,
                 board, budget, net=None, root=None,
