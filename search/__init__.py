@@ -21,7 +21,7 @@ from search.alphabeta import ABNode
 
 from functools import partial
 from search.mcds import mcds_search
-from search.mcts import mcts_search, mcts_eval_search
+from search.mcts import mcts_search, mcts_eval_search, ab_search
 from search.nse import nse_search
 
 # active searches first
@@ -35,7 +35,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'st': partial(mcts_search, STUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
-           'alphabeta': partial(mcts_search, ABNode),
+           'alphabeta': partial(ab_search, ABNode),
 
            'nse_uct': partial(nse_search, UCTNode),
 
