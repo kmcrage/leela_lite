@@ -84,7 +84,7 @@ class ABNode:
         best_child = self
         v = self.v_plus[d]
         print('best child', d, best_child.move, self.v_plus)
-        while d > 1:
+        while d:
             d -= 1
             best_child = [c for c in best_child.children if c.v_plus[d] == v][0]
             print('best child', d, best_child.move)
