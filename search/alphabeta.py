@@ -68,6 +68,7 @@ class ABNode:
         d = 0
         current.v_plus[d] = value_estimate
         current.v_minus[d] = value_estimate
+        print('backup', current.move, value_estimate)
         while current.parent is not None:
             current = current.parent
             d += 1
