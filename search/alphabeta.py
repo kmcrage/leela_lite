@@ -39,9 +39,9 @@ class ABNode:
         while current.is_expanded and current.children and d:
             feasible_children = []
             for child in current.children:
-                print('child', child.move, child.v_minus[d-1], child.v_plus[d-1])
                 child.alpha = max(alpha, child.v_minus[d-1])
                 child.beta = min(beta, child.v_plus[d-1])
+                print('child', child.move, child.v_minus[d-1], child.v_plus[d-1], child.alpha, child.beta)
                 if child.alpha < child.beta:
                     feasible_children.append(child)
             current = feasible_children[0]
