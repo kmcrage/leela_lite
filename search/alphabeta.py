@@ -85,9 +85,12 @@ class ABNode:
         v = self.v_plus[d]
         print('best child', d, best_child.move, v, self.v_plus)
         while d:
+            v *= -1
             d -= 1
             for c in best_child.children:
                 print('vplus', c.move, d, v, c.v_plus)
+                if math.fabs(v - c.v_plus[d]) < TOLERANCE:
+                    best_child = c
             print('best child', d, best_child.move)
         return best_child
 
