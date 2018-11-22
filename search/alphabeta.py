@@ -69,7 +69,7 @@ class ABNode:
             d += 1
             current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
-        print('est', current.v_minus[current.depth], current.v_plus[current.depth])
+        print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
         if current.v_minus[current.depth] == current.v_plus[current.depth]:
             current.best_child = self.get_best_child(d)
             current.depth += 1
