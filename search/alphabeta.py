@@ -55,7 +55,7 @@ class ABNode:
 
     def expand(self, child_priors):
         self.is_expanded = True
-        print('child priors', child_priors)
+        #print('child priors', child_priors)
         for move, prior in (list(child_priors.items()))[:self.k]:
             self.add_child(move, prior)
 
@@ -65,12 +65,12 @@ class ABNode:
     def backup(self, value_estimate):
         current = self
         d = 0
-        current.v_plus[d] = value_estimate
-        current.v_minus[d] = value_estimate
+        current.v_plus[d] = -value_estimate
+        current.v_minus[d] = -value_estimate
         while current.parent is not None:
             current = current.parent
             d += 1
-            current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
+            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.children])
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
         if current.v_minus[current.depth] == current.v_plus[current.depth]:
