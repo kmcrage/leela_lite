@@ -35,21 +35,19 @@ class ABNode:
         alpha = self.alpha
         beta = self.beta
         current = self
+        print('selct leaf', d)
         while current.is_expanded and current.children and d:
             feasible_children = []
             for child in current.children:
-                if child.is_expanded:
-                    child.alpha = max(alpha, -child.v_plus[d-1])
-                    child.beta = min(beta, -child.v_minus[d-1])
-                    if child.alpha < child.beta:
-                        feasible_children.append(child)
-                else:
-                    feasible_children.insert(0, child)
+                child.alpha = max(alpha, -child.v_plus[d-1])
+                child.beta = min(beta, -child.v_minus[d-1])
+                if child.alpha < child.beta:
+                    feasible_children.append(child)
             current = feasible_children[0]
             d -= 1
             alpha = -current.beta
             beta = -current.alpha
-            print('selcting', current.move)
+            print('selcting', [c.move for c in feasible_children])
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
