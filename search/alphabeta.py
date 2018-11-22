@@ -6,6 +6,7 @@ from collections import OrderedDict
 A Rollout-Based Search Algorithm Unifying MCTS and Alpha-Beta
 """
 
+TOLERANCE = 1e-8
 
 class ABNode:
     name = 'ab'
@@ -43,7 +44,7 @@ class ABNode:
                 child.beta = min(beta, child.v_plus[d-1])
                 print('child', child.move, child.v_minus[d-1], child.v_plus[d-1], child.alpha, child.beta)
                 if child.alpha < child.beta:
-                    feasible_children.append(child)]
+                    feasible_children.append(child)
             current = feasible_children[0]
             d -= 1
             alpha = -current.beta
@@ -75,7 +76,7 @@ class ABNode:
             current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
-        if current.v_minus[current.depth] == current.v_plus[current.depth]:
+        if current.v_minus[current.depth] > current.v_plus[current.depth] - TOLERANCE:
             current.best_child = self.get_best_child(d)
             current.depth += 1
 
