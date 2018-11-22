@@ -72,7 +72,7 @@ class ABNode:
             current.d += 1
 
     def get_best_child(self, d):
-        best_child = self:
+        best_child = self
         v = self.v_plus[d]
         while d:
             d -= 1
