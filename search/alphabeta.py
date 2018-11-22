@@ -83,10 +83,11 @@ class ABNode:
     def get_best_child(self, d):
         best_child = self
         v = self.v_plus[d]
-        print('best child', d, best_child.move, self.v_plus)
+        print('best child', d, best_child.move, v, self.v_plus)
         while d:
             d -= 1
-            best_child = [c for c in best_child.children if c.v_plus[d] == v][0]
+            for c in best_child.children:
+                print('vplus', c.move, d, v, c.v_plus)
             print('best child', d, best_child.move)
         return best_child
 
