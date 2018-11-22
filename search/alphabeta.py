@@ -44,7 +44,7 @@ class ABNode:
                     if child.alpha < child.beta:
                         feasible_children.append(child)
                 else:
-                    feasible_children.append(child)
+                    feasible_children.insert(0, child)
             current = feasible_children[0]
             d -= 1
             alpha = -current.beta
