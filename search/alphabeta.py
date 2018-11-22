@@ -49,6 +49,7 @@ class ABNode:
             d -= 1
             alpha = -current.beta
             beta = -current.alpha
+            print('selcting', current.move)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
