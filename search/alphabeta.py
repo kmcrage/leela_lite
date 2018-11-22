@@ -53,7 +53,7 @@ class ABNode:
 
     def expand(self, child_priors):
         self.is_expanded = True
-        for move, prior in child_priors.items()[:self.k]:
+        for move, prior in (list(child_priors.items()))[:self.k]:
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
