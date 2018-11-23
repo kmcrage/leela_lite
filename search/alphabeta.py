@@ -59,6 +59,10 @@ class ABNode:
                 # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
+            if not feasible_children:
+                print('depth', d, 'ab', alpha, beta)
+                for child in current.children:
+                    print(child.move, child.v_minus[d-1], child.v_plus[d-1])
             current = feasible_children[0]
             d -= 1
             alpha = -current.v_plus[d]
