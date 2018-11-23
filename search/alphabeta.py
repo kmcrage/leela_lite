@@ -98,6 +98,8 @@ class ABNode:
             current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
+
+        # this current is root
         if current.v_minus[current.depth] > current.v_plus[current.depth] - TOLERANCE:
             current.set_reward(d)
             current.depth += 1

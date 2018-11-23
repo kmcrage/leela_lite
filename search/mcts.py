@@ -10,9 +10,8 @@ def mcts_search(nodeclass,
     while budget > 0:
         leaf = root.select_leaf()
         child_priors, value_estimate = net.evaluate(leaf.board)  # cached
-        if not leaf.is_expanded:
-            leaf.expand(child_priors)
-            budget -= 1
+        budget -= 1
+        leaf.expand(child_priors)
         leaf.backup(value_estimate)
 
     return root.outcome()
