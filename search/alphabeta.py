@@ -73,7 +73,7 @@ class ABNode:
         :param child_priors:
         :return:
         """
-        if not self.is_expanded:
+        if self.is_expanded:
             print('bonus')
             return
         self.is_expanded = True
