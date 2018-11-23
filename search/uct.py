@@ -67,6 +67,9 @@ class UCTNode:
             turnfactor *= -1
             current.total_value += (value_estimate * turnfactor)
 
+    def update_root(self):
+        pass
+
     def get_node(self, move):
         if move in self.children:
             return self.children[move]

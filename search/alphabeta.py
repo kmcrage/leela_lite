@@ -99,10 +99,12 @@ class ABNode:
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
 
-        # this current is root
-        if current.v_minus[current.depth] > current.v_plus[current.depth] - TOLERANCE:
-            current.set_reward(d)
-            current.depth += 1
+    def update_root(self):
+        if math.fabs(self.v_minus[self.depth] - self.v_plus[current.depth]) > TOLERANCE:
+            return
+        self.set_reward(self.depth)
+        self.depth += 1
+        print('new depth', self.depth)
 
     def set_reward(self, d):
         for c in self.children:
