@@ -1,18 +1,23 @@
 import math
 import heapq
-from collections import OrderedDict
+from collections import defaultdict
 
 """
 A Rollout-Based Search Algorithm Unifying MCTS and Alpha-Beta
 """
 
+# this is used in float comparisons
 TOLERANCE = 1e-8
+LOSS = -1
+WIN = 1
+
 
 class ABNode:
     name = 'ab'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
                  k=9, verbose=True):
+        # game state
         self.board = board
         self.move = move
         self.is_expanded = False
@@ -20,16 +25,23 @@ class ABNode:
         self.children = []
         self.prior = prior  # float
 
-        self.eval = 0
-        self.alpha = -1
-        self.beta = 1
-        self.depth = 0
-        self.v_minus = [-1] * 10 # max depth
-        self.v_plus = [1] * 10
-        self.best_child = None
-
+        # search parms
         self.k = k
         self.verbose = verbose
+
+        # eval
+        self.eval = 0
+        self.alpha = LOSS
+        self.beta = WIN
+        self.depth = 0
+        self.v_minus = defaultdict(lambda: LOSS)
+        self.v_plus = defaultdict(lambda: WIN)
+        self.best_child = None
+
+        # rewards
+        self.weight = 10
+        self.wscale = k + 1
+        self.number_visits = 0
 
     def select_leaf(self):
         d = self.depth
@@ -56,6 +68,11 @@ class ABNode:
         return current
 
     def expand(self, child_priors):
+        """
+        expand best k children, ordered by priors
+        :param child_priors:
+        :return:
+        """
         self.is_expanded = True
         # print('child priors', child_priors)
         for move, prior in (list(child_priors.items()))[:self.k]:
@@ -65,6 +82,11 @@ class ABNode:
         self.children.append(self.__class__(parent=self, move=move, prior=prior))
     
     def backup(self, value_estimate):
+        """
+        minmax backup of alpha, beta values, increase depth counter if minmax solves that depth
+        :param value_estimate:
+        :return:
+        """
         current = self
         d = 0
         current.v_plus[d] = value_estimate
@@ -77,22 +99,14 @@ class ABNode:
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
         if current.v_minus[current.depth] > current.v_plus[current.depth] - TOLERANCE:
-            current.best_child = current.get_best_child(d)
+            current.set_reward(d)
             current.depth += 1
 
-    def get_best_child(self, d):
-        best_child = self
-        v = self.v_plus[d]
-        # print('best child', d, best_child.move, v, self.v_plus)
-        while d:
-            v *= -1
-            d -= 1
-            for c in best_child.children:
-                # print('vplus', c.move, d, v, c.v_plus)
-                if math.fabs(v - c.v_plus[d]) < TOLERANCE:
-                    best_child = c
-            # print('best child', d, best_child.move)
-        return best_child
+    def set_reward(self, d):
+        for c in self.children:
+            # print('vplus', c.move, d, v, c.v_plus)
+            if math.fabs(self.v_plus[d] + c.v_plus[d]) < TOLERANCE:
+                c.number_visits = self.weight + math.pow(self.wscale, d)
 
     def get_node(self, move):
         if move in self.children:
@@ -106,4 +120,9 @@ class ABNode:
         print("---")
 
     def outcome(self):
-        return self.best_child.move, self.best_child
+        size = min(5, len(self.children))
+        pv = heapq.nlargest(size, self.children,
+                            key=lambda item: (item.number_visits, item.prior))
+        if self.verbose:
+            print(self.name, 'pv:', [(n.move, n.number_visits, n.prior) for n in pv])
+        return pv[0].move, pv[0]
