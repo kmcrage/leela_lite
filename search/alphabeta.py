@@ -56,11 +56,9 @@ class ABNode:
             for child in current.children:
                 child_alpha = max(alpha, child.v_minus[d-1])
                 child_beta = min(beta, child.v_plus[d-1])
-                print('child', child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
+                print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
-            if not feasible_children:
-                break
             current = feasible_children[0]
             d -= 1
             alpha = -beta
@@ -70,6 +68,14 @@ class ABNode:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
         return current
+
+    def update_root(self):
+        for c in self.children:
+            # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
+            if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
+                c.number_visits = self.weight * math.pow(self.wscale, self.depth)
+        self.depth += 1
+        print('new depth', self.depth)
 
     def expand(self, child_priors):
         """
@@ -102,14 +108,6 @@ class ABNode:
             current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
             current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
-
-    def update_root(self):
-        for c in self.children:
-            # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
-            if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
-                c.number_visits = self.weight * math.pow(self.wscale, self.depth)
-        self.depth += 1
-        print('new depth', self.depth)
 
     def get_node(self, move):
         for node in self.children:
