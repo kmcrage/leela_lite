@@ -102,7 +102,6 @@ class ABNode:
     def update_root(self):
         if math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) > TOLERANCE:
             return
-        self.set_reward(self.depth)
         for c in self.children:
             # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
