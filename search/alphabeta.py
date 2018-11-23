@@ -103,14 +103,12 @@ class ABNode:
         if math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) > TOLERANCE:
             return
         self.set_reward(self.depth)
-        self.depth += 1
-        print('new depth', self.depth)
-
-    def set_reward(self, d):
         for c in self.children:
             # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
-            if math.fabs(self.v_plus[d] + c.v_plus[d-1]) < TOLERANCE:
-                c.number_visits = self.weight * math.pow(self.wscale, d)
+            if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
+                c.number_visits = self.weight * math.pow(self.wscale, self.depth)
+        self.depth += 1
+        print('new depth', self.depth)
 
     def get_node(self, move):
         for node in self.children:
