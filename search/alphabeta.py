@@ -109,7 +109,7 @@ class ABNode:
                 c.number_visits = self.weight * math.pow(self.wscale, d)
 
     def get_node(self, move):
-        if node in self.children:
+        for node in self.children:
             if node.move == move:
                 return node
         return None
