@@ -125,5 +125,5 @@ class ABNode:
         pv = heapq.nlargest(size, self.children,
                             key=lambda item: (item.number_visits, item.prior))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.number_visits, n.prior) for n in pv])
+            print(self.name, 'pv:', [(n.move, self.v_plus[self.depth - 1], n.number_visits, n.prior) for n in pv])
         return pv[0].move, pv[0]
