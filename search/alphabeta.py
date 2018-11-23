@@ -62,10 +62,10 @@ class ABNode:
             #    print('depth', d, 'ab', alpha, beta)
             #    for child in current.children:
             #        print(child.move, child.v_minus[d-1], child.v_plus[d-1])
+            # it is proven by Huang that this set is never empty
             current = feasible_children[0]
             d -= 1
-            alpha = -current.v_plus[d]
-            beta = -current.v_minus[d]
+            alpha, beta = -min(beta, current.v_plus[d]), -max(alpha, current.v_minus[d])
             # print('selcting', [c.move for c in feasible_children])
         if not current.board:
             current.board = current.parent.board.copy()
