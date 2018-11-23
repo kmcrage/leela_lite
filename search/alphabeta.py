@@ -45,8 +45,8 @@ class ABNode:
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()
 
-        alpha = self.v_minus[self.depth]
-        beta = self.v_plus[self.depth]
+        alpha = -self.v_plus[self.depth]
+        beta = -self.v_minus[self.depth]
         d = self.depth
         current = self
 
