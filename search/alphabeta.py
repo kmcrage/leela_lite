@@ -61,8 +61,7 @@ class ABNode:
                     feasible_children.append(child)
             current = feasible_children[0]
             d -= 1
-            alpha = -beta
-            beta = -alpha
+            alpha, beta = -beta, -alpha
             # print('selcting', [c.move for c in feasible_children])
         if not current.board:
             current.board = current.parent.board.copy()
