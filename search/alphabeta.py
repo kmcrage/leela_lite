@@ -42,10 +42,14 @@ class ABNode:
         self.number_visits = 0
 
     def select_leaf(self):
-        d = self.depth
+        while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
+            self.update_root()
+
         alpha = self.v_minus[self.depth]
         beta = self.v_plus[self.depth]
+        d = self.depth
         current = self
+
         print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.children and d:
             feasible_children = []
@@ -98,8 +102,6 @@ class ABNode:
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
 
     def update_root(self):
-        if math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) > TOLERANCE:
-            return
         for c in self.children:
             # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
