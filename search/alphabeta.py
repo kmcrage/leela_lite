@@ -16,7 +16,7 @@ class ABNode:
     name = 'ab'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
-                 k=9, verbose=True):
+                 k=5, verbose=True):
         # game state
         self.board = board
         self.move = move
@@ -106,7 +106,7 @@ class ABNode:
         for c in self.children:
             print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
             if math.fabs(self.v_plus[d] + c.v_plus[d-1]) < TOLERANCE:
-                c.number_visits = self.weight + math.pow(self.wscale, d)
+                c.number_visits = self.weight * math.pow(self.wscale, d)
 
     def get_node(self, move):
         if move in self.children:
