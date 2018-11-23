@@ -73,9 +73,6 @@ class ABNode:
         :param child_priors:
         :return:
         """
-        if self.is_expanded:
-            print('bonus')
-            return
         self.is_expanded = True
         # print('child priors', child_priors)
         for move, prior in (list(child_priors.items()))[:self.k]:
