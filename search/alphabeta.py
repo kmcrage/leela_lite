@@ -104,7 +104,7 @@ class ABNode:
 
     def set_reward(self, d):
         for c in self.children:
-            # print('vplus', c.move, d, v, c.v_plus)
+            print('vplus', c.move, d, v, c.v_plus)
             if math.fabs(self.v_plus[d] + c.v_plus[d]) < TOLERANCE:
                 c.number_visits = self.weight + math.pow(self.wscale, d)
 
