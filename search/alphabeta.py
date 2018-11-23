@@ -17,6 +17,7 @@ class ABNode:
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
                  k=5, verbose=True):
+        self.verbose = verbose
         # game state
         self.board = board
         self.move = move
@@ -27,14 +28,12 @@ class ABNode:
 
         # search parms
         self.k = k
-        self.verbose = verbose
 
         # eval
         self.eval = 0
         self.depth = 0
         self.v_minus = defaultdict(lambda: LOSS)
         self.v_plus = defaultdict(lambda: WIN)
-        self.best_child = None
 
         # rewards
         self.weight = 10
@@ -79,7 +78,7 @@ class ABNode:
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
                 c.number_visits += self.weight * math.pow(self.wscale, self.depth)
         self.depth += 1
-        print('new depth', self.depth)
+        # print('new depth', self.depth)
 
     def expand(self, child_priors):
         """
