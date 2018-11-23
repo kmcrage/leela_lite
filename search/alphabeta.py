@@ -59,10 +59,10 @@ class ABNode:
                 # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
-            if not feasible_children:
-                print('depth', d, 'ab', alpha, beta)
-                for child in current.children:
-                    print(child.move, child.v_minus[d-1], child.v_plus[d-1])
+            # if not feasible_children:
+            #    print('depth', d, 'ab', alpha, beta)
+            #    for child in current.children:
+            #        print(child.move, child.v_minus[d-1], child.v_plus[d-1])
             current = feasible_children[0]
             d -= 1
             alpha = -current.v_plus[d]
@@ -77,7 +77,7 @@ class ABNode:
         for c in self.children:
             # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
-                c.number_visits = self.weight * math.pow(self.wscale, self.depth)
+                c.number_visits += self.weight * math.pow(self.wscale, self.depth)
         self.depth += 1
         print('new depth', self.depth)
 
