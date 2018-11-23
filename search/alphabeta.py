@@ -31,8 +31,6 @@ class ABNode:
 
         # eval
         self.eval = 0
-        self.alpha = LOSS
-        self.beta = WIN
         self.depth = 0
         self.v_minus = defaultdict(lambda: LOSS)
         self.v_plus = defaultdict(lambda: WIN)
@@ -45,22 +43,22 @@ class ABNode:
 
     def select_leaf(self):
         d = self.depth
-        alpha = self.alpha
-        beta = self.beta
+        alpha = LOSS
+        beta = WIN
         current = self
-        # print('selct leaf', d, alpha, beta)
+        print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.children and d:
             feasible_children = []
             for child in current.children:
-                child.alpha = max(alpha, child.v_minus[d-1])
-                child.beta = min(beta, child.v_plus[d-1])
-                # print('child', child.move, child.v_minus[d-1], child.v_plus[d-1], child.alpha, child.beta)
-                if child.alpha < child.beta:
+                child_alpha = max(alpha, child.v_minus[d-1])
+                child_beta = min(beta, child.v_plus[d-1])
+                print('child', child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
+                if child_alpha < child_beta:
                     feasible_children.append(child)
             current = feasible_children[0]
             d -= 1
-            alpha = -current.beta
-            beta = -current.alpha
+            alpha = -beta
+            beta = -alpha
             # print('selcting', [c.move for c in feasible_children])
         if not current.board:
             current.board = current.parent.board.copy()
