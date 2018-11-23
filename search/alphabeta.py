@@ -43,8 +43,8 @@ class ABNode:
 
     def select_leaf(self):
         d = self.depth
-        alpha = LOSS
-        beta = WIN
+        alpha = self.v_minus[self.depth]
+        beta = self.v_plus[self.depth]
         current = self
         print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.children and d:
