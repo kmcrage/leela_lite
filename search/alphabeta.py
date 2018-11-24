@@ -78,7 +78,10 @@ class ABNode:
         nxt = self
         bonus = self.weight * math.pow(self.wscale, self.depth)
         while d:
-            nxt = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE][0]
+            candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
+            if not candidates:
+                break
+            nxt = candidates[0]
             nxt.number_visits = bonus
             d -= 1
         self.depth += 1
@@ -135,11 +138,14 @@ class ABNode:
         if self.verbose:
             print(self.name, 'pv:', [(n.move, n.v_plus[self.depth - 2], n.number_visits, n.prior) for n in pv])
 
-            d = self.depth
-            nxt = self
+            d = self.depth - 1
+            nxt = pv[0]
             print('prediction:', end=' ')
             while d:
-                nxt = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d - 1]) < TOLERANCE][0]
+                candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d - 1]) < TOLERANCE]
+                if not candidates:
+                    break
+                nxt = candidates[0]
                 print(nxt.move, end=' ')
                 d -= 1
             print('')
