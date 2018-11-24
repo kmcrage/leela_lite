@@ -82,13 +82,13 @@ class ABNode:
         d = self.depth
         nxt = self
         while d:
-            candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_plus[d-1]) < TOLERANCE]
+            candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
             nxt = candidates[0]
             print(nxt.move, end=' ')
             d -= 1
         print('')
         for c in self.children:
-            if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
+            if math.fabs(self.v_plus[self.depth] + c.v_minus[self.depth-1]) < TOLERANCE:
                 c.number_visits += self.weight * math.pow(self.wscale, self.depth)
                 print('reward', c.move, c.number_visits, c.v_minus[self.depth-1], c.v_plus[self.depth-1],)
         self.depth += 1
