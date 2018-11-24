@@ -1,6 +1,7 @@
 import math
 import heapq
 from collections import defaultdict
+import weakref
 
 """
 A Rollout-Based Search Algorithm Unifying MCTS and Alpha-Beta
@@ -22,7 +23,7 @@ class ABNode:
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = parent  # Optional[UCTNode]
+        self.parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = []
         self.prior = prior  # float
 

@@ -1,6 +1,7 @@
 import math
 import heapq
 from collections import OrderedDict
+import weakref
 
 """
 Standard UCT
@@ -18,7 +19,7 @@ class UCTNode:
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = parent  # Optional[UCTNode]
+        self.parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
         self.total_value = -parent.Q() if parent else 0  # float, fpu is in lc0 rather than a0
