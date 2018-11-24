@@ -110,19 +110,20 @@ class ABNode:
     def backup(self, value_estimate):
         """
         minmax backup of alpha, beta values, increase depth counter if minmax solves that depth
+        values are stored as value to opponent rather than self value
         :param value_estimate:
         :return:
         """
         current = self
         d = 0
-        current.v_plus[d] = value_estimate
-        current.v_minus[d] = value_estimate
+        current.v_plus[d] = -value_estimate
+        current.v_minus[d] = -value_estimate
         # print('backup', current.move, value_estimate)
         while current.parent is not None:
             current = current.parent
             d += 1
-            current.v_minus[d] = -min([c.v_plus[d-1] for c in current.children])
-            current.v_plus[d] = -min([c.v_minus[d-1] for c in current.children])
+            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.children])
+            current.v_plus[d] = -max([c.v_minus[d-1] for c in current.children])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
 
     def get_node(self, move):
