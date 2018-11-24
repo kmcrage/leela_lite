@@ -78,8 +78,15 @@ class ABNode:
         return current
 
     def update_root(self):
+        print("depth", self.depth, sep=' ')
+        d = self.depth
+        nxt = self
+        while d >= 0:
+            candidates = [c for nxt.children if math.fabs(nxt.v_plus[d] + c.v_plus[d-1]) < TOLERANCE]
+            nxt = candidates[0]
+            print(nxt.move, sep=' ')
+            d -= 1
         for c in self.children:
-            # print('vplus', c.move, d, c.v_plus, c.v_minus, self.v_plus)
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
                 c.number_visits += self.weight * math.pow(self.wscale, self.depth)
         self.depth += 1
