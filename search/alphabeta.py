@@ -86,6 +86,7 @@ class ABNode:
             nxt = candidates[0]
             print(nxt.move, end=' ')
             d -= 1
+        print('')
         for c in self.children:
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
                 c.number_visits += self.weight * math.pow(self.wscale, self.depth)
