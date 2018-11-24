@@ -90,7 +90,7 @@ class ABNode:
         for c in self.children:
             if math.fabs(self.v_plus[self.depth] + c.v_plus[self.depth-1]) < TOLERANCE:
                 c.number_visits += self.weight * math.pow(self.wscale, self.depth)
-                print('reward', c.move, c.number_visits, c.v_plus[self.depth-1], c.v_minus[self.depth-1],)
+                print('reward', c.move, c.number_visits, c.v_minus[self.depth-1], c.v_plus[self.depth-1],)
         self.depth += 1
         # print('new depth', self.depth)
 
