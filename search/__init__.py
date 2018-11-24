@@ -17,7 +17,7 @@ from search.uctv import UCTV_search
 from search.sota import SOTA_search
 from search.st import STUCTNode
 
-from search.alphabeta import ABNode, AB4Node, AB6Node
+from search.alphabeta import ABNode
 
 from functools import partial
 from search.mcds import mcds_search
@@ -35,9 +35,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'st': partial(mcts_search, STUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
-           'alphabeta4': partial(mcts_search, AB4Node),
-           'alphabeta5': partial(mcts_search, ABNode),
-           'alphabeta6': partial(mcts_search, AB6Node),
+           'alphabeta': partial(mcts_search, ABNode),
 
            'nse_uct': partial(nse_search, UCTNode),
 

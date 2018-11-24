@@ -149,17 +149,3 @@ class ABNode:
                 d -= 1
             print('')
         return pv[0].move, pv[0]
-
-
-class AB4Node(ABNode):
-    name = 'ab4'
-
-    def __init__(self, k=4, **kwargs):
-        super().__init__(k=4, **kwargs)
-
-
-class AB6Node(ABNode):
-    name = 'ab6'
-
-    def __init__(self, k=6, **kwargs):
-        super().__init__(k=6, **kwargs)
