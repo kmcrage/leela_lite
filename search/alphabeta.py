@@ -47,7 +47,7 @@ class ABNode:
 
     def select_leaf(self):
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
-            self.update_root()
+            self.update_root()  # this also increments depth
 
         alpha = -self.v_plus[self.depth]
         beta = -self.v_minus[self.depth]
@@ -63,10 +63,6 @@ class ABNode:
                 # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
-            # if not feasible_children:
-            #    print('depth', d, 'ab', alpha, beta)
-            #    for child in current.children:
-            #        print(child.move, child.v_minus[d-1], child.v_plus[d-1])
             # it is proven by Huang that this set is never empty
             current = feasible_children[0]
             d -= 1
@@ -78,21 +74,14 @@ class ABNode:
         return current
 
     def update_root(self):
-        print("depth", self.depth, end=' ')
         d = self.depth
         nxt = self
+        bonus = self.weight * math.pow(self.wscale, self.depth)
         while d:
-            candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
-            nxt = candidates[0]
-            print(nxt.move, end=' ')
+            nxt = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE][0]
+            nxt.number_visits = bonus
             d -= 1
-        print('')
-        for c in self.children:
-            if math.fabs(self.v_plus[self.depth] + c.v_minus[self.depth-1]) < TOLERANCE:
-                c.number_visits += self.weight * math.pow(self.wscale, self.depth)
-                print('reward', c.move, c.number_visits, c.v_minus[self.depth-1], c.v_plus[self.depth-1],)
         self.depth += 1
-        # print('new depth', self.depth)
 
     def expand(self, child_priors):
         """
@@ -145,4 +134,13 @@ class ABNode:
                             key=lambda item: (item.number_visits, item.prior))
         if self.verbose:
             print(self.name, 'pv:', [(n.move, n.v_plus[self.depth - 2], n.number_visits, n.prior) for n in pv])
+
+            d = self.depth
+            nxt = self
+            print('prediction:', end='')
+            while d:
+                nxt = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d - 1]) < TOLERANCE][0]
+                print(nxt.move, end='')
+                d -= 1
+            print('')
         return pv[0].move, pv[0]
