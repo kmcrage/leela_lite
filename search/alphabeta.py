@@ -4,7 +4,7 @@ from collections import defaultdict
 import weakref
 
 """
-A Rollout-Based Search Algorithm Unifying MCTS and Alpha-Beta
+A Rollout-Based Alpha-Beta Search Algorithm
 """
 
 # this is used in float comparisons
@@ -31,15 +31,14 @@ class ABNode:
         self.k = k
 
         # eval
-        self.eval = 0
         self.depth = 0
         self.v_minus = defaultdict(lambda: LOSS)
         self.v_plus = defaultdict(lambda: WIN)
 
         # rewards
-        self.weight = 10
-        self.wscale = k + 1
-        self.number_visits = 0
+        self.weight = 1
+        self.wscale = k
+        self.bonus_visits = 0
 
     @property
     def parent(self):
@@ -82,7 +81,7 @@ class ABNode:
             if not candidates:
                 break
             nxt = candidates[0]
-            nxt.number_visits = bonus
+            nxt.bonus_visits = bonus
             d -= 1
         self.depth += 1
 
@@ -102,8 +101,8 @@ class ABNode:
     
     def backup(self, value_estimate):
         """
-        minmax backup of alpha, beta values, increase depth counter if minmax solves that depth
-        values are stored as value to opponent rather than self value
+        minmax backup of alpha, beta values
+        values are stored as value to opponent reward rather than self value
         :param value_estimate:
         :return:
         """
@@ -134,9 +133,9 @@ class ABNode:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children,
-                            key=lambda item: (item.number_visits, item.prior))
+                            key=lambda item: (item.bonus_visits, item.prior))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.v_plus[self.depth - 2], n.number_visits, n.prior) for n in pv])
+            print(self.name, 'pv:', [(n.move, n.v_plus[self.depth - 2], n.bonus_visits, n.prior) for n in pv])
 
             d = self.depth - 1
             nxt = pv[0]
@@ -150,3 +149,17 @@ class ABNode:
                 d -= 1
             print('')
         return pv[0].move, pv[0]
+
+
+class AB4Node(ABNode):
+    name = 'ab4'
+
+    def __init__(self, k=4, **kwargs):
+        super().__init__(k=4, **kwargs)
+
+
+class AB6Node(ABNode):
+    name = 'ab6'
+
+    def __init__(self, k=6, **kwargs):
+        super().__init__(k=6, **kwargs)
