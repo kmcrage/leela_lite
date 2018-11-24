@@ -137,10 +137,10 @@ class ABNode:
 
             d = self.depth
             nxt = self
-            print('prediction:', end='')
+            print('prediction:', end=' ')
             while d:
                 nxt = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d - 1]) < TOLERANCE][0]
-                print(nxt.move, end='')
+                print(nxt.move, end=' ')
                 d -= 1
             print('')
         return pv[0].move, pv[0]
