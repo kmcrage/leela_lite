@@ -19,7 +19,7 @@ class UCTNode:
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
+        self._parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
         self.prior = prior  # float
         self.total_value = -parent.Q() if parent else 0  # float, fpu is in lc0 rather than a0
@@ -27,6 +27,10 @@ class UCTNode:
         self.reward = 0
 
         self.verbose = verbose
+
+    @property
+    def parent(self):
+        return self._parent() if self._parent else None
 
     def Q(self):  # returns float
         return self.total_value / (1 + self.number_visits)

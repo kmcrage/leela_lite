@@ -23,7 +23,7 @@ class ABNode:
         self.board = board
         self.move = move
         self.is_expanded = False
-        self.parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
+        self._parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = []
         self.prior = prior  # float
 
@@ -40,6 +40,10 @@ class ABNode:
         self.weight = 10
         self.wscale = k + 1
         self.number_visits = 0
+
+    @property
+    def parent(self):
+        return self._parent() if self._parent else None
 
     def select_leaf(self):
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
