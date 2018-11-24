@@ -82,7 +82,7 @@ class ABNode:
         d = self.depth
         nxt = self
         while d >= 0:
-            candidates = [c for nxt.children if math.fabs(nxt.v_plus[d] + c.v_plus[d-1]) < TOLERANCE]
+            candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_plus[d-1]) < TOLERANCE]
             nxt = candidates[0]
             print(nxt.move, sep=' ')
             d -= 1
