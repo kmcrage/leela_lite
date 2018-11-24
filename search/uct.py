@@ -52,6 +52,8 @@ class UCTNode:
         return current
 
     def expand(self, child_priors):
+        if self.is_expanded:
+            return
         self.is_expanded = True
         for move, prior in child_priors.items():
             self.add_child(move, prior)

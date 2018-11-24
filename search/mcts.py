@@ -9,8 +9,6 @@ def mcts_search(nodeclass,
     root.verbose = verbose
     while budget > 0:
         leaf = root.select_leaf()
-        if leaf.is_expanded:
-            continue
         child_priors, value_estimate = net.evaluate(leaf.board)  # cached
         budget -= 1
         leaf.expand(child_priors)
