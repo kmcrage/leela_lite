@@ -53,6 +53,7 @@ class ABNode:
         d = self.depth
         current = self
 
+        print('1', current, current.move, current.parent)
         # print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.children and d:
             feasible_children = []
@@ -68,6 +69,7 @@ class ABNode:
             alpha, beta = -min(beta, current.v_plus[d]), -max(alpha, current.v_minus[d])
             # print('selcting', [c.move for c in feasible_children])
 
+        print('a', current, current.move, current.parent)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)

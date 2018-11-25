@@ -62,12 +62,14 @@ class ABUCTNode:
 
     def select_leaf(self):
         current = self
+        print('1', current, current.move, current.parent)
         while current.is_expanded and current.children:
             if random.random() < self.p:
                 current = current.best_child_uct()
             else:
                 current = self.select_leaf_ab()
-                break
+                break                break
+        print('a', current, current.move, current.parent)
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
