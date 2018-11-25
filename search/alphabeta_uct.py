@@ -18,7 +18,7 @@ class ABUCTNode:
     name = 'abuct'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
-                 k=5, cpuct=3.4, p=0.95, weight=10, wscale=5, verbose=True):
+                 k=5, cpuct=3.4, p=.99, weight=10, wscale=10, verbose=True):
         self.verbose = verbose
         # game state
         self.board = board
@@ -107,7 +107,7 @@ class ABUCTNode:
     def update_root(self):
         d = self.depth
         nxt = self
-        bonus = self.weight * math.pow(self.wscale, self.depth)
+        bonus = self.weight + self.wscale * self.depth
         while d:
             candidates = [c for c in nxt.ab_children() if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
             if not candidates:
