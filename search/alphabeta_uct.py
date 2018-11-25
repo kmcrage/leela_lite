@@ -87,6 +87,7 @@ class ABUCTNode:
             self.update_root()  # this also increments depth
             #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
 
+        print('d', self.depth)
         alpha = -self.v_plus[self.depth]
         beta = -self.v_minus[self.depth]
         d = self.depth
