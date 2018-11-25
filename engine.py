@@ -56,6 +56,7 @@ nodes = int(sys.argv[3])
 backend = 'pytorch_cuda' if path.exists('/opt/bin/nvidia-smi') else 'pytorch_cpu'
 net = load_network(backend=backend, filename=weights, policy_softmax_temp=2.2)
 nn = search.NeuralNet(net=net)
+node = None
 
 send("Leela Lite")
 board = LeelaBoard()
@@ -80,8 +81,10 @@ while True:
         board = LeelaBoard()
     elif tokens[0] == 'position':
         board = process_position(tokens)
+        if node:
+            node = node.get_node(tokens[-1])
     elif tokens[0] == 'go':
-        best, node = search.engines[policy](board, nodes, net=nn)
+        best, node = search.engines[policy](board, nodes, net=nn, root=node)
         send("bestmove {}".format(best))
     else:
         print('unknown:', tokens)
