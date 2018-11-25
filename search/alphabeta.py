@@ -70,9 +70,6 @@ class ABNode:
             # print('selcting', [c.move for c in feasible_children])
 
         print('a', current, current.move, current.parent)
-        if not current.board:
-            current.board = current.parent.board.copy()
-            current.board.push_uci(current.move)
 
         return current
 
@@ -101,7 +98,9 @@ class ABNode:
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children.append(self.__class__(parent=self, move=move, prior=prior))
+        board = self.board.copy()
+        board.push_uci(move)
+        self.children.append(self.__class__(parent=self, move=move, prior=prior, board=board))
     
     def backup(self, value_estimate):
         """
