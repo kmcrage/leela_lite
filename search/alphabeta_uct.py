@@ -177,9 +177,9 @@ class ABUCTNode:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children,
-                            key=lambda item: (item.number_visits + item.bonus_visits, item.prior))
+                            key=lambda item: (item.number_visits + item.bonus_visits, item.Q(), item.prior))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.number_visits, n.bonus_visits) for n in pv])
+            print(self.name, 'pv:', [(n.move, n.Q(), n.v_plus[n.depth-1], n.number_visits, n.bonus_visits) for n in pv])
 
             print('prediction:', end=' ')
             predict = pv[0]
