@@ -82,24 +82,21 @@ class ABUCTNode:
         return ab_children
 
     def select_leaf_ab(self):
-        print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()  # this also increments depth
-            #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
 
-        print('d', self.depth)
         alpha = -self.v_plus[self.depth]
         beta = -self.v_minus[self.depth]
         d = self.depth
         current = self
 
-        #print('selct leaf', d, alpha, beta)
+        # print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.ab_children() and d:
             feasible_children = []
             for child in current.ab_children():
                 child_alpha = max(alpha, child.v_minus[d-1])
                 child_beta = min(beta, child.v_plus[d-1])
-                #print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
+                # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
             # it is proven by Huang that this set is never empty
@@ -116,18 +113,14 @@ class ABUCTNode:
         d = self.depth
         nxt = self
         bonus = self.weight * math.pow(self.wscale, self.depth)
-        print('depth', self.depth)
         while d:
-            print([(c.move, nxt.v_plus[d], c.v_minus[d-1]) for c in nxt.ab_children()])
             candidates = [c for c in nxt.ab_children() if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
-            print([c.move for c in candidates])
             if not candidates:
                 break
             nxt = candidates[0]
             nxt.bonus_visits = bonus
             d -= 1
         self.depth += 1
-        print('depth ->', self.depth)
 
     def expand(self, child_priors):
         """
