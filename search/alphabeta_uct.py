@@ -104,9 +104,7 @@ class ABUCTNode:
             d -= 1
             alpha, beta = -min(beta, current.v_plus[d]), -max(alpha, current.v_minus[d])
             # print('selcting', [c.move for c in feasible_children])
-        if not current.board:
-            current.board = current.parent.board.copy()
-            current.board.push_uci(current.move)
+
         return current
 
     def update_root(self):
@@ -179,7 +177,7 @@ class ABUCTNode:
         pv = heapq.nlargest(size, self.children,
                             key=lambda item: (item.number_visits + item.bonus_visits, item.Q(), item.prior))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.Q(), n.v_plus[n.depth-1], n.number_visits, n.bonus_visits) for n in pv])
+            print(self.name, 'pv:', [(n.move, n.Q(), n.v_plus[self.depth-2], n.number_visits, n.bonus_visits) for n in pv])
 
             print('prediction:', end=' ')
             predict = pv[0]

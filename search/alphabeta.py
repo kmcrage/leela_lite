@@ -67,9 +67,11 @@ class ABNode:
             d -= 1
             alpha, beta = -min(beta, current.v_plus[d]), -max(alpha, current.v_minus[d])
             # print('selcting', [c.move for c in feasible_children])
+
         if not current.board:
             current.board = current.parent.board.copy()
             current.board.push_uci(current.move)
+
         return current
 
     def update_root(self):
