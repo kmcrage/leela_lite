@@ -46,9 +46,6 @@ class UCTNode:
         current = self
         while current.is_expanded and current.children:
             current = current.best_child()
-        if not current.board:
-            current.board = current.parent.board.copy()
-            current.board.push_uci(current.move)
         return current
 
     def expand(self, child_priors):
@@ -59,7 +56,9 @@ class UCTNode:
             self.add_child(move, prior)
 
     def add_child(self, move, prior):
-        self.children[move] = self.__class__(parent=self, move=move, prior=prior)
+        board = self.board.copy()
+        board.push_uci(move)
+        self.children[move] = self.__class__(parent=self, move=move, prior=prior, board=board)
     
     def backup(self, value_estimate: float):
         current = self
