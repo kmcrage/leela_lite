@@ -62,14 +62,12 @@ class ABUCTNode:
 
     def select_leaf(self):
         current = self
-        print('1', current, current.move, current.parent)
         while current.is_expanded and current.children:
             if random.random() < self.p:
                 current = current.best_child_uct()
             else:
                 current = self.select_leaf_ab()
                 break
-        print('a', current, current.move, current.parent)
         return current
 
     def ab_children(self):
