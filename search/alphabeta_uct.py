@@ -18,7 +18,7 @@ class ABUCTNode:
     name = 'abuct'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
-                 k=5, cpuct=3.4, p=1., weight=1, wscale=5, verbose=True):
+                 k=5, cpuct=3.4, p=0., weight=1, wscale=5, verbose=True):
         self.verbose = verbose
         # game state
         self.board = board
@@ -31,7 +31,7 @@ class ABUCTNode:
         # search parms
         self.k = k  # pruning for ab
         self.cpuct = cpuct  # width for uct
-        self.p = p  # uct vs ab
+        self.p = p  # ab:0 vs uct:1
 
         # eval
         self.depth = 0
