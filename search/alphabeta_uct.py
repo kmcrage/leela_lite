@@ -116,7 +116,7 @@ class ABUCTNode:
         nxt = self
         bonus = self.weight * math.pow(self.wscale, self.depth)
         while d:
-            print([c.move, nxt.v_plus[d], c.v_minus[d-1] for c in nxt.ab_children()])
+            print([(c.move, nxt.v_plus[d], c.v_minus[d-1]) for c in nxt.ab_children()])
             candidates = [c for c in nxt.ab_children() if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
             print([c.move for c in candidates])
             if not candidates:
