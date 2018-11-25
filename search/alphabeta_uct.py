@@ -82,8 +82,10 @@ class ABUCTNode:
         return ab_children
 
     def select_leaf_ab(self):
+        print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()  # this also increments depth
+            print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
 
         alpha = -self.v_plus[self.depth]
         beta = -self.v_minus[self.depth]
@@ -96,7 +98,7 @@ class ABUCTNode:
             for child in current.ab_children():
                 child_alpha = max(alpha, child.v_minus[d-1])
                 child_beta = min(beta, child.v_plus[d-1])
-                print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
+                #print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
             # it is proven by Huang that this set is never empty
