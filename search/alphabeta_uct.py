@@ -5,7 +5,11 @@ import random
 import weakref
 
 """
-A Rollout-Based Alpha-Beta Search Algorithm
+Based on
+
+A Rollout-Based Search Algorithm Unifying MCTS and Alpha-Beta
+Hendrik Baier
+
 """
 
 # this is used in float comparisons
@@ -18,7 +22,7 @@ class ABUCTNode:
     name = 'abuct'
 
     def __init__(self, board=None, parent=None, move=None, prior=0,
-                 k=5, cpuct=3.4, p=.95, weight=0, wscale=5, verbose=True):
+                 k=5, cpuct=3.4, p=.95, weight=1, wscale=5, verbose=True):
         self.verbose = verbose
         # game state
         self.board = board
@@ -66,18 +70,18 @@ class ABUCTNode:
             if random.random() < self.p:
                 current = current.best_child_uct()
             else:
-                current = current.select_leaf_ab()
+                current = current.best_child_ab()
         return current
 
-    def ab_children(self):
-        ab_children = [c for c in self.children if c.number_visits > 0]
-        if len(ab_children) < self.k:
-            ab_children += heapq.nlargest(self.k - len(ab_children),
+    def children_ab(self):
+        children_ab = [c for c in self.children if c.number_visits > 0]
+        if len(children_ab) < self.k:
+            children_ab += heapq.nlargest(self.k - len(children_ab),
                                           [c for c in self.children if not c.number_visits],
                                           key=lambda c: c.prior)
-        return ab_children
+        return children_ab
 
-    def select_leaf_ab(self):
+    def best_child_ab(self):
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()  # this also increments depth
 
@@ -87,9 +91,9 @@ class ABUCTNode:
         current = self
 
         # print('selct leaf', d, alpha, beta)
-        while current.is_expanded and current.ab_children() and d:
+        while current.is_expanded and current.children_ab() and d:
             feasible_children = []
-            for child in current.ab_children():
+            for child in current.children_ab():
                 child_alpha = max(alpha, child.v_minus[d-1])
                 child_beta = min(beta, child.v_plus[d-1])
                 # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
@@ -111,7 +115,7 @@ class ABUCTNode:
         nxt = self
         bonus = self.ab_bonus()
         while d:
-            candidates = [c for c in nxt.ab_children() if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
+            candidates = [c for c in nxt.children_ab() if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
             if not candidates:
                 break
             nxt = candidates[0]
@@ -139,7 +143,7 @@ class ABUCTNode:
     def backup(self, value_estimate):
         """
         minmax backup of alpha, beta values
-        averaging backup of uxt value
+        averaging backup of uct value
         values are stored as value to opponent reward rather than self value
         :param value_estimate:
         :return:
@@ -155,8 +159,8 @@ class ABUCTNode:
         while current.parent is not None:
             current = current.parent
             d += 1
-            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.ab_children()])
-            current.v_plus[d] = -max([c.v_minus[d-1] for c in current.ab_children()])
+            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.children_ab()])
+            current.v_plus[d] = -max([c.v_minus[d-1] for c in current.children_ab()])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
             current.number_visits += 1
             turnfactor *= -1
