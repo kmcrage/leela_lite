@@ -45,7 +45,7 @@ class ABNode:
         return self._parent() if self._parent else None
 
     def select_leaf(self):
-        #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
+        print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()  # this also increments depth
             #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])

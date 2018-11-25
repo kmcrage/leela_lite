@@ -82,7 +82,7 @@ class ABUCTNode:
         return ab_children
 
     def select_leaf_ab(self):
-        #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
+        print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
         while math.fabs(self.v_minus[self.depth] - self.v_plus[self.depth]) < TOLERANCE:
             self.update_root()  # this also increments depth
             #print(self.depth, self.v_minus[self.depth], self.v_plus[self.depth])
