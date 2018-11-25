@@ -80,6 +80,7 @@ class ABNode:
         bonus = self.weight * math.pow(self.wscale, self.depth)
         while d:
             candidates = [c for c in nxt.children if math.fabs(nxt.v_plus[d] + c.v_minus[d-1]) < TOLERANCE]
+            print([c.move for c in candidates])
             if not candidates:
                 break
             nxt = candidates[0]
