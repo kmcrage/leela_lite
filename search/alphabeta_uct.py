@@ -115,6 +115,7 @@ class ABUCTNode:
             nxt = candidates[0]
             nxt.bonus_visits = bonus
             d -= 1
+            nxt.depth = d
         self.depth += 1
 
     def expand(self, child_priors):
@@ -176,7 +177,9 @@ class ABUCTNode:
         pv = heapq.nlargest(size, self.children,
                             key=lambda item: (item.number_visits + item.bonus_visits, item.Q(), item.prior))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.Q(), n.v_plus[self.depth-2], n.number_visits, n.bonus_visits) for n in pv])
+            print(self.name, 'pv:', [(n.move,
+                                      n.Q(), n.v_plus[self.depth-2],
+                                      n.number_visits, n.bonus_visits) for n in pv])
 
             print('prediction:', end=' ')
             predict = pv[0]
