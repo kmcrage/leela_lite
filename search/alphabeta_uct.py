@@ -115,7 +115,7 @@ class ABUCTNode:
             nxt = candidates[0]
             nxt.bonus_visits = bonus
             d -= 1
-            nxt.depth = d
+            nxt.depth = max(nxt.depth, d)
         self.depth += 1
 
     def expand(self, child_priors):
