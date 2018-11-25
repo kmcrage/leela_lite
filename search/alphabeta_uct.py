@@ -162,12 +162,12 @@ class ABUCTNode:
         while current.parent is not None:
             current = current.parent
             d += 1
-            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.children])
-            current.v_plus[d] = -max([c.v_minus[d-1] for c in current.children])
+            current.v_minus[d] = -max([c.v_plus[d-1] for c in current.ab_children()])
+            current.v_plus[d] = -max([c.v_minus[d-1] for c in current.ab_children()])
             # print('est', current.depth, current.move, current.v_minus[current.depth], current.v_plus[current.depth])
             current.number_visits += 1
             turnfactor *= -1
-            current.total_value += (value_estimate * turnfactor)
+            current.total_value += value_estimate * turnfactor
 
     def get_node(self, move):
         for node in self.children:
