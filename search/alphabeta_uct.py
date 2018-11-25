@@ -90,13 +90,13 @@ class ABUCTNode:
         d = self.depth
         current = self
 
-        # print('selct leaf', d, alpha, beta)
+        print('selct leaf', d, alpha, beta)
         while current.is_expanded and current.ab_children() and d:
             feasible_children = []
             for child in current.ab_children():
                 child_alpha = max(alpha, child.v_minus[d-1])
                 child_beta = min(beta, child.v_plus[d-1])
-                # print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
+                print('child', d, child.move, child.v_minus[d-1], child.v_plus[d-1], child_alpha, child_beta)
                 if child_alpha < child_beta:
                     feasible_children.append(child)
             # it is proven by Huang that this set is never empty
