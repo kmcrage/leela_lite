@@ -68,7 +68,7 @@ class ABUCTNode:
                 current = current.best_child_uct()
             else:
                 current = self.select_leaf_ab()
-                break                break
+                break
         print('a', current, current.move, current.parent)
         if not current.board:
             current.board = current.parent.board.copy()
