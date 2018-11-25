@@ -126,6 +126,7 @@ class ABUCTNode:
             nxt.bonus_visits = bonus
             d -= 1
         self.depth += 1
+        print('depth ->', self.depth)
 
     def expand(self, child_priors):
         """
