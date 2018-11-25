@@ -77,7 +77,7 @@ class ABUCTNode:
         ab_children = [c for c in self.children if c.number_visits > 0]
         if len(ab_children) < self.k:
             ab_children += heapq.nlargest(self.k - len(ab_children),
-                                          [c for c in self.children if not c.number_visits,
+                                          [c for c in self.children if not c.number_visits],
                                           key=lambda c: c.prior)
         return ab_children
 
