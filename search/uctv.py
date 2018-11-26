@@ -16,7 +16,7 @@ class Variance_mixin:
         return math.sqrt(self.total_vsquared / self.number_visits - self.Q() ** 2)
 
     def U(self):  # returns float
-        return (math.sqrt(self.parent.number_visits) / (1 + self.number_visits) + self.prior) * self.sigma()
+        return (0. * math.sqrt(self.parent.number_visits) + self.prior) * self.sigma()
 
     def best_child(self):
         return max(self.children.values(),
