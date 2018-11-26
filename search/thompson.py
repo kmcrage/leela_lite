@@ -26,7 +26,7 @@ class Thompson_mixin:
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
-            turnfactor *= -0.5
+            turnfactor *= -1
             current.num_wins += self.result_weight * (1 - value_estimate * turnfactor)
             current.num_losses += self.result_weight * (1 + value_estimate * turnfactor)
 
