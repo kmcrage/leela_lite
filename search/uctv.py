@@ -5,8 +5,11 @@ from search.uct import UCTNode
 class Variance_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.total_vsquared = self.parent.total_vsquared / self.parent.number_visits if self.parent else 0.   # float
-
+        if self.parent and self.parent.number_visits:
+            self.total_vsquared = self.parent.total_vsquared / self.parent.number_visits
+        else:
+            self.total_vsquared = 0
+            
     def sigma(self):  # returns float
         return math.sqrt(self.total_vsquared / (1 + self.number_visits) - self.Q() ** 2)
 
