@@ -9,7 +9,7 @@ class Variance_mixin:
             self.total_vsquared = self.parent.total_vsquared / self.parent.number_visits
         else:
             self.total_vsquared = 0
-            
+
     def sigma(self):  # returns float
         return math.sqrt(self.total_vsquared / (1 + self.number_visits) - self.Q() ** 2)
 
@@ -18,7 +18,7 @@ class Variance_mixin:
 
     def best_child(self):
         return max(self.children.values(),
-                   key=lambda node: (node.Q() + self.cpuct * node.U))
+                   key=lambda node: (node.Q() + self.cpuct * node.U()))
 
     def backup(self, value_estimate: float):
         current = self
