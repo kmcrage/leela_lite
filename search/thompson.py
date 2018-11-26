@@ -2,6 +2,7 @@ import math
 from search.uct import UCTNode
 import os
 import numpy
+import heapq
 
 
 class Thompson_mixin:
