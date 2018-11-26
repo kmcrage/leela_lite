@@ -7,8 +7,8 @@ import numpy
 class Thompson_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.prior_weight = 5.
-        self.result_weight = 1.
+        self.prior_weight = float(os.getenv("PW", "5.0"))
+        self.result_weight = float(os.getenv("RW", "1.0"))
         self.num_wins = 1 + self.prior_weight * self.prior  # from pov of parent
         self.num_losses = 1 + self.prior_weight * (1 - self. prior)
 
