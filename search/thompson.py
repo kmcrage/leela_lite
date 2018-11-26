@@ -7,8 +7,8 @@ import numpy
 class Thompson_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.num_wins = 1 + 20 * self.prior  # from pov of parent
-        self.num_losses = 1 + 20 * (1 - self. prior)
+        self.num_wins = 1 + self.prior  # from pov of parent
+        self.num_losses = 1 + (1 - self. prior)
 
     def best_child(self):
         return max(self.children.values(),
