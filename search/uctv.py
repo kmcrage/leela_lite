@@ -2,6 +2,7 @@ import math
 from search.uct import UCTNode
 import os
 
+
 class Variance_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -13,8 +14,9 @@ class Variance_mixin:
         self.b = float(os.getenv('UCTV_VAR', "1."))
 
     def sigma(self):  # returns float
-        if self.number_visits < 3:
-            return 1.
+        if self.number_visits < 3 and self.parent:
+            return self.parent.sigma()
+
         return math.sqrt(self.total_vsquared / self.number_visits - self.Q() ** 2)
 
     def U(self):  # returns float
