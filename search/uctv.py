@@ -11,7 +11,9 @@ class Variance_mixin:
             self.total_vsquared = 0
 
     def sigma(self):  # returns float
-        return math.sqrt(self.total_vsquared / (1 + self.number_visits) - self.Q() ** 2)
+        if self.number_visits < 3:
+            return 1.
+        return math.sqrt(self.total_vsquared / self.number_visits - self.Q() ** 2)
 
     def U(self):  # returns float
         return (math.sqrt(self.parent.number_visits) / (1 + self.number_visits) + self.prior) * self.sigma()
