@@ -15,10 +15,10 @@ class Thompson_mixin:
 
     def best_child(self):
         def beta(node):
-            phi = math.sqrt(math.log(node.parent.number_visits) / node.number_visits)
+            phi = math.sqrt(math.log(1 + node.parent.number_visits) / (1 + node.number_visits))
             return numpy.random.beta(node.num_wins/phi, node.num_losses/phi)
         return max(self.children.values(), key=beta)
-    
+
     def backup(self, value_estimate: float):
         current = self
         turnfactor = 1
