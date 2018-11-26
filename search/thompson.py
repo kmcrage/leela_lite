@@ -18,6 +18,7 @@ class Thompson_mixin:
         current = self
         current.num_wins += 1 - value_estimate
         current.num_losses += 1 + value_estimate
+        current.number_visits += 1
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = 1
         while current.parent is not None:
