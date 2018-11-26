@@ -19,11 +19,10 @@ class Thompson_mixin:
 
     def backup(self, value_estimate: float):
         current = self
-        current.num_wins += self.result_weight * (1 - value_estimate)
-        current.num_losses += self.result_weight * (1 + value_estimate)
+        turnfactor = -1
+        current.num_wins += self.result_weight * (1 - value_estimate * turnfactor)
+        current.num_losses += self.result_weight * (1 + value_estimate * turnfactor)
         current.number_visits += 1
-        # Child nodes are multiplied by -1 because we want max(-opponent eval)
-        turnfactor = 1
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
