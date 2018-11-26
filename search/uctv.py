@@ -9,8 +9,8 @@ class Variance_mixin:
             self.total_vsquared = self.parent.total_vsquared / self.parent.number_visits
         else:
             self.total_vsquared = 0
-        self.a = os.getenv('UCTV_CPUCT', 1.)
-        self.b = os.getenv('UCTV_VAR', 1.)
+        self.a = float(os.getenv('UCTV_CPUCT', "1."))
+        self.b = float(os.getenv('UCTV_VAR', "1."))
 
     def sigma(self):  # returns float
         if self.number_visits < 3:
