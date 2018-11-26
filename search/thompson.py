@@ -7,12 +7,12 @@ import numpy
 class Thompson_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.num_wins = 20 * self.prior  # from pov of parent
-        self.num_losses = 20 * (1 - self. prior)
+        self.num_wins = 1 + 20 * self.prior  # from pov of parent
+        self.num_losses = 1 + 20 * (1 - self. prior)
 
     def best_child(self):
         return max(self.children.values(),
-                   key=lambda node: numpy.random.beta(node.num_losses, node.num_wins))
+                   key=lambda node: numpy.random.beta(node.num_wins, node.num_losses))
 
     def backup(self, value_estimate: float):
         current = self
