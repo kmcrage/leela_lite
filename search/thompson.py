@@ -14,9 +14,11 @@ class Thompson_mixin:
         self.num_losses = 1 + self.prior_weight * (1 - self. prior)
 
     def best_child(self):
-        return max(self.children.values(),
-                   key=lambda node: numpy.random.beta(node.num_wins, node.num_losses))
-
+        def beta(node):
+            phi = math.sqrt(math.log(node.parent.number_visits) / node.number_visits)
+            return numpy.random.beta(node.num_wins/phi, node.num_losses/phi)
+        return max(self.children.values(), key=beta)
+    
     def backup(self, value_estimate: float):
         current = self
         turnfactor = 1
