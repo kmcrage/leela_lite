@@ -1,6 +1,6 @@
 import math
 from search.uct import UCTNode
-
+import os
 
 class Variance_mixin:
     def __init__(self, **kwargs):
@@ -9,6 +9,8 @@ class Variance_mixin:
             self.total_vsquared = self.parent.total_vsquared / self.parent.number_visits
         else:
             self.total_vsquared = 0
+        self.a = os.getenv('UCTV_CPUCT', 1.)
+        self.b = os.getenv('UCTV_VAR', 1.)
 
     def sigma(self):  # returns float
         if self.number_visits < 3:
@@ -16,7 +18,7 @@ class Variance_mixin:
         return math.sqrt(self.total_vsquared / self.number_visits - self.Q() ** 2)
 
     def U(self):  # returns float
-        return (0. * math.sqrt(self.parent.number_visits) + self.prior) * self.sigma()
+        return (self.a * math.sqrt(self.parent.number_visits) + self.b * self.prior) * self.sigma()
 
     def best_child(self):
         return max(self.children.values(),
