@@ -33,5 +33,5 @@ class Variance_mixin:
             current.total_vsquared += value_estimate ** 2
 
 
-class UCTV(Variance_mixin, UCTNode):
+class UCTVNode(Variance_mixin, UCTNode):
     name = 'uctv'
