@@ -35,7 +35,7 @@ class Thompson_mixin:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda item: (n[1].num_wins - n[1].num_losses) / (n[1].num_wins+n[1].num_losses))
+                            key=lambda n: (n[1].num_wins - n[1].num_losses) / (n[1].num_wins+n[1].num_losses))
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       (n[1].num_wins - n[1].num_losses) / (n[1].num_wins+n[1].num_losses),
