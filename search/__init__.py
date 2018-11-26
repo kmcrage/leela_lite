@@ -14,6 +14,7 @@ from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
 from search.uctv import UCTVNode
+from search.thompson import UCTTNode
 from search.sota import SOTA_search
 from search.st import STUCTNode
 
