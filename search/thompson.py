@@ -7,8 +7,10 @@ import numpy
 class Thompson_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.num_wins = 1 + self.prior  # from pov of parent
-        self.num_losses = 1 + (1 - self. prior)
+        self.prior_weight = 5.
+        self.result_weight = 1.
+        self.num_wins = 1 + self.prior_weight * self.prior  # from pov of parent
+        self.num_losses = 1 + self.prior_weight * (1 - self. prior)
 
     def best_child(self):
         return max(self.children.values(),
@@ -16,8 +18,8 @@ class Thompson_mixin:
 
     def backup(self, value_estimate: float):
         current = self
-        current.num_wins += 1 - value_estimate
-        current.num_losses += 1 + value_estimate
+        current.num_wins += self.result_weight * (1 - value_estimate)
+        current.num_losses += self.result_weight * (1 + value_estimate)
         current.number_visits += 1
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = 1
@@ -25,8 +27,8 @@ class Thompson_mixin:
             current = current.parent
             current.number_visits += 1
             turnfactor *= -1
-            current.num_wins += 1 - value_estimate * turnfactor
-            current.num_losses += 1 + value_estimate * turnfactor
+            current.num_wins += self.result_weight * (1 - value_estimate * turnfactor)
+            current.num_losses += self.result_weight * (1 + value_estimate * turnfactor)
 
 
 class UCTTNode(Thompson_mixin, UCTNode):
