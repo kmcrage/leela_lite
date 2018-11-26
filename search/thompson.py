@@ -28,5 +28,6 @@ class Thompson_mixin:
             current.num_losses += 1 + value_estimate * turnfactor
 
 
-class UCTVNode(Variance_mixin, UCTNode):
-    name = 'uctv'
+class UCTTNode(Thompson_mixin, UCTNode):
+    name = 'uctt'
+

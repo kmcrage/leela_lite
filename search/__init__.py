@@ -35,6 +35,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'pruned': partial(mcts_search, PrunedUCTNode),
            'st': partial(mcts_search, STUCTNode),
            'uctv': partial(mcts_search, UCTVNode),
+           'uctt': partial(mcts_search, UCTTNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),
