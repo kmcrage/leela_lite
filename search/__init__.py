@@ -13,7 +13,7 @@ from search.prune import PrunedUCTNode
 from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
-from search.uctv import UCTV_search
+from search.uctv import UCTVNode
 from search.sota import SOTA_search
 from search.st import STUCTNode
 
@@ -34,6 +34,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'minmaxt': partial(mcts_search, MinMaxUCTNode),
            'pruned': partial(mcts_search, PrunedUCTNode),
            'st': partial(mcts_search, STUCTNode),
+           'uctv': partial(mcts_search, UCTVNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),
@@ -45,7 +46,6 @@ engines = {'uct': partial(mcts_search, UCTNode),
 
            'mpa': MPA_search,
            'voi': VOI_search,
-           'uctv': UCTV_search,
            'crazy': CRAZY_search,
            'srcr': SRCR_search,
            'asym': Asym_search,
