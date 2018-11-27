@@ -6,12 +6,12 @@ import heapq
 
 
 class Thompson_mixin:
-    def __init__(self, action_value=0, **kwargs):
+    def __init__(self, action_value=0, prior_weight=10., prior_scale=1., beta_scale=50, **kwargs):
         super().__init__(**kwargs)
-        self.prior_weight = float(os.getenv("PW", "5.0"))
-        self.result_weight = float(os.getenv("RW", "1.0"))
-        self.num_wins = 10 * (1. + action_value) / 2.
-        self.num_losses = 10 * (1. - action_value) / 2.
+        self.prior_scale = prior_scale
+        self.beta_scale = beta_scale
+        self.num_wins = prior_weight * (1. + action_value) / 2.
+        self.num_losses = prior_weight * (1. - action_value) / 2.
 
     def expand(self, child_priors):
         """
@@ -24,7 +24,7 @@ class Thompson_mixin:
         self.is_expanded = True
         offset = sum([p*p for p in child_priors.values()])
         for move, prior in child_priors.items():
-            action_value = -self.Q() + self.prior_weight * (prior - offset)
+            action_value = -self.Q() + self.prior_scale * (prior - offset)
             self.add_child(move, prior, action_value)
 
     def add_child(self, move, prior, action_value):
@@ -35,9 +35,7 @@ class Thompson_mixin:
 
     def best_child(self):
         def beta(node):
-            phi = self.result_weight * math.sqrt(math.sqrt(1 + node.parent.number_visits) / (1 + node.number_visits))
-            phi = self.result_weight
-            return numpy.random.beta(node.num_wins/phi, node.num_losses/phi)
+            return numpy.random.beta(node.beta_scale * node.num_wins, node.beta_scale * node.num_losses)
         return max(self.children.values(), key=beta)
 
     def backup(self, value_estimate: float):
