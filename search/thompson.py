@@ -4,7 +4,7 @@ import heapq
 
 
 class Thompson_mixin:
-    def __init__(self, action_value=0., prior_weight=10., prior_scale=.1, beta_scale=1., **kwargs):
+    def __init__(self, action_value=0., prior_weight=30., prior_scale=.1, beta_scale=20., **kwargs):
         super().__init__(**kwargs)
         self.prior_scale = prior_scale
         self.beta_scale = beta_scale
