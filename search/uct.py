@@ -2,6 +2,7 @@ import math
 import heapq
 from collections import OrderedDict
 import weakref
+import statistics
 
 """
 Standard UCT
@@ -105,4 +106,7 @@ class UCTNode:
                                      key=lambda item: (item[1].number_visits, item[1].Q()))[0]
             print(predict[0], end=' ')
         print('')
+        beta = sum([c.prior ** 2 for c in self.children.values()])
+        const = statistics.median([(self.Q() + c.Q())/max(0.0000001, c.prior + beta) for c in self.children.values()])
+        print('const', c)
         return pv[0] if pv else None
