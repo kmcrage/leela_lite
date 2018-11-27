@@ -1,6 +1,4 @@
-import math
 from search.uct import UCTNode
-import os
 import numpy
 import heapq
 
@@ -13,6 +11,9 @@ class Thompson_mixin:
         self.num_wins = prior_weight * (1. + action_value) / 2.
         self.num_losses = prior_weight * (1. - action_value) / 2.
 
+    def Q(self):
+        return (self.num_losses - self.num_wins) / (self.num_wins + self.num_losses)
+
     def expand(self, child_priors):
         """
         fake an action value
@@ -24,7 +25,7 @@ class Thompson_mixin:
         self.is_expanded = True
         offset = sum([p*p for p in child_priors.values()])
         for move, prior in child_priors.items():
-            action_value = -self.Q() + self.prior_scale * (prior - offset)
+            action_value = numpy.clip(-self.Q() + self.prior_scale * (prior - offset), -1., 1.)
             self.add_child(move, prior, action_value)
 
     def add_child(self, move, prior, action_value):
@@ -54,13 +55,9 @@ class Thompson_mixin:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda n: (n[1].number_visits,
-                                           (n[1].num_wins - n[1].num_losses) / (1 + n[1].num_wins + n[1].num_losses)
-                                           ))
+                            key=lambda n: (n[1].number_visits, n[1].Q()))
         if self.verbose:
-            print(self.name, 'pv:', [(n[0],
-                                      (n[1].num_wins - n[1].num_losses) / (n[1].num_wins+n[1].num_losses),
-                                      n[1].number_visits) for n in pv])
+            print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
         # there could be no moves if we jump into a mate somehow
         print('prediction:', end=' ')
         predict = pv[0]
