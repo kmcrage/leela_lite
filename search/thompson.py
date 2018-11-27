@@ -75,11 +75,11 @@ class UCTTNode(Thompson_mixin, UCTNode):
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
-    def __init__(self, prior_scale=.05, **kwargs):
-        super().__init__(prior_scale=prior_scale, **kwargs)
+    def __init__(self, test_low=10, **kwargs):
+        super().__init__(beta_scale=test_low, **kwargs)
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, prior_scale=.2, **kwargs):
-        super().__init__(prior_scale=prior_scale, **kwargs)
+    def __init__(self, test_high=40, **kwargs):
+        super().__init__(beta_scale=test_high, **kwargs)
