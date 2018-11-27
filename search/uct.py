@@ -106,7 +106,4 @@ class UCTNode:
                                      key=lambda item: (item[1].number_visits, item[1].Q()))[0]
             print(predict[0], end=' ')
         print('')
-        beta = sum([c.prior ** 2 for c in self.children.values()])
-        const = statistics.median([math.fabs(self.Q() + c.Q())/max(0.0000001, math.fabs(c.prior - beta)) for c in self.children.values()])
-        print('const', const)
         return pv[0] if pv else None
