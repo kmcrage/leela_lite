@@ -6,7 +6,7 @@ import heapq
 
 
 class Thompson_mixin:
-    def __init__(self, action_value=0, prior_weight=10., prior_scale=1., beta_scale=50, **kwargs):
+    def __init__(self, action_value=0, prior_weight=35., prior_scale=1., beta_scale=35, **kwargs):
         super().__init__(**kwargs)
         self.prior_scale = prior_scale
         self.beta_scale = beta_scale
@@ -75,14 +75,14 @@ class Thompson_mixin:
 class UCTTNode(Thompson_mixin, UCTNode):
     name = 'uctt'
 
-class UCTT25Node(UCTTNode):
-    name = 'uctt25'
+class UCTTMinusNode(UCTTNode):
+    name = 'uctt_minus'
 
-    def __init__(self, beta_scale=25, **kwargs):
-        super().__init__(beta_scale=beta_scale, **kwargs)
+    def __init__(self, prior_weight=25, **kwargs):
+        super().__init__(prior_weight=prior_weight, **kwargs)
 
-class UCTT10Node(UCTTNode):
-    name = 'uctt10'
+class UCTTPlusNode(UCTTNode):
+    name = 'uctt_plus'
 
-    def __init__(self, beta_scale=10, **kwargs):
-        super().__init__(beta_scale=beta_scale, **kwargs)
+    def __init__(self, prior_weight=45, **kwargs):
+        super().__init__(prior_weight=prior_weight, **kwargs)
