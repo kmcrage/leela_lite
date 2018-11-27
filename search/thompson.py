@@ -83,6 +83,6 @@ class UCTT25Node(UCTTNode):
 
 class UCTT10Node(UCTTNode):
     name = 'uctt10'
-    
+
     def __init__(self, beta_scale=10, **kwargs):
         super().__init__(beta_scale=beta_scale, **kwargs)
