@@ -4,12 +4,12 @@ import heapq
 
 
 class Thompson_mixin:
-    def __init__(self, action_value=0., prior_weight=35., prior_scale=1., beta_scale=35, **kwargs):
+    def __init__(self, action_value=0., prior_weight=10., prior_scale=.1, beta_scale=1., **kwargs):
         super().__init__(**kwargs)
         self.prior_scale = prior_scale
         self.beta_scale = beta_scale
-        self.num_wins = prior_weight * (1. + action_value) / 2.
-        self.num_losses = prior_weight * (1. - action_value) / 2.
+        self.num_wins = 1 + prior_weight * (1. + action_value) / 2.
+        self.num_losses = 1 + prior_weight * (1. - action_value) / 2.
 
     def Q(self):
         return (self.num_losses - self.num_wins) / (self.num_wins + self.num_losses)
@@ -76,11 +76,11 @@ class UCTTNode(Thompson_mixin, UCTNode):
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
-    def __init__(self, prior_weight=25, **kwargs):
-        super().__init__(prior_weight=prior_weight, **kwargs)
+    def __init__(self, prior_scale=.05, **kwargs):
+        super().__init__(prior_scale=prior_scale, **kwargs)
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, prior_weight=45, **kwargs):
-        super().__init__(prior_weight=prior_weight, **kwargs)
+    def __init__(self, prior_scale=.2, **kwargs):
+        super().__init__(prior_scale=prior_scale, **kwargs)
