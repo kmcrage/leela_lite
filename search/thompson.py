@@ -4,7 +4,7 @@ import heapq
 
 
 class Thompson_mixin:
-    def __init__(self, action_value=0, prior_weight=35., prior_scale=1., beta_scale=35, **kwargs):
+    def __init__(self, action_value=0., prior_weight=35., prior_scale=1., beta_scale=35, **kwargs):
         super().__init__(**kwargs)
         self.prior_scale = prior_scale
         self.beta_scale = beta_scale
@@ -36,6 +36,7 @@ class Thompson_mixin:
 
     def best_child(self):
         def beta(node):
+            print('beta', node.beta_scale, node.num_wins, node.num_losses)
             return numpy.random.beta(node.beta_scale * node.num_wins, node.beta_scale * node.num_losses)
         return max(self.children.values(), key=beta)
 
