@@ -10,8 +10,8 @@ class Thompson_mixin:
         super().__init__(**kwargs)
         self.prior_weight = float(os.getenv("PW", "5.0"))
         self.result_weight = float(os.getenv("RW", "1.0"))
-        self.num_wins = (1. + action_value) / 2.
-        self.num_losses = (1. - action_value) / 2.
+        self.num_wins = 10 * (1. + action_value) / 2.
+        self.num_losses = 10 * (1. - action_value) / 2.
 
     def expand(self, child_priors):
         """
