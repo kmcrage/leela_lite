@@ -36,7 +36,6 @@ class Thompson_mixin:
 
     def best_child(self):
         def beta(node):
-            print('beta', node.beta_scale, node.num_wins, node.num_losses)
             return numpy.random.beta(node.beta_scale * node.num_wins, node.beta_scale * node.num_losses)
         return max(self.children.values(), key=beta)
 
