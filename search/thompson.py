@@ -11,8 +11,7 @@ class Thompson_mixin:
         self.prior_weight = float(os.getenv("PW", "5.0"))
         self.result_weight = float(os.getenv("RW", "1.0"))
         self.num_wins = (1. + action_value) / 2.
-        self.num_losses = (1. - action_value) /2.
-
+        self.num_losses = (1. - action_value) / 2.
 
     def expand(self, child_priors):
         """
@@ -25,7 +24,7 @@ class Thompson_mixin:
         self.is_expanded = True
         offset = sum([p*p for p in child_priors.values()])
         for move, prior in child_priors.items():
-            action_value = -self.Q() + 0.25 * (prior - offset)
+            action_value = -self.Q() + self.prior_weight * (prior - offset)
             self.add_child(move, prior, action_value)
 
     def add_child(self, move, prior, action_value):
