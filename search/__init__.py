@@ -14,7 +14,7 @@ from search.minmax_backup import MinMax_search
 from search.srcr import SRCR_search
 from search.asymmetric import Asym_search
 from search.uctv import UCTVNode
-from search.thompson import UCTTNode
+from search.thompson import UCTTNode, UCTT10Node, UCTT25Node
 from search.sota import SOTA_search
 from search.st import STUCTNode
 
@@ -37,6 +37,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'st': partial(mcts_search, STUCTNode),
            'uctv': partial(mcts_search, UCTVNode),
            'uctt': partial(mcts_search, UCTTNode),
+           'uctt10': partial(mcts_search, UCTT10Node),
+           'uctt25': partial(mcts_search, UCTT25Node),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),

@@ -74,3 +74,11 @@ class Thompson_mixin:
 
 class UCTTNode(Thompson_mixin, UCTNode):
     name = 'uctt'
+
+class UCTT25Node(UCTNode):
+    def __init__(self, beta_scale=25, **kwargs):
+        super().__init__(beta_scale=beta_scale, **kwargs)
+
+class UCTT10Node(UCTNode):
+    def __init__(self, beta_scale=10, **kwargs):
+        super().__init__(beta_scale=beta_scale, **kwargs)
