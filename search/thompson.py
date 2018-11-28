@@ -10,7 +10,7 @@ https://arxiv.org/pdf/1707.09727.pdf
 
 class Thompson_mixin:
     def __init__(self, action_value=0.,
-                 prior_weight=30., prior_scale=.2, reward_scale=1., discount_rate=.99,
+                 prior_weight=30., prior_scale=.2, reward_scale=20., discount_rate=.99,
                  **kwargs):
         super().__init__(**kwargs)
         self.discount_rate = discount_rate
