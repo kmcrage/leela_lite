@@ -40,23 +40,21 @@ class Thompson_mixin:
                                              board=board, action_value=action_value)
 
     def best_child(self):
-        def beta(node):
-            return numpy.random.beta(node.beta_scale * node.num_wins, node.beta_scale * node.num_losses)
-        return max(self.children.values(), key=beta)
+        return max(self.children.values(), key=lambda node: numpy.random.beta(node.num_wins, node.num_losses))
 
     def backup(self, value_estimate: float):
         current = self
         turnfactor = -1
         # wins is parent wins
-        current.num_wins += (1. + value_estimate * turnfactor) / 2.
-        current.num_losses += (1. - value_estimate * turnfactor) / 2.
+        current.num_wins += self.beta_scale * (1. + value_estimate * turnfactor) / 2.
+        current.num_losses += self.beta_scale * (1. - value_estimate * turnfactor) / 2.
         current.number_visits += 1
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
             turnfactor *= -1
-            current.num_wins += (1. + value_estimate * turnfactor) / 2.
-            current.num_losses += (1. - value_estimate * turnfactor) / 2.
+            current.num_wins += self.beta_scale * (1. + value_estimate * turnfactor) / 2.
+            current.num_losses += self.beta_scale * (1. - value_estimate * turnfactor) / 2.
 
     def outcome(self):
         size = min(5, len(self.children))
