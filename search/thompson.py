@@ -87,5 +87,5 @@ class UCTTMinusNode(UCTTNode):
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, test_high=40, **kwargs):
+    def __init__(self, test_high=30, **kwargs):
         super().__init__(beta_scale=test_high, **kwargs)
