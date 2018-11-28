@@ -2,22 +2,33 @@ from search.uct import UCTNode
 import numpy
 import heapq
 
+"""
+Taming Non-stationary Bandits: A Bayesian Approach
+https://arxiv.org/pdf/1707.09727.pdf
+"""
+
 
 class Thompson_mixin:
-    def __init__(self, action_value=0., prior_weight=30., prior_scale=.1, beta_scale=20., **kwargs):
+    def __init__(self, action_value=0.,
+                 prior_weight=30., prior_scale=.2, reward_scale=1., discount_rate=.99,
+                 **kwargs):
         super().__init__(**kwargs)
+        self.discount_rate = discount_rate
         self.prior_scale = prior_scale
-        self.beta_scale = beta_scale
+        self.reward_scale = reward_scale
         # parent wins and losses
-        self.num_wins = 1 + prior_weight * (1. + action_value) / 2.
-        self.num_losses = 1 + prior_weight * (1. - action_value) / 2.
+        self.prior_wins = prior_weight * (1. + action_value) / 2.
+        self.prior_losses = prior_weight * (1. - action_value) / 2.
+        self.num_wins = 0
+        self.num_losses = 0
 
     def Q(self):
         """
         value from pov of the parent ie -1 is bad for parent
         :return:
         """
-        return (self.num_wins - self.num_losses) / (self.num_wins + self.num_losses)
+        return ((self.prior_wins + self.num_wins - self.num_losses - self.prior_losses) /
+                (2 + self.prior_wins + self.num_wins + self.prior_losses + self.num_losses))
 
     def expand(self, child_priors):
         """
@@ -40,21 +51,22 @@ class Thompson_mixin:
                                              board=board, action_value=action_value)
 
     def best_child(self):
-        return max(self.children.values(), key=lambda node: numpy.random.beta(node.num_wins, node.num_losses))
+        return max(self.children.values(), key=lambda node: numpy.random.beta(1 + node.prior_wins + node.num_wins,
+                                                                              1 + node.prior_losses + node.num_losses))
 
     def backup(self, value_estimate: float):
         current = self
         turnfactor = -1
-        # wins is parent wins
-        current.num_wins += self.beta_scale * (1. + value_estimate * turnfactor) / 2.
-        current.num_losses += self.beta_scale * (1. - value_estimate * turnfactor) / 2.
-        current.number_visits += 1
-        while current.parent is not None:
-            current = current.parent
+        while current:
+            # wins is parent wins
+            for child in current.children.values():
+                child.num_wins *= self.discount_rate
+                child.num_losses *= self.discount_rate
+            current.num_wins += self.reward_scale * (1. + value_estimate * turnfactor) / 2.
+            current.num_losses += self.reward_scale * (1. - value_estimate * turnfactor) / 2.
             current.number_visits += 1
             turnfactor *= -1
-            current.num_wins += self.beta_scale * (1. + value_estimate * turnfactor) / 2.
-            current.num_losses += self.beta_scale * (1. - value_estimate * turnfactor) / 2.
+            current = current.parent
 
     def outcome(self):
         size = min(5, len(self.children))
@@ -62,14 +74,14 @@ class Thompson_mixin:
                             key=lambda n: (n[1].number_visits, n[1].Q()))
         if self.verbose:
             print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
-        # there could be no moves if we jump into a mate somehow
-        print('prediction:', end=' ')
-        predict = pv[0]
-        while len(predict[1].children):
-            predict = heapq.nlargest(1, predict[1].children.items(),
-                                     key=lambda item: (item[1].number_visits, item[1].Q()))[0]
-            print(predict[0], end=' ')
-        print('')
+            # there could be no moves if we jump into a mate somehow
+            print('prediction:', end=' ')
+            predict = pv[0]
+            while len(predict[1].children):
+                predict = heapq.nlargest(1, predict[1].children.items(),
+                                         key=lambda item: (item[1].number_visits, item[1].Q()))[0]
+                print(predict[0], end=' ')
+            print('')
         return pv[0] if pv else None
 
 
@@ -80,12 +92,12 @@ class UCTTNode(Thompson_mixin, UCTNode):
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
-    def __init__(self, test_low=10, **kwargs):
-        super().__init__(beta_scale=test_low, **kwargs)
+    def __init__(self, test_low=.90, **kwargs):
+        super().__init__(discount_rate=test_low, **kwargs)
 
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, test_high=30, **kwargs):
-        super().__init__(beta_scale=test_high, **kwargs)
+    def __init__(self, test_high=.999, **kwargs):
+        super().__init__(discount_rate=test_high, **kwargs)
