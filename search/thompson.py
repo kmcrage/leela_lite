@@ -17,7 +17,7 @@ class Thompson_mixin:
         value from pov of the parent ie -1 is bad for parent
         :return:
         """
-        return (self.num_losses - self.num_wins) / (self.num_wins + self.num_losses)
+        return (self.num_wins - self.num_losses) / (self.num_wins + self.num_losses)
 
     def expand(self, child_priors):
         """
