@@ -8,10 +8,15 @@ class Thompson_mixin:
         super().__init__(**kwargs)
         self.prior_scale = prior_scale
         self.beta_scale = beta_scale
+        # parent wins and losses
         self.num_wins = 1 + prior_weight * (1. + action_value) / 2.
         self.num_losses = 1 + prior_weight * (1. - action_value) / 2.
 
     def Q(self):
+        """
+        value from pov of the parent ie -1 is bad for parent
+        :return:
+        """
         return (self.num_losses - self.num_wins) / (self.num_wins + self.num_losses)
 
     def expand(self, child_priors):
@@ -41,16 +46,17 @@ class Thompson_mixin:
 
     def backup(self, value_estimate: float):
         current = self
-        turnfactor = 1
-        current.num_wins += (1. - value_estimate * turnfactor) / 2.
-        current.num_losses += (1. + value_estimate * turnfactor) / 2.
+        turnfactor = -1
+        # wins is parent wins
+        current.num_wins += (1. + value_estimate * turnfactor) / 2.
+        current.num_losses += (1. - value_estimate * turnfactor) / 2.
         current.number_visits += 1
         while current.parent is not None:
             current = current.parent
             current.number_visits += 1
             turnfactor *= -1
-            current.num_wins += (1. - value_estimate * turnfactor) / 2.
-            current.num_losses += (1. + value_estimate * turnfactor) / 2.
+            current.num_wins += (1. + value_estimate * turnfactor) / 2.
+            current.num_losses += (1. - value_estimate * turnfactor) / 2.
 
     def outcome(self):
         size = min(5, len(self.children))
@@ -72,11 +78,13 @@ class Thompson_mixin:
 class UCTTNode(Thompson_mixin, UCTNode):
     name = 'uctt'
 
+
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
     def __init__(self, test_low=10, **kwargs):
         super().__init__(beta_scale=test_low, **kwargs)
+
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
