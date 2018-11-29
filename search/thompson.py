@@ -10,7 +10,7 @@ https://arxiv.org/pdf/1707.09727.pdf
 
 class Thompson_mixin:
     def __init__(self, action_value=0.,
-                 prior_weight=30., prior_scale=.2, reward_scale=20., discount_rate=.99,
+                 prior_weight=30., prior_scale=.2, reward_scale=20., discount_rate=.999,
                  **kwargs):
         super().__init__(**kwargs)
         self.discount_rate = discount_rate
@@ -92,12 +92,12 @@ class UCTTNode(Thompson_mixin, UCTNode):
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
-    def __init__(self, test_low=.90, **kwargs):
+    def __init__(self, test_low=.995, **kwargs):
         super().__init__(discount_rate=test_low, **kwargs)
 
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, test_high=.999, **kwargs):
+    def __init__(self, test_high=.9999, **kwargs):
         super().__init__(discount_rate=test_high, **kwargs)
