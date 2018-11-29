@@ -75,7 +75,7 @@ class Thompson_mixin:
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       n[1].Q(),
-                                      n[1].num_wins + n[1].num_losses
+                                      n[1].num_wins + n[1].num_losses,
                                       n[1].number_visits) for n in pv])
             # there could be no moves if we jump into a mate somehow
             print('prediction:', end=' ')
