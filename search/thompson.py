@@ -79,7 +79,7 @@ class Thompson_mixin:
             predict = pv[0]
             while len(predict[1].children):
                 predict = heapq.nlargest(1, predict[1].children.items(),
-                                         key=lambda item: (item[1].number_visits, item[1].Q()))[0]
+                                         key=lambda item: (item[1].Q(), item[1].number_visits))[0]
                 print(predict[0], end=' ')
             print('')
         return pv[0] if pv else None
@@ -92,12 +92,12 @@ class UCTTNode(Thompson_mixin, UCTNode):
 class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
-    def __init__(self, test_low=.995, **kwargs):
-        super().__init__(discount_rate=test_low, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(prior_weight=3., prior_scale=.2, reward_scale=2., discount_rate=.999)
 
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
-    def __init__(self, test_high=.9999, **kwargs):
-        super().__init__(discount_rate=test_high, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(prior_weight=30., prior_scale=.2, reward_scale=2., discount_rate=.999)
