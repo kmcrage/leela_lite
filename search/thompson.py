@@ -73,7 +73,10 @@ class Thompson_mixin:
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda n: (n[1].Q(), n[1].number_visits))
         if self.verbose:
-            print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
+            print(self.name, 'pv:', [(n[0],
+                                      n[1].Q(),
+                                      n[1].num_wins + n[1].num_losses
+                                      n[1].number_visits) for n in pv])
             # there could be no moves if we jump into a mate somehow
             print('prediction:', end=' ')
             predict = pv[0]
