@@ -93,11 +93,11 @@ class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(prior_weight=3., prior_scale=.2, reward_scale=2., discount_rate=.999)
+        super().__init__(prior_weight=3., prior_scale=.2, reward_scale=2., discount_rate=.999, **kwargs)
 
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(prior_weight=30., prior_scale=.2, reward_scale=2., discount_rate=.999)
+        super().__init__(prior_weight=30., prior_scale=.2, reward_scale=2., discount_rate=.999, **kwargs)
