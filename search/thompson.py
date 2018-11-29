@@ -71,7 +71,7 @@ class Thompson_mixin:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda n: (n[1].number_visits, n[1].Q()))
+                            key=lambda n: (n[1].Q(), n[1].number_visits))
         if self.verbose:
             print(self.name, 'pv:', [(n[0], n[1].Q(), n[1].number_visits) for n in pv])
             # there could be no moves if we jump into a mate somehow
