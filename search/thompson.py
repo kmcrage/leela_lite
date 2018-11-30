@@ -54,8 +54,14 @@ class Thompson_mixin:
                                              board=board, action_value=action_value)
 
     def best_child(self):
-        return max(self.children.values(), key=lambda node: numpy.random.beta(1 + node.prior_wins + node.num_wins,
-                                                                              1 + node.prior_losses + node.num_losses))
+        """
+        optimistic thompson
+        :return:
+        """
+        return max(self.children.values(),
+                   key=lambda node: max((1 + node.Q()) / 2.,
+                                        numpy.random.beta(1 + node.prior_wins + node.num_wins,
+                                                          1 + node.prior_losses + node.num_losses)))
 
     def backup(self, value_estimate: float):
         current = self
