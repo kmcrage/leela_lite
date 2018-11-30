@@ -57,7 +57,7 @@ class Thompson_mixin:
         print(' ')
         for node in self.children.values():
             eval = numpy.random.beta(1 + node.prior_wins + node.num_wins, 1 + node.prior_losses + node.num_losses)
-            print(node.move, node.Q(), eval)
+            print(node.move, node.Q(), eval, node.num_wins, node.num_losses)
         return max(self.children.values(), key=lambda node: numpy.random.beta(1 + node.prior_wins + node.num_wins,
                                                                               1 + node.prior_losses + node.num_losses))
 
