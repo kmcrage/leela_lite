@@ -54,10 +54,6 @@ class Thompson_mixin:
                                              board=board, action_value=action_value)
 
     def best_child(self):
-        print(' ')
-        for node in self.children.values():
-            eval = numpy.random.beta(1 + node.prior_wins + node.num_wins, 1 + node.prior_losses + node.num_losses)
-            print(node.move, node.Q(), eval, node.num_wins, node.num_losses)
         return max(self.children.values(), key=lambda node: numpy.random.beta(1 + node.prior_wins + node.num_wins,
                                                                               1 + node.prior_losses + node.num_losses))
 
@@ -86,6 +82,8 @@ class Thompson_mixin:
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       n[1].Q(),
+                                      numpy.random.beta(1 + n[1].prior_wins + n[1].num_wins,
+                                                        1 + n[1].prior_losses + n[1].num_losses),
                                       n[1].num_wins + n[1].num_losses,
                                       n[1].number_visits) for n in pv])
             # there could be no moves if we jump into a mate somehow
