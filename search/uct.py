@@ -64,15 +64,13 @@ class UCTNode:
     def backup(self, value_estimate: float):
         current = self
         current.reward = -value_estimate
-        current.total_value += current.reward
-        current.number_visits += 1
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
-        while current.parent is not None:
-            current = current.parent
+        while current:
             current.number_visits += 1
-            turnfactor *= -1
             current.total_value += (value_estimate * turnfactor)
+            current = current.parent
+            turnfactor *= -1
 
     def get_node(self, move):
         if move in self.children:
