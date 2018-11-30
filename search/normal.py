@@ -77,7 +77,7 @@ class NSNode:
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda item: (item[1].number_visits, item[1].q))
         if self.verbose:
-            print(self.name, 'pv:', [(n[0], n[1].q, n[1].number_visits) for n in pv])
+            print(self.name, 'pv:', [(n[0], n[1].q, n[1].sigma(), n[1].number_visits) for n in pv])
         # there could be no moves if we jump into a mate somehow
         print('prediction:', end=' ')
         predict = pv[0]
