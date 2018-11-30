@@ -66,8 +66,8 @@ class Thompson_mixin:
     def backup(self, value_estimate: float):
         current = self
         turnfactor = -1
-        self.prior_wins = self.prior_weight * (1 - value_estimate)
-        self.prior_losses = self.prior_weight * (1 + value_estimate)
+        self.num_wins = self.prior_weight * (1 - value_estimate)
+        self.num_losses = self.prior_weight * (1 + value_estimate)
         while current:
             # wins is parent wins
             for child in current.children.values():
