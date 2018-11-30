@@ -82,6 +82,7 @@ class Thompson_mixin:
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       n[1].Q(),
+                                      .5 + n[1].Q()/2.,
                                       numpy.random.beta(1 + n[1].prior_wins + n[1].num_wins,
                                                         1 + n[1].prior_losses + n[1].num_losses),
                                       n[1].num_wins + n[1].num_losses,
