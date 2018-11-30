@@ -54,6 +54,7 @@ class Thompson_mixin:
                                              board=board, action_value=action_value)
 
     def best_child(self):
+        print(' ')
         for node in self.children.values():
             eval = numpy.random.beta(1 + node.prior_wins + node.num_wins, 1 + node.prior_losses + node.num_losses)
             print(node.move, node.Q(), eval)
