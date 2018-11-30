@@ -11,31 +11,32 @@ https://arxiv.org/pdf/1707.09727.pdf
 
 class Thompson_mixin:
     def __init__(self, action_value=0.,
-                 prior_weight=30., prior_scale=.2, reward_scale=20., discount_rate=.999,
+                 prior_scale=float(os.getenv('PRIOR_SCALE', '.2')),
+                 action_weight=float(os.getenv('ACTION_WEIGHT', '10')),
+                 value_weight=float(os.getenv('VALUE_WEIGHT', '200')),
+                 reward_weight=float(os.getenv('REWARD_WEIGHT', '2')),
+                 discount_rate=float(os.getenv('DISCOUNT_RATE', '.995')),
                  **kwargs):
         super().__init__(**kwargs)
-        self.prior_weight = float(os.getenv('PRIOR_WEIGHT', '20'))
-        self.discount_rate = float(os.getenv('DISCOUNT_RATE', '.999'))
-        self.prior_scale = float(os.getenv('PRIOR_SCALE', '.2'))
-        self.reward_scale = float(os.getenv('REWARD_WEIGHT', '20'))
-        # parent wins and losses
-        self.prior_wins = self.prior_weight * (1. + action_value) / 2.
-        self.prior_losses = self.prior_weight * (1. - action_value) / 2.
-        self.num_wins = 0
-        self.num_losses = 0
+        self.prior_scale = prior_scale
+        self.action_weight = action_weight
+        self.value_weight = value_weight
+        self.reward_weight = reward_weight
+        self.discount_rate = discount_rate
+        # parent wins and losses, don't trust the action value
+        self.num_wins = self.action_weight * (1. + action_value) / 2.
+        self.num_losses = self.action_weight * (1. - action_value) / 2.
 
     def Q(self):
         """
         value from pov of the parent ie -1 is bad for parent
         :return:
         """
-        if self.num_wins + self.num_losses > 0:
-            return (self.num_wins - self.num_losses) / (self.num_wins + self.num_losses)
-        return (self.prior_wins - self.prior_losses) / (self.prior_wins + self.prior_losses)
+        return (self.num_wins - self.num_losses) / (1 + self.num_wins + self.num_losses)
 
     def expand(self, child_priors):
         """
-        fake an action value
+        fake an action value, which we won't weight highly
         :param child_priors:
         :return:
         """
@@ -55,34 +56,33 @@ class Thompson_mixin:
 
     def best_child(self):
         """
-        optimistic thompson
+        optimistic thompson: don't sample below the mean
         :return:
         """
         return max(self.children.values(),
                    key=lambda node: max((1 + node.Q()) / 2.,
-                                        numpy.random.beta(1 + node.prior_wins + node.num_wins,
-                                                          1 + node.prior_losses + node.num_losses)))
+                                        numpy.random.beta(1 + node.num_wins,
+                                                          1 + node.num_losses)))
 
     def backup(self, value_estimate: float):
         current = self
         turnfactor = -1
-        self.num_wins = self.prior_weight * (1 - value_estimate)
-        self.num_losses = self.prior_weight * (1 + value_estimate)
+        # trust the value estimate so we can reduce the variation a lot
+        self.num_wins = self.value_weight * (1 - value_estimate)
+        self.num_losses = self.value_weight * (1 + value_estimate)
         while current:
             # wins is parent wins
             for child in current.children.values():
                 child.num_wins *= self.discount_rate
                 child.num_losses *= self.discount_rate
-                child.prior_wins *= self.discount_rate
-                child.prior_losses *= self.discount_rate
-            current.num_wins += self.reward_scale * (1. + value_estimate * turnfactor) / 2.
-            current.num_losses += self.reward_scale * (1. - value_estimate * turnfactor) / 2.
+            # trust the rewards, but variance is low by now
+            current.num_wins += self.reward_weight * (1. + value_estimate * turnfactor) / 2.
+            current.num_losses += self.reward_weight * (1. - value_estimate * turnfactor) / 2.
             current.number_visits += 1
             turnfactor *= -1
             current = current.parent
 
     def outcome(self):
-        print('root:', self.Q(), self.number_visits)
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda n: (n[1].number_visits,
@@ -114,11 +114,11 @@ class UCTTMinusNode(UCTTNode):
     name = 'uctt_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(prior_weight=3., prior_scale=.2, reward_scale=2., discount_rate=.999, **kwargs)
+        super().__init__(action_weight=10., prior_scale=.2, reward_weight=2., discount_rate=.993, **kwargs)
 
 
 class UCTTPlusNode(UCTTNode):
     name = 'uctt_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(prior_weight=30., prior_scale=.2, reward_scale=2., discount_rate=.999, **kwargs)
+        super().__init__(action_weight=10., prior_scale=.2, reward_weight=2., discount_rate=.997, **kwargs)
