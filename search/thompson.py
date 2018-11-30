@@ -1,6 +1,7 @@
 from search.uct import UCTNode
 import numpy
 import heapq
+import os
 
 """
 Taming Non-stationary Bandits: A Bayesian Approach
@@ -13,12 +14,13 @@ class Thompson_mixin:
                  prior_weight=30., prior_scale=.2, reward_scale=20., discount_rate=.999,
                  **kwargs):
         super().__init__(**kwargs)
-        self.discount_rate = discount_rate
-        self.prior_scale = prior_scale
-        self.reward_scale = reward_scale
+        self.prior_weight = float(os.getenv('PRIOR_WEIGHT', '20'))
+        self.discount_rate = float(os.getenv('DISCOUNT_RATE', '.999'))
+        self.prior_scale = float(os.getenv('PRIOR_SCALE', '.2'))
+        self.reward_scale = float(os.getenv('REWARD_WEIGHT', '20'))
         # parent wins and losses
-        self.prior_wins = prior_weight * (1. + action_value) / 2.
-        self.prior_losses = prior_weight * (1. - action_value) / 2.
+        self.prior_wins = self.prior_weight * (1. + action_value) / 2.
+        self.prior_losses = self.prior_weight * (1. - action_value) / 2.
         self.num_wins = 0
         self.num_losses = 0
 
@@ -27,8 +29,9 @@ class Thompson_mixin:
         value from pov of the parent ie -1 is bad for parent
         :return:
         """
-        return ((self.prior_wins + self.num_wins - self.num_losses - self.prior_losses) /
-                (2 + self.prior_wins + self.num_wins + self.prior_losses + self.num_losses))
+        if self.num_wins + self.num_losses > 0:
+            return (self.num_wins - self.num_losses) / (self.num_wins + self.num_losses)
+        return (self.prior_wins - self.prior_losses) / (self.prior_wins + self.prior_losses)
 
     def expand(self, child_priors):
         """
@@ -62,6 +65,8 @@ class Thompson_mixin:
             for child in current.children.values():
                 child.num_wins *= self.discount_rate
                 child.num_losses *= self.discount_rate
+                child.prior_wins *= self.discount_rate
+                child.prior_losses *= self.discount_rate
             current.num_wins += self.reward_scale * (1. + value_estimate * turnfactor) / 2.
             current.num_losses += self.reward_scale * (1. - value_estimate * turnfactor) / 2.
             current.number_visits += 1
@@ -71,8 +76,7 @@ class Thompson_mixin:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda n: (n[1].num_wins + n[1].num_losses,  # discounted visits
-                                           n[1].Q(),
+                            key=lambda n: (n[1].Q(),
                                            n[1].number_visits))
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
