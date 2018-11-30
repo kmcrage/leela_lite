@@ -85,8 +85,8 @@ class Thompson_mixin:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda n: (n[1].Q(),
-                                           n[1].number_visits))
+                            key=lambda n: (n[1].number_visits,
+                                           n[1].Q()))
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       n[1].Q(),
@@ -98,7 +98,7 @@ class Thompson_mixin:
             predict = pv[0]
             while len(predict[1].children):
                 predict = heapq.nlargest(1, predict[1].children.items(),
-                                         key=lambda item: (item[1].Q(), item[1].number_visits))[0]
+                                         key=lambda item: (item[1].number_visits))[0]
                 print(predict[0], end=' ')
             print('')
         return pv[0] if pv else None
