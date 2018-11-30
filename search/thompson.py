@@ -74,7 +74,7 @@ class Thompson_mixin:
             current = current.parent
 
     def outcome(self):
-        print('root:', self.Q())
+        print('root:', self.Q(), self.number_visits)
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda n: (n[1].Q(),
