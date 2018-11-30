@@ -77,8 +77,8 @@ class Thompson_mixin:
         print('root:', self.Q(), self.number_visits)
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda n: (n[1].Q(),
-                                           n[1].number_visits))
+                            key=lambda n: (n[1].number_visits,
+                                           n[1].Q()))
         if self.verbose:
             print(self.name, 'pv:', [(n[0],
                                       n[1].Q(),
