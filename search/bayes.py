@@ -17,7 +17,7 @@ https://www.aaai.org/ocs/index.php/SOCS/SOCS12/paper/viewFile/5376/5207
 class BayesNode:
     name = 'bayes'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, c=0.01, temp=2.2, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, c=0.1, temp=2.2, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
