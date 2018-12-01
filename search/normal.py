@@ -116,4 +116,4 @@ class NSPlusNode(NSNode):
     name = 'ns_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(beta=0.0, **kwargs)
+        super().__init__(beta=0.75, **kwargs)
