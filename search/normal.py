@@ -35,7 +35,8 @@ class NSNode:
 
     def best_child(self):
         return max(self.children.values(),
-                   key=lambda node: numpy.random.normal(node.q, node.sigma()))
+                   key=lambda node: max(node.q,
+                                        numpy.random.normal(node.q, node.sigma())))
 
     def select_leaf(self):
         current = self
