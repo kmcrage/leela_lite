@@ -33,10 +33,13 @@ class NSNode:
     def sigma(self):
         return math.sqrt(self.q_sse / self.number_visits)
 
+    def confidence(self):
+        return self.prior * math.sqrt(self.parent.number_visits / self.number_visits)
+
     def best_child(self):
         return max(self.children.values(),
                    key=lambda node: max(node.q,
-                                        numpy.random.normal(node.q, node.prior * node.sigma())))
+                                        numpy.random.normal(node.q, node.confidence() * node.sigma())))
 
     def select_leaf(self):
         current = self
