@@ -14,7 +14,7 @@ initialise Q from parent
 class NSNode:
     name = 'ns'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=1.0, c=1, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=1.0, c=0.2, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
@@ -121,11 +121,11 @@ class NSMinusNode(NSNode):
     name = 'ns_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=1 / math.sqrt(2), **kwargs)
+        super().__init__(c=0.1, **kwargs)
 
 
 class NSPlusNode(NSNode):
     name = 'ns_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=math.sqrt(2), **kwargs)
+        super().__init__(c=0.4, **kwargs)
