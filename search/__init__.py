@@ -17,7 +17,7 @@ from search.uctv import UCTVNode
 from search.thompson import UCTTNode
 from search.sota import SOTA_search
 from search.st import STUCTNode
-from search.normal import NSNode
+from search.normal import NSNode, NSMinusNode, NSPlusNode
 
 from search.alphabeta import ABNode
 from search.alphabeta_uct import ABUCTNode
@@ -39,6 +39,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'uctv': partial(mcts_search, UCTVNode),
            'uctt': partial(mcts_search, UCTTNode),
            'ns': partial(mcts_search, NSNode),
+           'nsminus': partial(mcts_search, NSMinusNode),
+           'nsplus': partial(mcts_search, NSPlusNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),

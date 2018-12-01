@@ -2,6 +2,7 @@ import heapq
 from collections import OrderedDict
 import numpy
 import math
+import random
 import weakref
 
 """
@@ -13,12 +14,13 @@ initialise Q from parent
 class NSNode:
     name = 'ns'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=0.5, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
         self._parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
+        self.beta = beta
         self.prior = prior  # float
         self.q = -parent.q if parent else 0  # float, fpu is in lc0 rather than a0
         self.q_sse = sse
@@ -37,9 +39,20 @@ class NSNode:
         return self.prior * math.sqrt(self.parent.number_visits / self.number_visits)
 
     def best_child(self):
-        return max(self.children.values(),
-                   key=lambda node: max(node.q,
-                                        numpy.random.normal(node.q, node.confidence() * node.sigma())))
+        """
+        pick the top result beta of the time, else the second top
+        pick using the optimistic sampler
+        :return:
+        """
+        num = min(2, len(self.children))
+        candidates = heapq.nlargest(num,
+                                    self.children.values(),
+                                    key=lambda node: max(node.q,
+                                                         numpy.random.normal(node.q,
+                                                                             node.confidence() * node.sigma())))
+        if num == 1 or random.random() < self.beta:
+            return candidates[0]
+        return candidates[1]
 
     def select_leaf(self):
         current = self
@@ -91,3 +104,16 @@ class NSNode:
             print(predict[0], end=' ')
         print('')
         return pv[0] if pv else None
+
+
+class NSMinusNode(NSNode):
+    name = 'ns_minus'
+
+    def __init__(self, **kwargs):
+        super().__init__(beta=0.25, **kwargs)
+
+class NSPlusNode(NSNode):
+    name = 'ns_plus'
+
+    def __init__(self, **kwargs):
+        super().__init__(beta=0.0, **kwargs)
