@@ -86,8 +86,9 @@ class NSNode:
             current.q += e / current.number_visits
             current.q_sse += e * (sample - current.q)
 
-            if current.number_visits > 2:
-                current.qmax = -max([n.qmax for n in current.children.values() if n.number_visits > 1])
+            q_children = [n.qmax for n in current.children.values() if n.number_visits > 1]
+            if q_children:
+                current.qmax = -max(q_children)
             else:
                 current.qmax = current.q
 
