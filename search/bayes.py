@@ -8,6 +8,9 @@ import weakref
 """
 Bayesian Inference in Monte-Carlo Tree Search
 https://pdfs.semanticscholar.org/a37f/480cf340b6cd2c2fda4db31e7cc89bcddc8d.pdf
+
+MCTS Based on Simple Regret 
+https://www.aaai.org/ocs/index.php/SOCS/SOCS12/paper/viewFile/5376/5207
 """
 
 
@@ -39,7 +42,7 @@ class BayesNode:
         return math.sqrt(self.q_sse / self.number_visits)
 
     def u(self):
-        return math.sqrt(self.parent.number_visits) * self.sigma()
+        return math.pow(self.parent.number_visits, 0.25) * self.sigma()
 
     def best_child(self):
         """
