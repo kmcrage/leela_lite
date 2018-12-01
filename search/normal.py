@@ -14,17 +14,20 @@ initialise Q from parent
 class NSNode:
     name = 'ns'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=1.0, c=3, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=1.0, c=1, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
         self._parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
+
         self.c = c
         self.beta = beta
+
         self.prior = prior  # float
         self.q = -parent.q if parent else 0  # float, fpu is in lc0 rather than a0
         self.q_sse = sse
+        self.qmax = self.q
         self.number_visits = 1
 
         self.verbose = verbose
@@ -82,6 +85,12 @@ class NSNode:
             e = sample - current.q
             current.q += e / current.number_visits
             current.q_sse += e * (sample - current.q)
+
+            if current.children:
+                current.qmax = -max([n.qmax for n in current.children.values()])
+            else:
+                current.qmax = current.q
+
             current = current.parent
             sample *= -1
 
@@ -95,7 +104,7 @@ class NSNode:
         pv = heapq.nlargest(size, self.children.items(),
                             key=lambda item: (item[1].number_visits, item[1].q))
         if self.verbose:
-            print(self.name, 'pv:', [(n[0], n[1].q, n[1].sigma(), n[1].number_visits) for n in pv])
+            print(self.name, 'pv:', [(n[0], n[1].qmax, n[1].q, n[1].sigma(), n[1].u(), n[1].number_visits) for n in pv])
         # there could be no moves if we jump into a mate somehow
         print('prediction:', end=' ')
         predict = pv[0]
@@ -111,10 +120,11 @@ class NSMinusNode(NSNode):
     name = 'ns_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=1, **kwargs)
+        super().__init__(c=1 / math.sqrt(2), **kwargs)
+
 
 class NSPlusNode(NSNode):
     name = 'ns_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=6, **kwargs)
+        super().__init__(c=math.sqrt(2), **kwargs)
