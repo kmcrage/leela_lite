@@ -51,7 +51,7 @@ class NSNode:
         num = min(2, len(self.children))
         candidates = heapq.nlargest(num,
                                     self.children.values(),
-                                    key=lambda node: max(node.q,
+                                    key=lambda node: max(node.qmax,
                                                          numpy.random.normal(node.q,
                                                                              self.c * node.u())))
         if num == 1 or random.random() < self.beta:
@@ -103,7 +103,7 @@ class NSNode:
     def outcome(self):
         size = min(5, len(self.children))
         pv = heapq.nlargest(size, self.children.items(),
-                            key=lambda item: (item[1].number_visits, item[1].q))
+                            key=lambda item: (item[1].number_visits, item[1].qmax))
         if self.verbose:
             print(self.name, 'pv:', [(n[0], n[1].qmax, n[1].q, n[1].sigma(), n[1].u(), n[1].number_visits) for n in pv])
         # there could be no moves if we jump into a mate somehow
