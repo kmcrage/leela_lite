@@ -113,11 +113,11 @@ class BayesMinusNode(BayesNode):
     name = 'bayes_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=1 / math.sqrt(2), **kwargs)
+        super().__init__(c=0.25, **kwargs)
 
 
 class BayesPlusNode(BayesNode):
     name = 'bayes_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=math.sqrt(2), **kwargs)
+        super().__init__(c=0.75, **kwargs)
