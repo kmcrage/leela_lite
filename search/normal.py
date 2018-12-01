@@ -14,12 +14,13 @@ initialise Q from parent
 class NSNode:
     name = 'ns'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=0.5, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, beta=1.0, c=3, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
         self._parent = weakref.ref(parent) if parent else None  # Optional[UCTNode]
         self.children = OrderedDict()  # Dict[move, UCTNode]
+        self.c = c
         self.beta = beta
         self.prior = prior  # float
         self.q = -parent.q if parent else 0  # float, fpu is in lc0 rather than a0
@@ -35,8 +36,8 @@ class NSNode:
     def sigma(self):
         return math.sqrt(self.q_sse / self.number_visits)
 
-    def confidence(self):
-        return self.prior * math.sqrt(self.parent.number_visits / self.number_visits)
+    def u(self):
+        return self.prior * math.sqrt(self.parent.number_visits / self.number_visits) * self.sigma()
 
     def best_child(self):
         """
@@ -49,7 +50,7 @@ class NSNode:
                                     self.children.values(),
                                     key=lambda node: max(node.q,
                                                          numpy.random.normal(node.q,
-                                                                             node.confidence() * node.sigma())))
+                                                                             self.c * node.u())))
         if num == 1 or random.random() < self.beta:
             return candidates[0]
         return candidates[1]
@@ -110,10 +111,10 @@ class NSMinusNode(NSNode):
     name = 'ns_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(beta=0.25, **kwargs)
+        super().__init__(c=1, **kwargs)
 
 class NSPlusNode(NSNode):
     name = 'ns_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(beta=0.75, **kwargs)
+        super().__init__(c=6, **kwargs)
