@@ -17,7 +17,7 @@ https://www.aaai.org/ocs/index.php/SOCS/SOCS12/paper/viewFile/5376/5207
 class BayesNode:
     name = 'bayes'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, c=3, temp=2.2, verbose=True):
+    def __init__(self, board=None, parent=None, move=None, prior=0, sse=0.1, c=.5, temp=2.2, verbose=True):
         self.board = board
         self.move = move
         self.is_expanded = False
@@ -113,11 +113,11 @@ class BayesMinusNode(BayesNode):
     name = 'bayes_minus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=2, **kwargs)
+        super().__init__(c=.25, **kwargs)
 
 
 class BayesPlusNode(BayesNode):
     name = 'bayes_plus'
 
     def __init__(self, **kwargs):
-        super().__init__(c=4, **kwargs)
+        super().__init__(c=1, **kwargs)
