@@ -50,6 +50,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'bayesplus': partial(mcts_search, BayesPlusNode),
 
            'bounded': partial(mcts_search, BoundedUCTNode),
+           'policy': partial(mcts_search, PolicyUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),
