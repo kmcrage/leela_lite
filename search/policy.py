@@ -42,10 +42,11 @@ class Policy_mixin:
             current.number_visits += 1
             current.total_value += value_estimate * turnfactor
 
+            # renorm root node to avoid policy going to zero
+            if not current.parent:
+                current.policy = 1
             current = current.parent
             turnfactor *= -1
-        # root node
-        current.policy = 1
 
 
 class PolicyUCTNode(Policy_mixin, UCTNode):
