@@ -19,6 +19,7 @@ from search.sota import SOTA_search
 from search.st import STUCTNode
 from search.normal import NSNode, NSMinusNode, NSPlusNode
 from search.bayes import BayesNode, BayesMinusNode, BayesPlusNode
+from search.bounds import BoundedUCTNode
 
 from search.alphabeta import ABNode
 from search.alphabeta_uct import ABUCTNode
@@ -47,6 +48,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'bayes': partial(mcts_search, BayesNode),
            'bayesminus': partial(mcts_search, BayesMinusNode),
            'bayesplus': partial(mcts_search, BayesPlusNode),
+
+           'bounded': partial(mcts_search, BoundedUCTNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),
