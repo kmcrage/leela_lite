@@ -49,8 +49,8 @@ class Bounded_mixin:
 
             if not current.children:
                 # this is a terminal node
-                current.beta = current.Q()
-                current.alpha = current.Q()
+                current.beta = value_estimate * turnfactor
+                current.alpha = value_estimate * turnfactor
             else:
                 current.beta = -max([c.alpha for c in current.children.values()])
                 current.alpha = -max([c.beta for c in current.children.values()])
