@@ -27,7 +27,7 @@ class Bounded_mixin:
         candidates = [c for c in self.children.values() if c.alpha <= c.beta and c.beta > -self.beta]
         # if beta=alpha, its solved, so just choose one solution and stick with it
         if not candidates:
-            candidates = [c for c in self.children.values() if c.beta == -self.beta][:1]
+            candidates = [c for c in self.children.values() if c.beta == c.alpha][:1]
 
         return max(candidates,
                    key=lambda node: node.Q() + node.cpuct * node.U() + node.bound_penalty * node.alpha)
