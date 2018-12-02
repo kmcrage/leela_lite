@@ -20,6 +20,7 @@ from search.st import STUCTNode
 from search.normal import NSNode, NSMinusNode, NSPlusNode
 from search.bayes import BayesNode, BayesMinusNode, BayesPlusNode
 from search.bounds import BoundedUCTNode
+from search.policy import PolicyUCTNode
 
 from search.alphabeta import ABNode
 from search.alphabeta_uct import ABUCTNode
