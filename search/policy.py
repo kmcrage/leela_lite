@@ -28,12 +28,14 @@ class Policy_mixin:
         current.reward = -value_estimate
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
+        if current.policy == 0:
+            current.policy = 1
         while current:
             # update policy before we update the mean
             K = len(current.parent.children) if current.parent else 1
             current.policy *= math.exp(value_estimate * turnfactor / (K * current.policy * current.temperature))
 
-            #... and renormalise the children
+            # ... and renormalise the children
             if current.children:
                 renorm = sum([c.policy for c in current.children.values()])
                 for c in current.children.values():
