@@ -51,7 +51,7 @@ class Bounded_mixin:
             else:
                 current.beta = -max([c.alpha for c in current.children.values()])
                 current.alpha = -max([c.beta for c in current.children.values()])
-                current.total_value = current.number_visits * numpy.clip(current.Q(), current.beta, current.alpha)
+                current.total_value = current.number_visits * numpy.clip(current.Q(), current.alpha, current.beta)
 
             current = current.parent
             turnfactor *= -1
