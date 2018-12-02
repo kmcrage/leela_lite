@@ -21,13 +21,13 @@ class Bounded_mixin:
         prune the children with the bounds we've generated
         :return:
         """
-        candidates = [c for c in self.children.values() if c.alpha <= c.beta and c.beta > self.alpha]
+        candidates = [c for c in self.children.values() if c.alpha <= c.beta and c.beta > -self.beta]
         # if beta=alpha, its solved, so just choose one solution and stick with it
         if not candidates:
-            candidates = [c for c in self.children.values() if c.beta == self.alpha][:1]
+            candidates = [c for c in self.children.values() if c.beta == -self.beta][:1]
 
         return max(candidates,
-                   key=lambda node: node.Q() + self.cpuct * node.U() + self.bound_penalty * (self.alpha + self.beta))
+                   key=lambda node: node.Q() + node.cpuct * node.U() + node.bound_penalty * (node.alpha + node.beta))
 
     def backup(self, value_estimate: float):
         """
@@ -51,7 +51,7 @@ class Bounded_mixin:
             else:
                 current.beta = -max([c.alpha for c in current.children.values()])
                 current.alpha = -max([c.beta for c in current.children.values()])
-                current.total_value = current.number_visits * numpy.clip(current.Q(), current.alpha, current.beta)
+                current.total_value = (1 + current.number_visits) * numpy.clip(current.Q(), current.alpha, current.beta)
 
             current = current.parent
             turnfactor *= -1
