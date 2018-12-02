@@ -20,7 +20,7 @@ parser.add_argument("-b", "--black",
                     choices=search.engines.keys(), default=default_engine)
 parser.add_argument("-k", "--kibitz",
                     help="the engine to use for kibitz",
-                    choices=search.engines.keys()+['none'], default=default_engine)
+                    choices=list(search.engines.keys())+['none'], default=default_engine)
 parser.add_argument("-n", "--nodes",
                     help="the engine to use for black",
                     type=int, default=800)
