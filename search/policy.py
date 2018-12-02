@@ -32,7 +32,8 @@ class Policy_mixin:
             current.policy = 1
         while current:
             # update policy before we update the mean
-            K = len(current.parent.children) if current.parent else 1
+            K = len(current.parent.children) if current.parent and current.parent.children else 1
+            print(K, current.policy, current.temperature)
             current.policy *= math.exp(value_estimate * turnfactor / (K * current.policy * current.temperature))
 
             # ... and renormalise the children
