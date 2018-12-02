@@ -20,7 +20,7 @@ parser.add_argument("-b", "--black",
                     choices=search.engines.keys(), default=default_engine)
 parser.add_argument("-k", "--kibitz",
                     help="the engine to use for kibitz",
-                    choices=search.engines.keys(), default=default_engine)
+                    choices=search.engines.keys()+['none'], default=default_engine)
 parser.add_argument("-n", "--nodes",
                     help="the engine to use for black",
                     type=int, default=800)
@@ -53,7 +53,7 @@ while True:
             if players[turn]['root'] and hasattr(players[turn]['root'], 'number_visits'):
                 print('starting with', players[turn]['root'].number_visits, 'visits')
         start = time.time()
-        if players[turn]['engine'] != args.kibitz:
+        if players[turn]['engine'] != args.kibitz and args.kibitz != 'none':
             search.engines[args.kibitz](board, args.nodes, net=nn)
         best, node = search.engines[players[turn]['engine']](board, args.nodes,
                                                              net=nn, root=players[turn]['root'])
