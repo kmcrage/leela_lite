@@ -42,7 +42,7 @@ class BayesNode:
         return math.sqrt(self.q_sse / self.number_visits)
 
     def u(self):
-        return math.sqrt(self.parent.number_visits) * self.sigma() / self.number_visits
+        return self.sigma() * math.sqrt(self.parent.number_visits) / self.number_visits
 
     def best_child(self):
         """
