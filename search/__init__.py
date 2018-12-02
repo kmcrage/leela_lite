@@ -20,7 +20,7 @@ from search.st import STUCTNode
 from search.normal import NSNode, NSMinusNode, NSPlusNode
 from search.bayes import BayesNode, BayesMinusNode, BayesPlusNode
 from search.bounds import BoundedUCTNode
-from search.policy import PolicyUCTNode
+from search.policy import PolicyUCTNode, PolicyMinusNode, PolicyPlusNode
 
 from search.alphabeta import ABNode
 from search.alphabeta_uct import ABUCTNode
@@ -52,6 +52,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
 
            'bounded': partial(mcts_search, BoundedUCTNode),
            'policy': partial(mcts_search, PolicyUCTNode),
+           'policyplus': partial(mcts_search, PolicyMinusNode),
+           'policyminus': partial(mcts_search, PolicyPlusNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),

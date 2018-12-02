@@ -45,3 +45,17 @@ class Policy_mixin:
 
 class PolicyUCTNode(Policy_mixin, UCTNode):
     name = 'policy'
+
+
+class PolicyMinusNode(PolicyUCTNode):
+    name = 'policyminus'
+
+    def __init__(self, **kwargs):
+        super().__init__(temperature=.01, **kwargs)
+
+
+class PolicyPlusNode(PolicyUCTNode):
+    name = 'policyplus'
+
+    def __init__(self, **kwargs):
+        super().__init__(temperature=.1, **kwargs)
