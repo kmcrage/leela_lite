@@ -31,7 +31,7 @@ class Policy_mixin:
         while current:
             # update policy before we update the mean
             K = len(current.parent.children) if current.parent else 1
-            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) / (K * current.temperature))
+            current.policy *= math.exp(value_estimate * turnfactor / (K * current.temperature))
 
             #... and renormalise the children
             if current.children:
@@ -54,11 +54,11 @@ class PolicyMinusNode(PolicyUCTNode):
     name = 'policyminus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=.01, **kwargs)
+        super().__init__(temperature=.1, **kwargs)
 
 
 class PolicyPlusNode(PolicyUCTNode):
     name = 'policyplus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=.1, **kwargs)
+        super().__init__(temperature=10, **kwargs)
