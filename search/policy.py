@@ -2,7 +2,10 @@ from search.uct import UCTNode
 import math
 
 """
-Adaptive policy (see also exp3)
+Adaptive policy 
+See also exp3, https://cseweb.ucsd.edu/~yfreund/papers/bandits.pdf,
+which is known to do well in adversarial contexts.
+
 """
 
 
@@ -28,7 +31,8 @@ class Policy_mixin:
         while current:
             current.number_visits += 1
             current.total_value += value_estimate * turnfactor
-            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) / current.temperature)
+            K = len(current.parent.children) if current.parent else 1
+            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) / (K * current.temperature))
 
             if current.children:
                 renorm = sum([c.policy for c in current.children.values()])
