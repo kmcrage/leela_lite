@@ -20,7 +20,7 @@ class Bounded_mixin:
         prune the children with the bounds we've generated
         :return:
         """
-        candidates = [c for c in self.children.values() if c.beta > self.alpha]
+        candidates = [c for c in self.children.values() if c.alpha >= c.beta > self.alpha]
         # if beta=alpha, its solved, so just choose one solution and stick with it
         if not candidates:
             candidates = [c for c in self.children.values() if c.beta == self.alpha][:1]
