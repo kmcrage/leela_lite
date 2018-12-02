@@ -1,5 +1,6 @@
 from search.uct import UCTNode
 import heapq
+import numpy
 
 """
 http://www.lamsade.dauphine.fr/~cazenave/papers/mcsolver.pdf
@@ -31,6 +32,7 @@ class Bounded_mixin:
     def backup(self, value_estimate: float):
         """
         additional backup of optimistic and pessimistic bounds
+        clip Q to fit the bounds
         :param value_estimate:
         :return:
         """
@@ -49,6 +51,7 @@ class Bounded_mixin:
             else:
                 current.beta = -max([c.beta for c in current.children.values()])
                 current.alpha = -max([c.alpha for c in current.children.values()])
+                current.total_value = current.number_visits * numpy.clip(current.Q(), current.beta, current.alpha)
 
             current = current.parent
             turnfactor *= -1
