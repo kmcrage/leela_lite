@@ -13,7 +13,7 @@ initialise Q from parent
 class UCTNode:
     name = 'uct'
 
-    def __init__(self, board=None, parent=None, move=None, prior=0,
+    def __init__(self, board=None, parent=None, move=None, prior=1,
                  cpuct=3.4, verbose=True):
         self.cpuct = cpuct
 
