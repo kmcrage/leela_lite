@@ -52,8 +52,8 @@ engines = {'uct': partial(mcts_search, UCTNode),
 
            'bounded': partial(mcts_search, BoundedUCTNode),
            'policy': partial(mcts_search, PolicyUCTNode),
-           'policyplus': partial(mcts_search, PolicyMinusNode),
-           'policyminus': partial(mcts_search, PolicyPlusNode),
+           'policyminus': partial(mcts_search, PolicyMinusNode),
+           'policyplus': partial(mcts_search, PolicyPlusNode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),
