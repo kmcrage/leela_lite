@@ -49,8 +49,8 @@ class Bounded_mixin:
                 current.beta = current.Q()
                 current.alpha = current.Q()
             else:
-                current.beta = -max([c.beta for c in current.children.values()])
-                current.alpha = -max([c.alpha for c in current.children.values()])
+                current.beta = -max([c.alpha for c in current.children.values()])
+                current.alpha = -max([c.beta for c in current.children.values()])
                 current.total_value = current.number_visits * numpy.clip(current.Q(), current.beta, current.alpha)
 
             current = current.parent
