@@ -30,8 +30,9 @@ class Policy_mixin:
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
         while current:
-            # update policy before we update the mean (could be simpler just to set policy, or divide this by visits)
+            current.number_visits += 1
 
+            # update policy before we update the mean (could be simpler just to set policy, or divide this by visits)
             current.policy *= math.exp((value_estimate * turnfactor - current.Q()) /
                                        (current.number_visits * current.temperature))
 
@@ -41,7 +42,6 @@ class Policy_mixin:
                 for c in current.children.values():
                     c.policy /= renorm
 
-            current.number_visits += 1
             current.total_value += value_estimate * turnfactor
 
             current = current.parent
