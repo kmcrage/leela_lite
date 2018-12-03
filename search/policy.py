@@ -30,9 +30,7 @@ class Policy_mixin:
         turnfactor = -1
         while current:
             # update policy before we update the mean
-            K = len(current.parent.children) if current.parent and current.parent.children else 1
-            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) /
-                                       (K * current.policy * current.temperature))
+            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) / current.temperature)
 
             # ... and renormalise the children
             if current.children:
@@ -43,9 +41,6 @@ class Policy_mixin:
             current.number_visits += 1
             current.total_value += value_estimate * turnfactor
 
-            # renorm root node to avoid policy going to zero
-            if not current.parent:
-                current.policy = 1
             current = current.parent
             turnfactor *= -1
 
