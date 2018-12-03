@@ -21,6 +21,7 @@ class Policy_mixin:
     def backup(self, value_estimate: float):
         """
         adapt policy as well as value
+        compare with boltzman distribution
         :param value_estimate:
         :return:
         """
@@ -29,8 +30,10 @@ class Policy_mixin:
         # Child nodes are multiplied by -1 because we want max(-opponent eval)
         turnfactor = -1
         while current:
-            # update policy before we update the mean
-            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) / current.temperature)
+            # update policy before we update the mean (could be simpler just to set policy, or divide this by visits)
+
+            current.policy *= math.exp((value_estimate * turnfactor - current.Q()) /
+                                       (current.number_visits * current.temperature))
 
             # ... and renormalise the children
             if current.children:
