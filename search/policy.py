@@ -10,7 +10,7 @@ which is known to do well in adversarial contexts.
 
 
 class Policy_mixin:
-    def __init__(self, temperature=2.2, **kwargs):
+    def __init__(self, temperature=3, **kwargs):
         super().__init__(**kwargs)
         self.temperature = temperature
         self.policy = self.prior
@@ -56,11 +56,11 @@ class PolicyMinusNode(PolicyUCTNode):
     name = 'policyminus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=1, **kwargs)
+        super().__init__(temperature=1.5, **kwargs)
 
 
 class PolicyPlusNode(PolicyUCTNode):
     name = 'policyplus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=5, **kwargs)
+        super().__init__(temperature=4, **kwargs)
