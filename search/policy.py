@@ -32,11 +32,11 @@ class Policy_mixin:
         while current:
             current.number_visits += 1
 
-            # update policy before we update the mean (could be simpler just to set policy, or divide this by visits)
+            # update policy before we update the mean (could be simpler just to set policy)
             current.policy *= math.exp((value_estimate * turnfactor - current.Q()) /
                                        (current.number_visits * current.temperature))
 
-            # ... and renormalise the children
+            # ... and renormalise the children (we don't care about normalising root)
             if current.children:
                 renorm = sum([c.policy for c in current.children.values()])
                 for c in current.children.values():
