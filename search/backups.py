@@ -15,7 +15,7 @@ class Product_mixin:
         while current:
             current.number_visits += 1
             q_vals = [1 - n.Q() for n in current.children.values() if n.number_visits]
-            if any([v <= 0 for v in vals]):
+            if any([v <= 0 for v in q_vals]):
                 g_gmean = -1
             else:
                 q_log_mean = sum([math.log(v) for v in q_vals]) / len(q_vals)
