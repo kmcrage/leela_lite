@@ -56,11 +56,11 @@ class PolicyMinusNode(PolicyUCTNode):
     name = 'policyminus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=.1, **kwargs)
+        super().__init__(temperature=1, **kwargs)
 
 
 class PolicyPlusNode(PolicyUCTNode):
     name = 'policyplus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=10, **kwargs)
+        super().__init__(temperature=5, **kwargs)

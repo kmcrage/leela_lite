@@ -1,6 +1,30 @@
 from search.uct import UCTNode
 
 
+class Product_mixin:
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def backup(self, value_estimate: float):
+        current = self
+        current.reward = -value_estimate
+        current.total_value += -value_estimate
+        current.number_visits += 1
+
+        current = current.parent
+        while current:
+            current.number_visits += 1
+            q_vals = [1 - n.Q() for n in current.children.values() if n.number_visits]
+            if any([v <= 0 for v in vals]):
+                g_gmean = -1
+            else:
+                q_log_mean = sum([math.log(v) for v in q_vals]) / len(q_vals)
+                g_gmean = exp(q_log_mean) - 1
+            current.total_value = current.number_visits * q_gmean
+
+            current = current.parent
+
+
 class MinMax_mixin:
     def __init__(self, **kwargs):
         super(MinMax_mixin, self).__init__(**kwargs)
@@ -63,6 +87,11 @@ class DPUCT_mixin:
                 current.total_value += child.backup_weight() * child.V()
                 sum_weights += child.backup_weight()
             current.total_value *= current.number_visits / sum_weights
+
+
+
+class ProductUCTNode(Product_mixin, UCTNode):
+    name = 'product'
 
 
 class DPUCTNode(DPUCT_mixin, UCTNode):
