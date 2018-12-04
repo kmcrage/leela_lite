@@ -20,7 +20,7 @@ class Product_mixin:
                 g_gmean = -1
             else:
                 q_log_mean = sum([math.log(v) for v in q_vals]) / len(q_vals)
-                g_gmean = exp(q_log_mean) - 1
+                g_gmean = math.exp(q_log_mean) - 1
             current.total_value = current.number_visits * q_gmean
 
             current = current.parent
