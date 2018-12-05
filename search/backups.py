@@ -68,14 +68,15 @@ class DPUCT_mixin:
     def V(self):
         children = [n for n in self.children.values() if n.number_visits]
         if children:
-            value = max([n.Q() for n in children])
+            value = -max([n.Q() for n in children])
         else:
-            value = -self.Q()
+            value = self.Q()
         return value
 
     def backup(self, value_estimate: float):
         current = self
         current.reward = -value_estimate
+        current.total_value = -value_estimate
         current.number_visits += 1
         while current.parent is not None:
             current = current.parent

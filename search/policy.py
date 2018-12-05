@@ -63,4 +63,5 @@ class PolicyPlusNode(PolicyUCTNode):
     name = 'policyplus'
 
     def __init__(self, **kwargs):
-        super().__init__(temperature=3.5, **kwargs)
+        super().__init__(temperature=3.5
+                         , **kwargs)
