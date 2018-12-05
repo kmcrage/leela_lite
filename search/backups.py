@@ -68,9 +68,9 @@ class DPUCT_mixin:
     def V(self):
         children = [n for n in self.children.values() if n.number_visits]
         if children:
-            value = min([n.Q() for n in children])
+            value = -min([n.Q() for n in children])
         else:
-            value = -self.Q()
+            value = self.Q()
         return value
 
     def backup(self, value_estimate: float):
