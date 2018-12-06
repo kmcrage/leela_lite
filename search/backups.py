@@ -17,7 +17,7 @@ class Harmonic_mixin:
             if turn * value_estimate == 1:
                 current.total_value = float('inf')
             else:
-                current.total_value += 1. / (1. - turn * value_estimate)
+                current.total_value += 1. / (1. + turn * value_estimate)
             current.number_visits += 1
             current = current.parent
             turn *= -1
