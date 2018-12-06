@@ -1,6 +1,27 @@
 from search.uct import UCTNode
 import math
 
+class Harmonic_mixin:
+    def __init__(self, parent=None, **kwargs):
+        super().__init__(parent=parent, **kwargs)
+        self.total_value = 1. / (1 - parent.Q()) if parent else 0
+
+    def Q(self):  # returns float
+        return (1 + self.number_visits) / self.total_value - 1.
+
+    def backup(self, value_estimate: float):
+        current = self
+        current.reward = -value_estimate
+        turn = -1
+        while current:
+            if turn * value_estimate == 1:
+                current.total_value = float('inf')
+            else:
+                current.total_value += 1. / (1. - turn * value_estimate)
+            current.number_visits += 1
+            current = current.parent
+            turn *= -1
+
 
 class Adapt_mixin:
     def __init__(self, **kwargs):
@@ -11,13 +32,13 @@ class Adapt_mixin:
         current.reward = -value_estimate
         turn = -1
         while current:
-            current.number_visits += 1
             children = [n for n in current.children.values() if n.number_visits]
             if children:
                 current.total_value += (math.fabs(current.Q()) * turn * value_estimate -
                                         (1 - math.fabs(current.Q())) * max([n.Q() for n in children]))
             else:
                 current.total_value += turn * value_estimate
+            current.number_visits += 1
             current = current.parent
             turn *= -1
 
@@ -111,6 +132,9 @@ class DPUCT_mixin:
                 sum_weights += child.backup_weight()
             current.total_value *= current.number_visits / sum_weights
 
+
+class HarmonicUCTNode(Harmonic_mixin, UCTNode):
+    name = 'harmonic'
 
 
 class AdaptUCTNode(Adapt_mixin, UCTNode):
