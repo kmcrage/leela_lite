@@ -2,6 +2,24 @@ from search.uct import UCTNode
 import math
 
 
+class Adapt_mixin:
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def backup(self, value_estimate: float):
+        current = self
+        current.reward = -value_estimate
+        turn = -1
+        while current:
+            current.number_visits += 1
+            children = [n for n in current.children.values() if n.number_visits]
+            if children:
+                current.total_value += ((1 - math.fabs(current.Q())) * turn * value_estimate -
+                                       math.fabs(current.Q()) * min([n.Q() for n in current.children.values()]))
+            current = current.parent
+            turn *= -1
+
+
 class Product_mixin:
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -91,6 +109,10 @@ class DPUCT_mixin:
                 sum_weights += child.backup_weight()
             current.total_value *= current.number_visits / sum_weights
 
+
+
+class AdaptUCTNode(Adapt_mixin, UCTNode):
+    name = 'adapt'
 
 
 class ProductUCTNode(Product_mixin, UCTNode):

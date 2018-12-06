@@ -5,7 +5,7 @@ from search.crazy import CRAZY_search
 from search.brue import BRUE_search
 from search.voi import VOI_search
 from search.mpa_backup import MPA_search
-from search.backups import DPUCTNode, ProductUCTNode
+from search.backups import DPUCTNode, ProductUCTNode, AdaptUCTNode
 from search.backups import MaxUCTNode
 from search.backups import MinMaxUCTNode
 from search.variants import CutoffUCTNode
@@ -37,6 +37,7 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'dpuct': partial(mcts_search, DPUCTNode),
            'maxuct': partial(mcts_search, MaxUCTNode),
            'product': partial(mcts_search, ProductUCTNode),
+           'adapt': partial(mcts_search, AdaptUCTNode),
            'minmaxt': partial(mcts_search, MinMaxUCTNode),
            'pruned': partial(mcts_search, PrunedUCTNode),
            'st': partial(mcts_search, STUCTNode),
