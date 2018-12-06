@@ -14,7 +14,7 @@ class Harmonic_mixin:
         current.reward = -value_estimate
         turn = -1
         while current:
-            if turn * value_estimate == 1:
+            if turn * value_estimate + 1 == 0:
                 current.total_value = float('inf')
             else:
                 current.total_value += 1. / (1. + turn * value_estimate)
