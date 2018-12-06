@@ -4,7 +4,7 @@ import math
 class Harmonic_mixin:
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent=parent, **kwargs)
-        self.total_value = 1. / (1 - parent.Q()) if parent else 0
+        self.total_value = 1. / (1 - parent.Q()) if parent else 1
 
     def Q(self):  # returns float
         return (1 + self.number_visits) / self.total_value - 1.
