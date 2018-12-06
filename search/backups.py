@@ -14,8 +14,8 @@ class Adapt_mixin:
             current.number_visits += 1
             children = [n for n in current.children.values() if n.number_visits]
             if children:
-                current.total_value += ((1 - math.fabs(current.Q())) * turn * value_estimate +
-                                       math.fabs(current.Q()) * max([n.Q() for n in current.children.values()]))
+                current.total_value += (math.fabs(current.Q()) * turn * value_estimate -
+                                        (1 - math.fabs(current.Q())) * max([n.Q() for n in current.children.values()]))
             current = current.parent
             turn *= -1
 
