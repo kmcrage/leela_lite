@@ -75,7 +75,7 @@ class BRUENode:
             sample *= -1
 
     def best_child(self):
-        # print('explore', self.ev(), 'exploit', self.ve())
+        print(sel.move, 'explore', self.ev(), 'exploit', self.ve())
         if self.ev() > self.ve():
             return self.exploration()
         else:
