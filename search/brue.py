@@ -21,7 +21,7 @@ class BRUENode:
         return self._parent() if self._parent else None
 
     def var(self):
-        if self.number_visits < 2:
+        if self.number_visits < 3:
             return 1
         return self.q_sse / self.number_visits
 
