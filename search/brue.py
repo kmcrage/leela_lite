@@ -1,5 +1,7 @@
 import weakref
 import heapq
+import random
+
 
 class BRUENode:
     name = 'brue'
@@ -12,7 +14,7 @@ class BRUENode:
         self.is_expanded = False
         self.prior = prior         # float
         self.q = -parent.q if parent else 0
-        self.q_sse = 0
+        self.q_var = 0
         self.number_visits = 0     # int
         self.verbose = verbose
 
@@ -20,32 +22,22 @@ class BRUENode:
     def parent(self):
         return self._parent() if self._parent else None
 
-    def var(self):
-        if self.number_visits < 3:
-            return 1
-        return self.q_sse / self.number_visits
+    def ee(self):
+        return sum([c.number_visits * c.q for c in self.children]) / self.number_visits
 
     def ev(self):
-        exploit = self.exploitation()
-        return sum([c.prior * c.var() for c in self.children if c != exploit]) / exploit.prior
+        return sum([c.number_visits * c.q_var for c in self.children]) / self.number_visits
 
     def ve(self):
-        current = self
-        var_sum = current.var()
-        depth = 1
-        while current.children:
-            current = current.exploitation()
-            depth += 1
-            var_sum += current.var()
-        return var_sum / depth
+        return sum([c.number_visits * (c.q - c.ee()) ** 2 for c in self.children]) / self.number_visits
 
     def exploitation(self):
-        return max(self.children, key=lambda node: node.q)
+        return random.choices(self.children, weights=[c.prior for c in self.children])
     
     def exploration(self):
         exploit = self.exploitation()
         return max([c for c in self.children if c != exploit],
-                   key=lambda node: node.prior * node.var())
+                   key=lambda node: node.prior * node.q_var)
 
     def expand(self, child_priors):
         if self.is_expanded:
@@ -72,14 +64,14 @@ class BRUENode:
             current.number_visits += 1
             e = sample - current.q
             current.q += e / current.number_visits
-            current.q_sse += e * (sample - current.q)
+            current.q_var += (e * (sample - current.q) - current.q_var) / current.number_visits
 
             current = current.parent
             sample *= -1
 
     def best_child(self):
         # print(self.move, 'explore', self.ev(), 'exploit', self.ve())
-        if self.ev() > self.ve():
+        if self.ev() > self.ve() * self.number_visits:
             return self.exploration()
         else:
             return self.exploitation()
@@ -95,12 +87,12 @@ class BRUENode:
         pv = heapq.nlargest(size, self.children,
                             key=lambda item: (item.q, item.number_visits))
         if self.verbose:
-            print(self.name, 'pv:', [(n.move, n.q, n.var(), n.number_visits) for n in pv])
+            print(self.name, 'pv:', [(n.move, n.q, n.q_var, n.number_visits) for n in pv])
         current = self.exploitation()
         print('brue prediction:', end=' ')
         while current.children:
             current = current.exploitation()
-            print(current.move, current.var(), end=', ')
+            print(current.move, current.q_var, end=', ')
         print('')
         result = self.exploitation()
         return result.move, result
