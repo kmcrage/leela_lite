@@ -27,7 +27,7 @@ class BRUENode:
 
     def ev(self):
         exploit = self.exploitation()
-        return sum([c.prior * c.var() for c in self.children if c != exploit])
+        return sum([c.prior * c.var() for c in self.children if c != exploit]) / exploit.prior
 
     def ve(self):
         current = self
@@ -43,7 +43,9 @@ class BRUENode:
         return max(self.children, key=lambda node: node.q)
     
     def exploration(self):
-        return max(self.children, key=lambda node: node.prior * node.var())
+        exploit = self.exploitation()
+        return max([c for c in self.children if c != exploit],
+                   key=lambda node: node.prior * node.var())
 
     def expand(self, child_priors):
         if self.is_expanded:
