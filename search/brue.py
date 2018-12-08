@@ -2,6 +2,8 @@ import weakref
 
 
 class BRUENode:
+    name = 'brue'
+
     def __init__(self, board=None, parent=None, prior=0, move=None):
         self.board = board
         self._parent = weakref.ref(parent) if parent else None
