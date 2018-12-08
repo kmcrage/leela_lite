@@ -13,8 +13,8 @@ class BRUENode:
         self.move = move
         self.is_expanded = False
         self.prior = prior         # float
-        self.q = -parent.q if parent else 0
-        self.q_var = 0
+        self.q = -1
+        self.q_var = 1
         self.number_visits = 0     # int
         self.verbose = verbose
 
@@ -32,12 +32,10 @@ class BRUENode:
         return sum([c.number_visits * (c.q - c.ee()) ** 2 for c in self.children]) / (1 + self.number_visits)
 
     def exploitation(self):
-        return random.choices(self.children, weights=[c.prior for c in self.children])[0]
+        return max(self.children, key=lambda c: c.q)
     
     def exploration(self):
-        exploit = self.exploitation()
-        return max([c for c in self.children if c != exploit],
-                   key=lambda node: node.prior * node.q_var)
+        return choice(self.children, weights=[c.prior for c in self.children])[0]
 
     def expand(self, child_priors):
         if self.is_expanded:
