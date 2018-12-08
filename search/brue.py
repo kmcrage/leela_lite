@@ -23,7 +23,7 @@ class BRUENode:
     def var(self):
         if self.number_visits < 2:
             return 1
-        return self.q_sse / self.number_visits - self.q * self.q
+        return self.q_sse / self.number_visits
 
     def ev(self):
         return sum([c.prior * c.var() for c in self.children])
