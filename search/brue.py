@@ -74,10 +74,6 @@ class BRUENode:
             current = current.parent
             sample *= -1
 
-    def update_node(self, reward):
-        self.number_visits += 1
-        self.q += (reward - self.q) / self.number_visits
-
     def best_child(self):
         # print('explore', self.ev(), 'exploit', self.ve())
         if self.ev() > self.ve():
