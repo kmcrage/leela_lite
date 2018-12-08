@@ -84,7 +84,7 @@ class BRUENode:
 
     def outcome(self):
         current = self
-        while current.childen:
+        while current.children:
             current = current.exploitation()
             print((current.move, current.number_visits), end=', ')
         print('')
