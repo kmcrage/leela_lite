@@ -97,7 +97,7 @@ class BRUENode:
                             key=lambda item: (item.q, item.number_visits))
         if self.verbose:
             print(self.name, 'pv:', [(n.move, n.q, n.number_visits) for n in pv])
-        current = current.exploitation()
+        current = self.exploitation()
         print('brue prediction:', end=' ')
         while current.children:
             current = current.exploitation()
