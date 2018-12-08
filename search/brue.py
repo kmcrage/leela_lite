@@ -41,7 +41,7 @@ class BRUENode:
         return max(self.children, key=lambda node: node.q)
     
     def exploration(self):
-        return max(self.children, key=lambda node: node.prior * node.var)
+        return max(self.children, key=lambda node: node.prior * node.var())
 
     def expand(self, child_priors):
         if self.is_expanded:
