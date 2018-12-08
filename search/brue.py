@@ -35,7 +35,7 @@ class BRUENode:
         return max(self.children, key=lambda c: c.q)
     
     def exploration(self):
-        return choice(self.children, weights=[c.prior for c in self.children])[0]
+        return random.choices(self.children, weights=[c.prior for c in self.children])[0]
 
     def expand(self, child_priors):
         if self.is_expanded:
