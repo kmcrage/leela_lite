@@ -1,10 +1,10 @@
 import weakref
-
+import heapq
 
 class BRUENode:
     name = 'brue'
 
-    def __init__(self, board=None, parent=None, prior=0, move=None):
+    def __init__(self, board=None, parent=None, prior=0, move=None, verbose=True):
         self.board = board
         self._parent = weakref.ref(parent) if parent else None
         self.children = []
@@ -14,6 +14,7 @@ class BRUENode:
         self.q = -1
         self.q_sse = 0
         self.number_visits = 0     # int
+        self.verbose = verbose
 
     @property
     def parent(self):
@@ -91,11 +92,16 @@ class BRUENode:
         return current
 
     def outcome(self):
+        size = min(5, len(self.children))
+        pv = heapq.nlargest(size, self.children,
+                            key=lambda item: (item.q, item.number_visits))
+        if self.verbose:
+            print(self.name, 'pv:', [(n, n.q, n.number_visits) for n in pv])
         current = self
-        print('brue pv:', end=' ')
+        print('brue prediction:', end=' ')
         while current.children:
             current = current.exploitation()
-            print((current.move, current.number_visits), end=', ')
+            print(current.move, end=', ')
         print('')
         result = self.exploitation()
         return result.move, result
