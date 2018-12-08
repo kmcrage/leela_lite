@@ -7,7 +7,8 @@ class BRUENode:
     def __init__(self, board, parent=None, prior=0):
         self.board = board
         self._parent = weakref.ref(parent) if parent else None
-        self.children = []  # Dict[move, UCTNode]
+        self.children = []
+        self.is_expanded = False
         self.prior = prior         # float
         self.q = -1
         self.q_sse = 0
@@ -47,7 +48,7 @@ class BRUENode:
 
     def add_child(self, move, prior):
         child = self.build_child(move)
-        self.children[move] = BRUENode(child, parent=self, prior=prior)
+        self.children.append(self.__class__(child, parent=self, prior=prior))
 
     def build_child(self, move):
         board = self.board.copy()
