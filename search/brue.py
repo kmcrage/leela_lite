@@ -2,7 +2,7 @@ import weakref
 
 
 class BRUENode:
-    def __init__(self, board, parent=None, prior=0, move=None, board=None):
+    def __init__(self, board=None, parent=None, prior=0, move=None):
         self.board = board
         self._parent = weakref.ref(parent) if parent else None
         self.children = []
