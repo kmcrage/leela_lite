@@ -96,7 +96,7 @@ class BRUENode:
         pv = heapq.nlargest(size, self.children,
                             key=lambda item: (item.q, item.number_visits))
         if self.verbose:
-            print(self.name, 'pv:', [(n, n.q, n.number_visits) for n in pv])
+            print(self.name, 'pv:', [(n.move, n.q, n.number_visits) for n in pv])
         current = self
         print('brue prediction:', end=' ')
         while current.children:
