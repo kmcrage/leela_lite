@@ -2,10 +2,11 @@ import weakref
 
 
 class BRUENode:
-    def __init__(self, board, parent=None, prior=0):
+    def __init__(self, board, parent=None, prior=0, move=None, board=None):
         self.board = board
         self._parent = weakref.ref(parent) if parent else None
         self.children = []
+        self.move = move
         self.is_expanded = False
         self.prior = prior         # float
         self.q = -1
@@ -44,14 +45,16 @@ class BRUENode:
         for move, prior in child_priors.items():
             self.add_child(move, prior)
 
-    def add_child(self, move, prior):
-        child = self.build_child(move)
-        self.children.append(self.__class__(child, parent=self, prior=prior))
 
-    def build_child(self, move):
+    def add_child(self, move, prior):
         board = self.board.copy()
         board.push_uci(move)
-        return board
+        self.children.append(self.__class__(child, parent=self, prior=prior, move=move, board=board))
+
+    def get_node(self, move):
+        if move in self.children:
+            return self.children[move]
+        return None
 
     def backup(self, value_estimate: float):
         current = self
