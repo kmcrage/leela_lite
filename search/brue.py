@@ -11,7 +11,7 @@ class BRUENode:
         self.move = move
         self.is_expanded = False
         self.prior = prior         # float
-        self.q = -1
+        self.q = -parent.q if parent else 0
         self.q_sse = 0
         self.number_visits = 0     # int
         self.verbose = verbose
@@ -97,7 +97,7 @@ class BRUENode:
                             key=lambda item: (item.q, item.number_visits))
         if self.verbose:
             print(self.name, 'pv:', [(n.move, n.q, n.number_visits) for n in pv])
-        current = self
+        current = current.exploitation()
         print('brue prediction:', end=' ')
         while current.children:
             current = current.exploitation()
