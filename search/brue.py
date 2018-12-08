@@ -25,7 +25,7 @@ class BRUENode:
     def ee(self):
         if not self.children:
             return self.q
-        return sum([c.number_visits * c.q for c in self.children]) / (self.number_visits
+        return sum([c.number_visits * c.q for c in self.children]) / self.number_visits
 
     def ev(self):
         if not self.children:
