@@ -42,11 +42,13 @@ class BRUENode:
     
     def exploration(self):
         return max(self.children, key=lambda node: node.prior * node.var)
-    
+
     def expand(self, child_priors):
+        if self.is_expanded:
+            return
+        self.is_expanded = True
         for move, prior in child_priors.items():
             self.add_child(move, prior)
-
 
     def add_child(self, move, prior):
         board = self.board.copy()
