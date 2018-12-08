@@ -23,13 +23,19 @@ class BRUENode:
         return self._parent() if self._parent else None
 
     def ee(self):
-        return sum([c.number_visits * c.q for c in self.children]) / (1 + self.number_visits)
+        if not self.children:
+            return self.q
+        return sum([c.number_visits * c.q for c in self.children]) / (self.number_visits
 
     def ev(self):
-        return sum([c.number_visits * c.q_var for c in self.children]) / (1 + self.number_visits)
+        if not self.children:
+            return self.q_var
+        return sum([c.number_visits * c.q_var for c in self.children]) / self.number_visits
 
     def ve(self):
-        return sum([c.number_visits * (c.q - c.ee()) ** 2 for c in self.children]) / (1 + self.number_visits)
+        if not self.children:
+            return 0
+        return sum([c.number_visits * (c.q - c.ee()) ** 2 for c in self.children]) / self.number_visits
 
     def exploitation(self):
         return max(self.children, key=lambda c: c.q)
