@@ -49,7 +49,7 @@ class BRUENode:
     def add_child(self, move, prior):
         board = self.board.copy()
         board.push_uci(move)
-        self.children.append(self.__class__(child, parent=self, prior=prior, move=move, board=board))
+        self.children.append(self.__class__(parent=self, prior=prior, move=move, board=board))
 
     def get_node(self, move):
         if move in self.children:
