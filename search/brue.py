@@ -26,7 +26,8 @@ class BRUENode:
         return self.q_sse / self.number_visits
 
     def ev(self):
-        return sum([c.prior * c.var() for c in self.children])
+        exploit = self.exploitation()
+        return sum([c.prior * c.var() for c in self.children if c != exploit])
 
     def ve(self):
         current = self
