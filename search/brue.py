@@ -78,7 +78,7 @@ class BRUENode:
         self.q += (reward - self.q) / self.number_visits
 
     def best_child(self):
-        print('explore', self.ev(), 'exploit', self.ve())
+        # print('explore', self.ev(), 'exploit', self.ve())
         if self.ev() > self.ve():
             return self.exploration()
         else:
