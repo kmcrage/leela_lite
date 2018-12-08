@@ -2,7 +2,7 @@ from search.neural_net import NeuralNet
 from search.uct import UCTNode
 from search.ucd import UCDNode
 from search.crazy import CRAZY_search
-from search.brue import BRUE_search
+from search.brue import BRUENode
 from search.voi import VOI_search
 from search.mpa_backup import MPA_search
 from search.backups import DPUCTNode, ProductUCTNode, AdaptUCTNode, HarmonicUCTNode
@@ -46,17 +46,14 @@ engines = {'uct': partial(mcts_search, UCTNode),
            'uctt': partial(mcts_search, UCTTNode),
 
            'ns': partial(mcts_search, NSNode),
-           'nsminus': partial(mcts_search, NSMinusNode),
-           'nsplus': partial(mcts_search, NSPlusNode),
-
            'bayes': partial(mcts_search, BayesNode),
-           'bayesminus': partial(mcts_search, BayesMinusNode),
-           'bayesplus': partial(mcts_search, BayesPlusNode),
 
            'bounded': partial(mcts_search, BoundedUCTNode),
            'policy': partial(mcts_search, PolicyUCTNode),
            'policyminus': partial(mcts_search, PolicyMinusNode),
            'policyplus': partial(mcts_search, PolicyPlusNode),
+
+           'brue': partial(mcts_search, BRUENode),
 
            'ucd': partial(mcds_search, UCDNode),
            'alphabeta': partial(mcts_search, ABNode),

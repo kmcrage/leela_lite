@@ -6,20 +6,40 @@ import math
 class BRUENode:
     def __init__(self, board, parent=None, prior=0):
         self.board = board
-        self.parent = parent  # Optional[UCTNode]
-        self.children = OrderedDict()  # Dict[move, UCTNode]
+        self._parent = weakref.ref(parent) if parent else None
+        self.children = []  # Dict[move, UCTNode]
         self.prior = prior         # float
-        self.q = 0.
+        self.q = -1
+        self.q_sse = 0
         self.number_visits = 0     # int
-        self.uncertainty = .15
-        
+
+    @property
+    def parent(self):
+        return self._parent() if self._parent else None
+
+    def var(self):
+        if self.number_visits < 2:
+            return 1
+        return self.q_sse / self.number_visits - self.q * self.q
+
+    def ev(self):
+        return sum([c.prior * c.var() for c in self.children])
+
+    def ve(self):
+        current = self
+        var_sum = current.var()
+        depth = 1
+        while current.children:
+            current = current.exploitation()
+            depth += 1
+            var_sum += current.var()
+        return var_sum / depth
+
     def exploitation(self):
-        return max(self.children.values(), key=lambda node: node.q)
+        return max(self.children, key=lambda node: node.q)
     
     def exploration(self):
-        children = self.children
-        return choices(list(children.values()),
-                       [node.prior for node in children.values()], k=1)[0]
+        return max(self.children, key=lambda node: node.prior * node.var)
     
     def expand(self, child_priors):
         for move, prior in child_priors.items():
@@ -34,68 +54,40 @@ class BRUENode:
         board.push_uci(move)
         return board
 
-    @staticmethod
-    def switch_function(num, _):
-        return 1 + num % int(1 + math.log(1 + num))
+    def backup(self, value_estimate: float):
+        current = self
+        # Child nodes are multiplied by -1 because we want max(-opponent eval)
+        sample = -value_estimate
+        while current:
+            current.number_visits += 1
+            e = sample - current.q
+            current.q += e / current.number_visits
+            current.q_sse += e * (sample - current.q)
 
-    @staticmethod
-    def end_of_probe(node, net, _):
-        if node.children:
-            return False
-        if not node.board.pc_board.is_game_over():
-            child_priors, value_estimate = net.evaluate(node.board)
-            node.expand(child_priors)
-            node.q = value_estimate
-            node.number_visits = 1
-        return True
+            current = current.parent
+            sample *= -1
 
     def update_node(self, reward):
         self.number_visits += 1
         self.q += (reward - self.q) / self.number_visits
 
-
-class Mcts2e:
-    def __init__(self, net):
-        self.net = net
-
-    def probe(self, node, depth, switch):
-        """
-        Note that we only want to give a reward based on the terminal state
-        as otherwise we over-reward long sequences. In the original MCTS/BRUE
-        search, all the sequences are |H| long, so this never matters
-
-        :param node:
-        :param depth:
-        :param switch:
-        :return:
-        """
-        if node.end_of_probe(node, self.net, depth):
-            if switch > depth:
-                switch = depth
-            reward = node.q
+    def best_child(self):
+        if self.ev() > self.ve():
+            return self.exploration()
         else:
-            if depth < switch:
-                child = node.exploration()
-            else:
-                child = node.exploitation()
-            reward = - self.probe(child, depth+1, switch)
-        print('node q:', node.q, 'depth', depth)
-        if depth == switch:
-            print('update depth', depth, 'reward', reward)
-            node.update_node(reward)
-        return reward
+            return self.exploitation()
 
-    def result(self, root=None, num_reads=0):
-        switch = 0
-        for n in range(num_reads):
-            switch = root.switch_function(n, switch)
-            self.probe(root, 0, switch)
-            print(sorted([(i[0], i[1].q, i[1].prior, i[1].number_visits) for i in root.children.items()], key=lambda item: -item[1]))
-        return max(root.children.items(),
-                   key=lambda item: (item[1].q, item[1].number_visits))
+    def select_leaf(self):
+        current = self
+        while current.is_expanded and current.children:
+            current = current.best_child()
+        return current
 
-
-def BRUE_search(board, num_reads, net=None, **_):
-    root = BRUENode(board)
-    search = Mcts2e(net)
-    return search.result(root, num_reads)
+    def outcome(self):
+        current = self
+        while current.childen:
+            current = current.exploitation()
+            print((current.move, current.number_visits), end=', ')
+        print('')
+        result = self.exploitation()
+        return result.move, result
