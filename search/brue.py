@@ -32,7 +32,7 @@ class BRUENode:
         return sum([c.number_visits * (c.q - c.ee()) ** 2 for c in self.children]) / (1 + self.number_visits)
 
     def exploitation(self):
-        return random.choices(1, self.children, weights=[c.prior for c in self.children])[0]
+        return random.choices(self.children, weights=[c.prior for c in self.children])[0]
     
     def exploration(self):
         exploit = self.exploitation()
