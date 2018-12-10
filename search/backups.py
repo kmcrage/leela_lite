@@ -1,6 +1,26 @@
 from search.uct import UCTNode
 import math
 
+
+class Mpa_mixin:
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def backup(self, value_estimate: float):
+        current = self
+        current.reward = -value_estimate
+        turn = -1
+        while current:
+            if current.children:
+                mpa = max(current.children.values(), key=lambda n: n.number_visits)
+                current.total_value = -mpa.Q()
+            else:
+                current.total_value += turn * value_estimate
+            current.number_visits += 1
+            current = current.parent
+            turn *= -1
+
+
 class Harmonic_mixin:
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent=parent, **kwargs)
@@ -135,6 +155,9 @@ class DPUCT_mixin:
 
 class HarmonicUCTNode(Harmonic_mixin, UCTNode):
     name = 'harmonic'
+
+class MpaUCTNode(Mpa_mixin, UCTNode):
+    name = 'mpa'
 
 
 class AdaptUCTNode(Adapt_mixin, UCTNode):
